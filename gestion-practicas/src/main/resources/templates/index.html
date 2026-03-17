@@ -1,10 +1,61 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>TFG - Gestión de Prácticas</title>
+    <title>Registro Completo de Usuario</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: sans-serif; margin: 40px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; }
+        input { width: 300px; padding: 5px; }
+        button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; }
+    </style>
 </head>
 <body>
-    <h1 th:text="${mensaje}">Hola mundo</h1>
-    <p>Tareas registradas en Supabase: <span th:text="${totalTareas}">0</span></p>
+    <h2>Formulario de Registro (TFG)</h2>
+    <form th:action="@{/usuarios/registrar}" method="post">
+        
+        <div class="form-group">
+            <label>Username:</label>
+            <input type="text" name="username" required />
+        </div>
+
+        <div class="form-group">
+            <label>Nombre:</label>
+            <input type="text" name="nombre" required />
+        </div>
+
+        <div class="form-group">
+            <label>Apellidos:</label>
+            <input type="text" name="apellidos" required />
+        </div>
+
+        <div class="form-group">
+            <label>Fecha de Nacimiento:</label>
+            <input type="date" name="fNac" required />
+        </div>
+
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" name="correo" required />
+        </div>
+
+        <div class="form-group">
+            <label>Contraseña:</label>
+            <input type="password" name="pwd" required />
+        </div>
+
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="activo" checked style="width: auto;"/> Cuenta activa
+            </label>
+        </div>
+
+        <button type="submit">Guardar Usuario</button>
+    </form>
+
+    <div th:if="${param.exito}" style="color: green; margin-top: 20px;">
+        ¡Usuario guardado y contraseña encriptada con éxito!
+    </div>
 </body>
 </html>
