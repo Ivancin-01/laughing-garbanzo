@@ -1,9 +1,10 @@
 package com.tfg.gestion_practicas.repository;
 
-import com.tfg.gestion_practicas.model.Tarea;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.tfg.gestion_practicas.model.Empresa;
+
 @Repository
-public interface TareaRepository extends JpaRepository<Tarea, Long> {
+public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
 }

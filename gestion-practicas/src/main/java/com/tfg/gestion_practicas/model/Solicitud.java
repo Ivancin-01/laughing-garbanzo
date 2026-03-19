@@ -25,10 +25,13 @@ public class Solicitud {
     @Size(min = 10, max = 300)
     private String mensaje; 
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
 
     @ManyToOne
     private Oferta oferta;
+
+    @ManyToOne
+    private Alumno alumno;
 }

@@ -18,13 +18,19 @@ public class UsuarioService {
     @Autowired
     private BCryptPasswordEncoder encoder; // Aquí Spring te "presta" la herramienta
 
-    public void registrar(Usuario u) {
-        // 1. Encriptar el campo pwd
+    public Usuario registrar(Usuario u) {
+
+        // Comprobamos si ya existe un usuario con un correo. 
+        if (usuarioRepository.existsByCorreo(u.getCorreo())) {
+            throw new RuntimeException("El correo ya está en uso");
+        }
+
+        // Encriptamos la contraseña para guardarla en la BBDD, guardamos la fecha de creación automáticamente y marcamos al usuario como activo.
         u.setPwd(encoder.encode(u.getPwd()));
-
-        // 2. Establecer la fecha de creación (si no, dará error por nullable = false)
         u.setFCreacion(LocalDateTime.now());
+        u.setActivo(true);
 
-        usuarioRepository.save(u);
+        // Guardamos al usuario en la base de datos. 
+        return usuarioRepository.save(u);
     }
 }
