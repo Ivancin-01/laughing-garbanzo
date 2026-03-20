@@ -30,4 +30,9 @@ public class OfertaService {
     public List<Oferta> obtenerPorEmpresa(Long empresaId) {
         return ofertaRepository.findByEmpresaId(empresaId);
     }
+
+    // Obtenemos una oferta por su ID. 
+    public Oferta obtenerPorId(Long id) {
+        return ofertaRepository.findById(id).orElse(null);
+    }
 }

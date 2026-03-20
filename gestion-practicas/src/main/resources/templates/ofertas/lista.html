@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Ofertas</title>
+</head>
+<body>
+    <h1>Listado de Ofertas</h1>
+    <div th:each="oferta : ${ofertas}">
+        <h3 th:text="${oferta.titulo}"></h3>
+        <p th:text="${oferta.descripcion}"></p>
+        <p><strong>Ciudad:</strong><span th:text="${oferta.ciudad}"></span></p>
+    
+        <!-- Para ver detalles de la oferta. -->
+        <a th:href="@{'/ofertas/' + ${oferta.id}}">Ver detalle</a>
+        <hr>
+    </div>
+</body>
+</html>
