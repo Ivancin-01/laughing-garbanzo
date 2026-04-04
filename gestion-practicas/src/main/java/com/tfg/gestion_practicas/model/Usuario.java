@@ -54,7 +54,7 @@ public class Usuario {
     private LocalDateTime fCreacion;
     @NotNull
     private boolean activo;
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Rol rol;
 

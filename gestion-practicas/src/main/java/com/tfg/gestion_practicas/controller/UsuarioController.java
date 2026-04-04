@@ -24,7 +24,11 @@ public class UsuarioController {
     // Recibe los datos del formulario
     @PostMapping("/registrar")
     public String registrarUsuario(Usuario usuario) {
-        usuarioService.registrar(usuario);
-        return "redirect:/usuarios/registro?exito"; // Recarga con un mensaje de éxito
+        try {
+            usuarioService.registrar(usuario);
+            return "redirect:/usuarios/registro?exito"; // Recarga con un mensaje de éxito
+        } catch (RuntimeException e) {
+            return "redirect:/usuarios/registro?error";
+        }
     }
 }

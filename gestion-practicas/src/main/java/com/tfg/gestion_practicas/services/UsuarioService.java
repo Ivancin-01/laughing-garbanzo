@@ -16,21 +16,38 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private BCryptPasswordEncoder encoder; // Aquí Spring te "presta" la herramienta
+    private BCryptPasswordEncoder encoder;
 
     public Usuario registrar(Usuario u) {
 
-        // Comprobamos si ya existe un usuario con un correo. 
+        if (u == null) {
+            throw new RuntimeException("Los datos del usuario no son válidos");
+        }
+
+        // Comprobamos si ya existe un usuario con ese correo.
         if (usuarioRepository.existsByCorreo(u.getCorreo())) {
             throw new RuntimeException("El correo ya está en uso");
         }
 
-        // Encriptamos la contraseña para guardarla en la BBDD, guardamos la fecha de creación automáticamente y marcamos al usuario como activo.
+        // Comprobamos si ya existe un usuario con ese username.
+        if (usuarioRepository.existsByUsername(u.getUsername())) {
+            throw new RuntimeException("El nombre de usuario ya está en uso");
+        }
+
+        // Comprobación simple del rol.
+        if (u.getRol() == null) {
+            throw new RuntimeException("Debes seleccionar un rol");
+        }
+
+        // Encriptamos la contraseña.
         u.setPwd(encoder.encode(u.getPwd()));
+
+        // Guardamos la fecha de creación automáticamente.
         u.setFCreacion(LocalDateTime.now());
+
+        // Marcamos al usuario como activo.
         u.setActivo(true);
 
-        // Guardamos al usuario en la base de datos. 
         return usuarioRepository.save(u);
     }
 }

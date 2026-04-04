@@ -26,7 +26,7 @@ public class OfertaService {
         return ofertaRepository.save(oferta);
     }
 
-    // Devuelve todas las empresas asignadas a una empresa concreta (Filtrado).
+    // Devuelve todas las ofertas asignadas a una empresa concreta (Filtrado).
     public List<Oferta> obtenerPorEmpresa(Long empresaId) {
         return ofertaRepository.findByEmpresaId(empresaId);
     }

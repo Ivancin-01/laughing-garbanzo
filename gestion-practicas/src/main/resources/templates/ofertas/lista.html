@@ -6,12 +6,23 @@
 </head>
 <body>
     <h1>Listado de Ofertas</h1>
+
+    <div th:if="${param.exito}" style="background:#d4edda; color:#155724; padding:10px; margin-bottom:15px; border-radius:6px;">
+        ✅ Solicitud enviada correctamente
+    </div>
+
+    <div th:if="${param.error}" style="background:#f8d7da; color:#721c24; padding:10px; margin-bottom:15px; border-radius:6px;">
+        ❌ Ha ocurrido un error al procesar la solicitud
+    </div>
+
+    <div th:if="${#lists.isEmpty(ofertas)}" style="background:#fff3cd; color:#856404; padding:10px; border-radius:6px;">
+        📭 Todavía no hay ofertas disponibles
+    </div>
+
     <div th:each="oferta : ${ofertas}">
         <h3 th:text="${oferta.titulo}"></h3>
         <p th:text="${oferta.descripcion}"></p>
-        <p><strong>Ciudad:</strong><span th:text="${oferta.ciudad}"></span></p>
-    
-        <!-- Para ver detalles de la oferta. -->
+        <p><strong>Ciudad:</strong> <span th:text="${oferta.ciudad}"></span></p>
         <a th:href="@{'/ofertas/' + ${oferta.id}}">Ver detalle</a>
         <hr>
     </div>
