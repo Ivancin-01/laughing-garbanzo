@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/usuarios")
@@ -23,12 +24,12 @@ public class UsuarioController {
 
     // Recibe los datos del formulario
     @PostMapping("/registrar")
-    public String registrarUsuario(Usuario usuario) {
-        try {
-            usuarioService.registrar(usuario);
-            return "redirect:/usuarios/registro?exito"; // Recarga con un mensaje de éxito
-        } catch (RuntimeException e) {
-            return "redirect:/usuarios/registro?error";
-        }
+public String registrarUsuario(Usuario usuario, @RequestParam(required = false) String matricula,@RequestParam(required = false) String dni) {
+    try {
+        usuarioService.registrar(usuario, matricula,dni);
+        return "redirect:/usuarios/registro?exito";
+    } catch (RuntimeException e) {
+        return "redirect:/usuarios/registro?error";
     }
+}
 }

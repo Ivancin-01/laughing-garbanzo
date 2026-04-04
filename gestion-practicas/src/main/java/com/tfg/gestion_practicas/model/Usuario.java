@@ -3,6 +3,7 @@ package com.tfg.gestion_practicas.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,6 +11,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.*;
 
@@ -57,5 +59,8 @@ public class Usuario {
     @NotNull
     @Enumerated(EnumType.STRING)
     private Rol rol;
-
+    // En Usuario.java
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private Alumno alumno;
+    
 }
