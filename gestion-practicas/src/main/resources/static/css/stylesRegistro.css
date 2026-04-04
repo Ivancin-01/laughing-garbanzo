@@ -1,0 +1,430 @@
+/* =====================================================
+   FP Connect — stylesRegistro.css
+   Misma paleta y fuentes que style.css de la landing.
+   ===================================================== */
+
+/* --- VARIABLES (mismas que en style.css) --- */
+:root {
+  --verde:        #6A8F6A;
+  --verde-claro:  #8BAF8B;
+  --melocoton:    #F4A87C;
+  --crema:        #FAF7F2;
+  --crema-oscura: #EDE8DF;
+  --texto:        #2C2C2C;
+  --texto-suave:  #666666;
+  --blanco:       #FFFFFF;
+  --error:        #d9534f;
+  --exito:        #5a9e6f;
+
+  --fuente-titulo: 'Poppins', sans-serif;
+  --fuente-texto:  'Lato', sans-serif;
+}
+
+/* --- RESET BÁSICO --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--fuente-texto);
+  background-color: var(--crema);
+  color: var(--texto);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+/* =====================================================
+   NAVBAR — copiado de style.css para ser consistente
+   ===================================================== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px;
+  background-color: rgba(250, 247, 242, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(106, 143, 106, 0.15);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.navbar__logo {
+  font-family: var(--fuente-titulo);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+.logo-fp      { color: var(--verde); }
+.logo-connect { color: var(--melocoton); }
+
+.navbar__menu {
+  list-style: none;
+  display: flex;
+  gap: 8px;
+}
+.navbar__menu a {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.navbar__menu a:hover {
+  color: var(--verde);
+  background-color: rgba(106, 143, 106, 0.08);
+}
+
+
+/* =====================================================
+   MAIN — centra la tarjeta en la pantalla
+   ===================================================== */
+.registro-main {
+  /* Empuja el contenido para que no tape el navbar fijo */
+  padding-top: 100px;
+  padding-bottom: 60px;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  /* Centra la tarjeta horizontalmente */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+
+/* =====================================================
+   TARJETA DEL FORMULARIO
+   ===================================================== */
+.registro-card {
+  background-color: var(--blanco);
+  border-radius: 20px;
+  border: 1px solid var(--crema-oscura);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  padding: 48px 48px 40px;
+  width: 100%;
+  max-width: 720px;
+}
+
+/* Cabecera de la tarjeta */
+.registro-cabecera {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.registro-cabecera h1 {
+  font-family: var(--fuente-titulo);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--texto);
+  margin-bottom: 6px;
+}
+.registro-cabecera p {
+  font-size: 0.95rem;
+  color: var(--texto-suave);
+}
+
+
+/* =====================================================
+   MENSAJES DE ÉXITO Y ERROR (Thymeleaf)
+   ===================================================== */
+.mensaje {
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.mensaje--exito {
+  background-color: rgba(90, 158, 111, 0.1);
+  color: var(--exito);
+  border: 1px solid rgba(90, 158, 111, 0.3);
+}
+.mensaje--error {
+  background-color: rgba(217, 83, 79, 0.1);
+  color: var(--error);
+  border: 1px solid rgba(217, 83, 79, 0.3);
+}
+
+
+/* =====================================================
+   FIELDSETS — bloques del formulario
+   ===================================================== */
+.bloque {
+  border: none;
+  border-top: 2px solid var(--crema-oscura);
+  padding-top: 24px;
+  margin-bottom: 24px;
+}
+
+.bloque__titulo {
+  font-family: var(--fuente-titulo);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--verde);
+  padding: 0 8px 0 0;
+  margin-bottom: 20px;
+}
+
+
+/* =====================================================
+   GRUPOS DE CAMPOS
+   ===================================================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+/* Dos campos en la misma fila */
+.form-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Campo que ocupa solo la mitad del ancho */
+.form-group--mitad {
+  max-width: calc(50% - 8px);
+}
+
+label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+/* Estilos comunes para inputs y selects */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--crema-oscura);
+  border-radius: 10px;
+  font-family: var(--fuente-texto);
+  font-size: 0.95rem;
+  color: var(--texto);
+  background-color: var(--crema);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+/* Al hacer foco el borde se vuelve verde */
+input:focus,
+select:focus {
+  border-color: var(--verde);
+  box-shadow: 0 0 0 3px rgba(106, 143, 106, 0.15);
+  background-color: var(--blanco);
+}
+
+/* Campo con error: borde rojo */
+input.campo-error,
+select.campo-error {
+  border-color: var(--error);
+}
+
+/* Mensaje de error debajo del campo */
+.error-msg {
+  font-size: 0.8rem;
+  color: var(--error);
+  font-weight: 700;
+  min-height: 16px; /* Para que no salte el layout cuando aparece */
+  display: block;
+}
+
+
+/* =====================================================
+   WRAPPER PARA EL OJO DE CONTRASEÑA
+   ===================================================== */
+.input-wrapper {
+  position: relative; /* Necesario para posicionar el botón dentro */
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  /* Dejamos sitio a la derecha para el botón del ojo */
+  padding-right: 44px;
+}
+
+.btn-ojo {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--texto-suave);
+  padding: 4px;
+  line-height: 1;
+  /* Para que el botón no tenga el outline por defecto al hacer clic */
+  outline: none;
+}
+.btn-ojo:hover {
+  color: var(--verde);
+}
+
+
+/* =====================================================
+   SELECTOR DE ROL — los cuatro botones en grid
+   ===================================================== */
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.rol-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 8px;
+  border: 2px solid var(--crema-oscura);
+  border-radius: 12px;
+  background-color: var(--crema);
+  font-family: var(--fuente-texto);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.rol-btn span {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.rol-btn:hover {
+  border-color: var(--verde-claro);
+  background-color: rgba(106, 143, 106, 0.06);
+  color: var(--verde);
+}
+
+/* Clase que JS añade al botón seleccionado */
+.rol-btn.seleccionado {
+  border-color: var(--verde);
+  background-color: rgba(106, 143, 106, 0.12);
+  color: var(--verde);
+}
+
+
+/* =====================================================
+   SECCIÓN ALUMNO — oculta por defecto
+   JS añade la clase "seccion-visible" para mostrarla
+   ===================================================== */
+.seccion-alumno {
+  /* Empieza oculta y sin espacio */
+  display: none;
+  overflow: hidden;
+
+  /* Cuando JS la muestre, la marcamos como visible con una transición */
+  /* (La transición de display no funciona, pero la de opacity sí) */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* JS añade esta clase cuando el rol es ALUMNO */
+.seccion-alumno.seccion-visible {
+  display: block; /* Primero la mostramos en el DOM */
+  opacity: 1;
+}
+
+
+/* =====================================================
+   CHECKBOX "Cuenta activa"
+   ===================================================== */
+.form-group--checkbox {
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--texto-suave);
+}
+
+/* Checkbox con tamaño razonable (por defecto es muy pequeño) */
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--verde); /* Color de la marca al activar */
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+
+/* =====================================================
+   BOTÓN SUBMIT
+   ===================================================== */
+.btn-submit {
+  width: 100%;
+  padding: 15px;
+  background-color: var(--verde);
+  color: var(--blanco);
+  font-family: var(--fuente-titulo);
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: var(--verde-claro);
+  transform: translateY(-2px);
+}
+
+/* Cuando el formulario está siendo enviado, desactivamos el botón */
+.btn-submit:disabled {
+  background-color: var(--crema-oscura);
+  color: var(--texto-suave);
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* =====================================================
+   ENLACE AL LOGIN
+   ===================================================== */
+.link-login {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+.link-login a {
+  color: var(--verde);
+  font-weight: 700;
+  transition: color 0.2s;
+}
+.link-login a:hover {
+  color: var(--melocoton);
+}

@@ -1,0 +1,487 @@
+/* =====================================================
+   FP Connect — style.css
+   Paleta: Verde salvia + Melocotón + Crema
+   Fuentes: Poppins (títulos) + Lato (texto)
+   ===================================================== */
+
+/* --- VARIABLES CSS --- */
+/* Definimos los colores y fuentes en un sitio central
+   para no repetirlos por todo el archivo */
+:root {
+  --verde:        #6A8F6A;
+  --verde-claro:  #8BAF8B;
+  --melocoton:    #F4A87C;
+  --crema:        #FAF7F2;
+  --crema-oscura: #EDE8DF;
+  --texto:        #2C2C2C;
+  --texto-suave:  #666666;
+  --blanco:       #FFFFFF;
+
+  --fuente-titulo: 'Poppins', sans-serif;
+  --fuente-texto:  'Lato', sans-serif;
+}
+
+/* --- RESET BÁSICO --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth; /* Scroll suave al pulsar los enlaces del menú */
+}
+
+body {
+  font-family: var(--fuente-texto);
+  background-color: var(--crema);
+  color: var(--texto);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* =====================================================
+   NAVBAR
+   ===================================================== */
+.navbar {
+  /* Fija la barra en la parte superior aunque hagamos scroll */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px;
+
+  /* Efecto cristal: fondo semi-transparente con desenfoque */
+  background-color: rgba(250, 247, 242, 0.5);
+  backdrop-filter: blur(8px);
+
+  border-bottom: 1px solid rgba(106, 143, 106, 0.15);
+
+  /* Transición suave cuando cambie el fondo al hacer scroll */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Clase que añade JS cuando el usuario baja la página */
+.navbar--scrolled {
+  background-color: rgba(250, 247, 242, 0.95);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Logo: las dos palabras con colores diferentes */
+.navbar__logo {
+  font-family: var(--fuente-titulo);
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.logo-fp {
+  color: var(--verde);
+}
+.logo-connect {
+  color: var(--melocoton);
+}
+
+/* Lista de enlaces del menú */
+.navbar__menu {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar__menu a {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.navbar__menu a:hover {
+  color: var(--verde);
+  background-color: rgba(106, 143, 106, 0.08);
+}
+
+/* Botón "Acceder" del menú: tiene estilo de botón */
+.navbar__btn {
+  background-color: var(--verde) !important;
+  color: var(--blanco) !important;
+  border-radius: 999px !important;
+  padding: 8px 22px !important;
+  font-weight: 700;
+  transition: background-color 0.2s ease !important;
+}
+
+.navbar__btn:hover {
+  background-color: var(--verde-claro) !important;
+}
+
+
+/* =====================================================
+   BOTÓN PRINCIPAL (reutilizable)
+   ===================================================== */
+.btn-principal {
+  display: inline-block;
+  background-color: var(--verde);
+  color: var(--blanco);
+  font-family: var(--fuente-titulo);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 14px 32px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-principal:hover {
+  background-color: var(--verde-claro);
+  transform: translateY(-2px); /* Sube un poquito al pasar el ratón */
+}
+
+
+/* =====================================================
+   HERO — Primera sección
+   ===================================================== */
+.hero {
+  /* Empujamos el contenido para que no quede tapado por el navbar fijo */
+  padding-top: 120px;
+  padding-bottom: 80px;
+  padding-left: 48px;
+  padding-right: 48px;
+
+  /* Flexbox: texto a la izquierda, imagen a la derecha */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+
+  min-height: 100vh;
+}
+
+.hero__texto {
+  max-width: 540px;
+}
+
+.hero__texto h1 {
+  font-family: var(--fuente-titulo);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  color: var(--texto);
+}
+
+/* El span dentro del h1 que colorea "empieza aquí" */
+.texto-verde {
+  color: var(--verde);
+}
+
+.hero__texto p {
+  font-size: 1.05rem;
+  color: var(--texto-suave);
+  margin-bottom: 32px;
+  line-height: 1.7;
+}
+
+/* Columna derecha del hero */
+.hero__imagen {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tarjeta decorativa del hero */
+.hero__tarjeta {
+  background-color: var(--blanco);
+  border: 1px solid var(--crema-oscura);
+  border-radius: 16px;
+  padding: 28px 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  max-width: 300px;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.tarjeta-estado {
+  margin-top: 12px;
+  color: var(--verde);
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   ANIMACIÓN BOUNCE (keyframes)
+   La imagen del hero sube y baja suavemente
+   ===================================================== */
+@keyframes bounce {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-16px); }
+  100% { transform: translateY(0px); }
+}
+
+.animacion-bounce {
+  animation-name: bounce;
+  animation-duration: 3s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite; /* Se repite para siempre */
+}
+
+
+/* =====================================================
+   SECCIÓN: CÓMO FUNCIONA
+   ===================================================== */
+.como-funciona {
+  background-color: var(--blanco);
+  padding: 80px 48px;
+  text-align: center;
+}
+
+.como-funciona h2 {
+  font-family: var(--fuente-titulo);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--texto);
+}
+
+.subtitulo-seccion {
+  font-size: 1rem;
+  color: var(--texto-suave);
+  margin-bottom: 48px;
+}
+
+/* Grid de tres columnas para las tarjetas */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Tarjeta normal */
+.card {
+  background-color: var(--crema);
+  border: 1px solid var(--crema-oscura);
+  border-radius: 16px;
+  padding: 36px 28px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Tarjeta central destacada */
+.card--destacada {
+  background-color: var(--verde);
+  color: var(--blanco);
+  border-color: var(--verde);
+}
+
+.card--destacada h3,
+.card--destacada p {
+  color: var(--blanco);
+}
+
+.card__icono {
+  font-size: 2.2rem;
+  margin-bottom: 16px;
+}
+
+.card h3 {
+  font-family: var(--fuente-titulo);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--texto);
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: var(--texto-suave);
+  line-height: 1.65;
+}
+
+
+/* =====================================================
+   SECCIÓN: OPINIONES (CARRUSEL)
+   ===================================================== */
+.opiniones {
+  padding: 80px 48px;
+  background-color: var(--crema-oscura);
+  text-align: center;
+}
+
+.opiniones h2 {
+  font-family: var(--fuente-titulo);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* Contenedor exterior: centra el carrusel y pone los botones a los lados */
+.carrusel-contenedor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+/* La ventana recorta las tarjetas que salen del área visible */
+.carrusel-ventana {
+  width: 700px;       /* Mostramos 2 tarjetas a la vez (300px + 24px gap + 300px ~= 700px) */
+  overflow: hidden;   /* Lo que salga de este ancho, no se ve */
+}
+
+/* La pista contiene TODAS las tarjetas en fila.
+   jQuery animará su margen izquierdo para desplazarla */
+.carrusel-pista {
+  display: flex;
+  gap: 24px;
+  /* El ancho total se calcula automáticamente según las tarjetas */
+}
+
+/* Cada tarjeta del carrusel */
+.carrusel-tarjeta {
+  /* Ancho fijo: importante para que el carrusel calcule bien el desplazamiento */
+  min-width: 338px;
+  max-width: 338px;
+
+  background-color: var(--blanco);
+  border-radius: 16px;
+  padding: 32px 28px;
+  border: 1px solid var(--crema-oscura);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  text-align: left;
+}
+
+.carrusel-tarjeta p {
+  font-size: 0.95rem;
+  color: var(--texto-suave);
+  line-height: 1.7;
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+.carrusel-tarjeta strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--texto);
+  font-style: normal;
+  margin-bottom: 6px;
+}
+
+.estrellas {
+  color: var(--melocoton);
+  font-size: 1rem;
+}
+
+/* Tarjeta de estadísticas (fondo degradado suave) */
+.carrusel-tarjeta--stat {
+  background: linear-gradient(135deg, #eef5ee, #fef0e7);
+  text-align: center;
+  font-style: normal;
+}
+
+.stat-numero {
+  font-family: var(--fuente-titulo);
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--verde);
+  font-style: normal !important;
+  margin-bottom: 4px;
+}
+
+.stat-etiqueta {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--texto);
+  font-style: normal !important;
+  margin-bottom: 8px;
+}
+
+/* Botones del carrusel (< y >) */
+.carrusel-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--verde-claro);
+  background-color: var(--blanco);
+  color: var(--verde);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.carrusel-btn:hover {
+  background-color: var(--verde);
+  color: var(--blanco);
+}
+
+/* Puntos indicadores del carrusel */
+.carrusel-puntos {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.punto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgba(106, 143, 106, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, width 0.3s ease;
+}
+
+.punto.activo {
+  background-color: var(--verde);
+  width: 26px;
+  border-radius: 999px; /* Se alarga el punto activo */
+}
+
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+.footer {
+  background-color: var(--texto);
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  padding: 36px 48px;
+  font-size: 0.9rem;
+}
+
+.footer .logo-fp {
+  color: var(--verde-claro);
+}
+
+.footer .logo-connect {
+  color: var(--melocoton);
+}
+
+.footer__sub {
+  margin-top: 6px;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.35);
+}

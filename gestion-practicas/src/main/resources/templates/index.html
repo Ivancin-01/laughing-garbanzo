@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FP Connect</title>
+ 
+  <!-- Google Fonts: Poppins para títulos, Lato para texto normal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+ 
+  <!-- Normalize: resetea estilos raros entre navegadores -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+ 
+  <!-- jQuery UI CSS (para animaciones del carrusel) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css">
+ 
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+ 
+  <!-- ========================================================
+       NAVBAR
+       Barra de navegación fija en la parte superior.
+       La clase "navbar--scrolled" se añade desde JS al hacer scroll.
+  ======================================================== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__logo">
+      <!-- Logo: solo texto con un span para el color verde -->
+      <span class="logo-fp">FP</span><span class="logo-connect">Connect</span>
+    </div>
+    <ul class="navbar__menu">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#como-funciona">Cómo funciona</a></li>
+      <li><a href="#opiniones">Opiniones</a></li>
+      <li><a href="/usuarios/registro" class="navbar__btn">Acceder</a></li>
+    </ul>
+  </nav>
+ 
+ 
+  <!-- ========================================================
+       SECCIÓN 1: HERO
+       La primera pantalla que ve el usuario.
+       Tiene un título, subtítulo, botón y una imagen animada.
+  ======================================================== -->
+  <section class="hero" id="inicio">
+    <div class="hero__texto">
+      <h1>Tu futuro profesional <span class="texto-verde">empieza aquí</span></h1>
+      <p>FP Connect conecta a los alumnos de Formación Profesional con empresas reales para sus prácticas. Fácil, rápido y supervisado por tu tutor.</p>
+      <a href="#como-funciona" class="btn-principal">Ver cómo funciona</a>
+    </div>
+    <div class="hero__imagen">
+      <!-- Imagen decorativa con animación bounce definida en CSS -->
+      <div class="hero__tarjeta animacion-bounce">
+        <p>👨‍💻 Ana García encontró sus prácticas en <strong>DAW</strong></p>
+        <p class="tarjeta-estado">✅ Prácticas confirmadas</p>
+      </div>
+    </div>
+  </section>
+ 
+ 
+  <!-- ========================================================
+       SECCIÓN 2: CÓMO FUNCIONA
+       Tres columnas explicando los tres roles de la app.
+  ======================================================== -->
+  <section class="como-funciona" id="como-funciona">
+    <h2>¿Cómo funciona?</h2>
+    <p class="subtitulo-seccion">Tres roles, una sola plataforma</p>
+ 
+    <div class="cards-grid">
+ 
+      <div class="card">
+        <div class="card__icono">🎓</div>
+        <h3>Alumno</h3>
+        <p>Busca ofertas de prácticas, filtra por tu ciclo formativo y envía tu solicitud directamente a la empresa.</p>
+      </div>
+ 
+      <div class="card card--destacada">
+        <div class="card__icono">🏢</div>
+        <h3>Empresa</h3>
+        <p>Publica tus plazas de prácticas y revisa las solicitudes que recibas. El recruiter gestiona todo desde su panel.</p>
+      </div>
+ 
+      <div class="card">
+        <div class="card__icono">👨‍🏫</div>
+        <h3>Tutor</h3>
+        <p>Supervisa las comunicaciones de tus alumnos y haz seguimiento de todo el proceso desde un único sitio.</p>
+      </div>
+ 
+    </div>
+  </section>
+ 
+ 
+  <!-- ========================================================
+       SECCIÓN 3: OPINIONES (CARRUSEL)
+       Controlado con jQuery. Las tarjetas se deslizan
+       con los botones anterior / siguiente.
+  ======================================================== -->
+  <section class="opiniones" id="opiniones">
+    <h2>Lo que dicen nuestros usuarios</h2>
+    <p class="subtitulo-seccion">Alumnos, tutores y empresas ya usan FP Connect</p>
+ 
+    <!-- Contenedor del carrusel -->
+    <div class="carrusel-contenedor">
+ 
+      <!-- Botón ANTERIOR -->
+      <button id="btn-anterior" class="carrusel-btn">&#8249;</button>
+ 
+      <!-- Ventana visible del carrusel (overflow: hidden en CSS) -->
+      <div class="carrusel-ventana">
+        <!-- Pista que se desplaza: aquí van TODAS las tarjetas seguidas -->
+        <div class="carrusel-pista" id="carrusel-pista">
+ 
+          <div class="carrusel-tarjeta">
+            <p>"Encontré mis prácticas en dos semanas. El proceso fue muy sencillo y mi tutor estuvo pendiente en todo momento."</p>
+            <strong>Marta S. — Alumna ASIR 2º</strong>
+            <span class="estrellas">★★★★★</span>
+          </div>
+ 
+          <div class="carrusel-tarjeta carrusel-tarjeta--stat">
+            <p class="stat-numero">87</p>
+            <p class="stat-etiqueta">Empresas colaboradoras</p>
+            <p>De informática, diseño, administración y más sectores.</p>
+          </div>
+ 
+          <div class="carrusel-tarjeta">
+            <p>"Los alumnos que llegan a través de FP Connect vienen muy bien preparados y el proceso de selección es transparente."</p>
+            <strong>Javier M. — Recruiter en TechStart S.L.</strong>
+            <span class="estrellas">★★★★★</span>
+          </div>
+ 
+          <div class="carrusel-tarjeta carrusel-tarjeta--stat">
+            <p class="stat-numero">95%</p>
+            <p class="stat-etiqueta">Tasa de satisfacción</p>
+            <p>Medida en encuestas a alumnos y empresas tras las prácticas.</p>
+          </div>
+ 
+          <div class="carrusel-tarjeta">
+            <p>"Por fin tengo un sitio donde ver todas las comunicaciones de mis alumnos. Me ahorra muchísimo trabajo cada semana."</p>
+            <strong>Laura T. — Tutora IES Tecnológico</strong>
+            <span class="estrellas">★★★★★</span>
+          </div>
+ 
+          <div class="carrusel-tarjeta carrusel-tarjeta--stat">
+            <p class="stat-numero">320+</p>
+            <p class="stat-etiqueta">Alumnos conectados</p>
+            <p>De DAW, DAM, ASIR, SMR y otros ciclos de FP.</p>
+          </div>
+ 
+        </div><!-- fin carrusel-pista -->
+      </div><!-- fin carrusel-ventana -->
+ 
+      <!-- Botón SIGUIENTE -->
+      <button id="btn-siguiente" class="carrusel-btn">&#8250;</button>
+ 
+    </div><!-- fin carrusel-contenedor -->
+ 
+    <!-- Puntos indicadores (se generan desde JS) -->
+    <div id="carrusel-puntos" class="carrusel-puntos"></div>
+ 
+  </section>
+ 
+ 
+  <!-- ========================================================
+       FOOTER
+  ======================================================== -->
+  <footer class="footer">
+    <p><span class="logo-fp">FP</span><span class="logo-connect">Connect</span> &mdash; Trabajo de Fin de Grado &middot; DAW</p>
+    <p class="footer__sub">Conectando talento FP con empresas reales.</p>
+  </footer>
+ 
+ 
+  <!-- jQuery (necesario antes de jQuery UI) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <!-- jQuery UI (para el método .animate() con easing) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+ 
+  <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

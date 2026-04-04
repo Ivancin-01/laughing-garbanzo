@@ -1,91 +1,202 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <title>Registro Completo de Usuario</title>
-    <meta charset="UTF-8">
-    <style>
-        body { font-family: sans-serif; margin: 40px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; }
-        input, select { width: 300px; padding: 5px; }
-        button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; }
-        #seccionAlumno { display: none; background: #f9f9f9; padding: 15px; border-left: 5px solid #28a745; margin-top: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FP Connect — Registro</title>
+ 
+  <!-- Mismas fuentes que la landing -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+ 
+  <!-- Normalize -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+ 
+  <link rel="stylesheet" th:href="@{/css/stylesRegistro.css}">
 </head>
 <body>
-    <h2>Formulario de Registro (TFG)</h2>
-
-    <form th:action="@{/usuarios/registrar}" method="post">
-        <div class="form-group">
-            <label>Username:</label>
-            <input type="text" name="username" required />
-        </div>
-        <div class="form-group">
-            <label>Nombre:</label>
-            <input type="text" name="nombre" required />
-        </div>
-        <div class="form-group">
-            <label>Apellidos:</label>
-            <input type="text" name="apellidos" required />
-        </div>
-        <div class="form-group">
-            <label>Fecha de Nacimiento:</label>
-            <input type="date" name="fNac" required />
-        </div>
-        <div class="form-group">
-            <label>Email:</label>
-            <input type="email" name="correo" required />
-        </div>
-        <div class="form-group">
-            <label>Contraseña:</label>
-            <input type="password" name="pwd" required />
-        </div>
-
-        <div class="form-group">
-            <label>Rol:</label>
-            <select name="rol" id="rolSelect" onchange="mostrarCamposExtra()" required>
-                <option value="">-- Selecciona un rol --</option>
-                <option value="ALUMNO">Alumno</option>
-                <option value="EMPRESA">Empresa</option>
-                <option value="TUTOR">Tutor</option>
-                <option value="ADMIN">Administrador</option>
-            </select>
-        </div>
-
-        <div id="seccionAlumno">
+ 
+  <!-- =====================================================
+       NAVBAR — igual que en la landing
+       ===================================================== -->
+  <nav class="navbar" id="navbar">
+    <a th:href="@{/}" class="navbar__logo">
+      <span class="logo-fp">FP</span><span class="logo-connect">Connect</span>
+    </a>
+    <ul class="navbar__menu">
+      <li><a th:href="@{/}">← Volver al inicio</a></li>
+    </ul>
+  </nav>
+ 
+ 
+  <!-- =====================================================
+       MAIN: formulario centrado en pantalla
+       ===================================================== -->
+  <main class="registro-main">
+ 
+    <div class="registro-card">
+ 
+      <!-- Cabecera -->
+      <div class="registro-cabecera">
+        <h1>Crear cuenta</h1>
+        <p>Rellena los datos para registrarte en FP Connect</p>
+      </div>
+ 
+      <!-- Mensajes Thymeleaf -->
+      <div th:if="${param.exito}" class="mensaje mensaje--exito">
+        ✅ ¡Usuario registrado con éxito!
+      </div>
+      <div th:if="${param.error}" class="mensaje mensaje--error">
+        ❌ Ha ocurrido un error al registrar. Inténtalo de nuevo.
+      </div>
+ 
+      <!-- ===================================================
+           FORMULARIO
+           th:action y method igual que en tu código original
+           =================================================== -->
+      <form th:action="@{/usuarios/registrar}" method="post" id="formRegistro" novalidate>
+ 
+        <!-- BLOQUE 1: Datos de acceso -->
+        <fieldset class="bloque">
+          <legend class="bloque__titulo">Datos de acceso</legend>
+ 
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="ej: ana.garcia" required>
+            <span class="error-msg" id="err-username"></span>
+          </div>
+ 
+          <div class="form-fila">
             <div class="form-group">
-                <label>Matrícula / Especialidad:</label>
-                <select name="matricula">
-                    <option value="">-- Selecciona Especialidad --</option>
-                    <option value="Informatica">Informática</option>
-                    <option value="Administracion">Administración</option>
-                    <option value="Peluqueria">Peluquería</option>
-                </select>
-                <br>
-                <label>DNI:</label>
-                <input type="text" name="dni"></input>
+              <label for="correo">Email</label>
+              <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com" required>
+              <span class="error-msg" id="err-correo"></span>
             </div>
+ 
+            <div class="form-group">
+              <label for="pwd">Contraseña</label>
+              <!-- Wrapper para poner el botón de ojo dentro del input -->
+              <div class="input-wrapper">
+                <input type="password" id="pwd" name="pwd" placeholder="Mínimo 6 caracteres" required>
+                <button type="button" id="btnOjo" class="btn-ojo" title="Mostrar u ocultar contraseña">👁</button>
+              </div>
+              <span class="error-msg" id="err-pwd"></span>
+            </div>
+          </div>
+ 
+        </fieldset>
+ 
+ 
+        <!-- BLOQUE 2: Datos personales -->
+        <fieldset class="bloque">
+          <legend class="bloque__titulo">Datos personales</legend>
+ 
+          <div class="form-fila">
+            <div class="form-group">
+              <label for="nombre">Nombre</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Ana" required>
+              <span class="error-msg" id="err-nombre"></span>
+            </div>
+ 
+            <div class="form-group">
+              <label for="apellidos">Apellidos</label>
+              <input type="text" id="apellidos" name="apellidos" placeholder="García López" required>
+              <span class="error-msg" id="err-apellidos"></span>
+            </div>
+          </div>
+ 
+          <div class="form-group form-group--mitad">
+            <label for="fNac">Fecha de nacimiento</label>
+            <input type="date" id="fNac" name="fNac" required>
+            <span class="error-msg" id="err-fNac"></span>
+          </div>
+ 
+        </fieldset>
+ 
+ 
+        <!-- BLOQUE 3: Rol -->
+        <fieldset class="bloque">
+          <legend class="bloque__titulo">Rol en la plataforma</legend>
+ 
+          <!--
+            Cuatro botones visuales para elegir el rol.
+            Al hacer clic, JS marca el botón y actualiza el select oculto de abajo.
+            El select oculto es el que envía el dato a Thymeleaf/Spring.
+          -->
+          <div class="roles-grid" id="rolesGrid">
+            <button type="button" class="rol-btn" data-rol="ALUMNO">
+              <span>🎓</span> Alumno
+            </button>
+            <button type="button" class="rol-btn" data-rol="EMPRESA">
+              <span>🏢</span> Empresa
+            </button>
+            <button type="button" class="rol-btn" data-rol="TUTOR">
+              <span>👨‍🏫</span> Tutor
+            </button>
+            <button type="button" class="rol-btn" data-rol="ADMIN">
+              <span>🛡️</span> Admin
+            </button>
+          </div>
+ 
+          <!-- Select oculto: solo sirve para enviar el valor al servidor -->
+          <select name="rol" id="rolSelect" required style="display:none;">
+            <option value="">-- Selecciona un rol --</option>
+            <option value="ALUMNO">Alumno</option>
+            <option value="EMPRESA">Empresa</option>
+            <option value="TUTOR">Tutor</option>
+            <option value="ADMIN">Administrador</option>
+          </select>
+ 
+          <span class="error-msg" id="err-rol"></span>
+ 
+        </fieldset>
+ 
+ 
+        <!-- BLOQUE 4: Datos de alumno — solo visible si el rol es ALUMNO -->
+        <!-- JS añade/quita la clase "seccion-visible" para mostrarlo u ocultarlo -->
+        <fieldset class="bloque seccion-alumno" id="seccionAlumno">
+          <legend class="bloque__titulo">Datos del alumno</legend>
+ 
+          <div class="form-fila">
+            <div class="form-group">
+              <label for="matricula">Especialidad</label>
+              <select name="matricula" id="matricula">
+                <option value="">-- Selecciona especialidad --</option>
+                <option value="Informatica">Informática</option>
+                <option value="Administracion">Administración</option>
+                <option value="Peluqueria">Peluquería</option>
+              </select>
+            </div>
+ 
+            <div class="form-group">
+              <label for="dni">DNI</label>
+              <input type="text" id="dni" name="dni" placeholder="12345678A">
+              <span class="error-msg" id="err-dni"></span>
+            </div>
+          </div>
+ 
+        </fieldset>
+ 
+ 
+        <!-- Checkbox cuenta activa -->
+        <div class="form-group form-group--checkbox">
+          <label class="checkbox-label">
+            <input type="checkbox" name="activo" checked>
+            <span>Activar cuenta inmediatamente</span>
+          </label>
         </div>
-
-        <div class="form-group">
-            <label>
-                <input type="checkbox" name="activo" checked style="width: auto;"/> Cuenta activa
-            </label>
-        </div>
-
-        <button type="submit">Guardar Usuario</button>
-    </form>
-
-    <div th:if="${param.exito}" style="color: green; margin-top: 20px;"> ¡Usuario guardado con éxito! </div>
-    <div th:if="${param.error}" style="color:red; margin-top:20px;"> Error al registrar. </div>
-
-    <script>
-        function mostrarCamposExtra() {
-            const rol = document.getElementById("rolSelect").value;
-            const seccion = document.getElementById("seccionAlumno");
-            // Si es Alumno, mostramos; si no, ocultamos
-            seccion.style.display = (rol === "ALUMNO") ? "block" : "none";
-        }
-    </script>
+ 
+        <!-- Botón enviar -->
+        <button type="submit" class="btn-submit">Crear cuenta</button>
+ 
+        <p class="link-login">
+          ¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a>
+        </p>
+ 
+      </form>
+    </div><!-- fin registro-card -->
+  </main>
+ 
+  <script th:src="@{/js/registro.js}"></script>
 </body>
 </html>
