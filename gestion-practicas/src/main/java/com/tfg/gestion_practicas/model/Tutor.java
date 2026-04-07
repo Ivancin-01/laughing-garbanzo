@@ -20,7 +20,10 @@ public class Tutor {
 
     private String departamento;
 
-    private String centroEducativo;
+    @ManyToOne
+    @MapsId
+    @JoinColumn(name = "id_centro")
+    private Centro centro;
 
     private String telefono;
 

@@ -26,7 +26,11 @@ public class Alumno {
     @NotBlank
     private String matricula; 
 
-    private String centroEducativo;
+    @ManyToOne
+    @MapsId
+    @JoinColumn(name = "id_centro")
+    private Centro centro;
+
 
     private String ciudad; 
 
