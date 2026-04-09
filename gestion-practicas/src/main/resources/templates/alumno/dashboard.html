@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Dashboard - Alumno</title>
+    <link rel="stylesheet" th:href="@{/css/alumno/styles.css}">
+</head>
+<body>
+    <div class="contenedor">
+        <div class="bloque">
+            <h1>Bienvenido/a, <span th:text="${alumno.nombre}">Alumno</span></h1>
+            <p>Este es tu panel principal. Desde aquí puedes ver ofertas y revisar tus solicitudes.</p>
+            <div class="acciones">
+                <a th:href="@{/ofertas}" class="btn">Ver ofertas</a>
+                <a th:href="@{/alumno/solicitudes}" class="btn secundario">Mis solicitudes</a>
+            </div>
+        </div>
+
+        <div class="bloque">
+            <h2>Resumen de mis solicitudes</h2>
+            <div th:if="${#lists.isEmpty(solicitudes)}" class="vacio">Todavía no has enviado ninguna solicitud.</div>
+            <table th:if="${not #lists.isEmpty(solicitudes)}">
+                <thead>
+                    <tr>
+                        <th>Oferta</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="solicitud : ${solicitudes}"></tr>
+                    <td th:text="${solicitud.oferta.titulo}">Oferta</td>
+                    <td th:text="${solicitud.fechaSolicitud}">2026-04-09</td>
+                    <td th:text="${solicitud.estado}">PENDIENTE</td>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

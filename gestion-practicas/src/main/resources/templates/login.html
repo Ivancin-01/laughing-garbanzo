@@ -100,7 +100,7 @@
         </div>
 
         <!-- Token CSRF de Spring Security -->
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> <!-- El token CSRF asegura que la petición la ha hecho el usuario desde nuestra web, no un atacante desde otra.-->
+        <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> !--><!-- El token CSRF asegura que la petición la ha hecho el usuario desde nuestra web, no un atacante desde otra.-->
 
         <!-- Botón submit -->
         <button type="submit" class="btn-submit">Iniciar sesión</button>

@@ -26,12 +26,24 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/", "/login", "/usuarios/**", "/css/**", "/js/**", "/img/**", "/dashboardAlumno").permitAll().anyRequest().authenticated())
-                .formLogin(form -> form.loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/", true).failureUrl("/login?error").permitAll())
-                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login?logout").permitAll());
-
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            // Aseguramos que todas las rutas de alumno y recursos estáticos sean libres
+            .requestMatchers("/", "/login", "/usuarios/**", "/css/**", "/js/**", "/img/**", "/alumno/**", "/ofertas/**").permitAll()
+            .anyRequest().authenticated())
+        .formLogin(form -> form
+            .loginPage("/login")
+            .loginProcessingUrl("/login")
+            .defaultSuccessUrl("/alumno/dashboard", true)
+            .failureUrl("/login?error")
+            .permitAll()
+        )
+        .logout(logout -> logout
+            .logoutUrl("/logout").logoutSuccessUrl("/login?logout").permitAll()
+        );
+            
         return http.build();
     }
 }
