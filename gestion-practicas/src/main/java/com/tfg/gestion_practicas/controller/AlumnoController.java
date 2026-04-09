@@ -16,8 +16,7 @@ import com.tfg.gestion_practicas.services.SolicitudService;
 
 @Controller
 public class AlumnoController {
-    private final AuthController authController;
-
+    private final AuthController authController; 
     private final AlumnoService alumnoService;
 
     @Autowired
@@ -34,19 +33,26 @@ public class AlumnoController {
     // Dashboard de alumno simplificada - para trabajar mejor.
     @GetMapping("/alumno/dashboard")
     public String dashboardAlumno (Model model, Principal principal) {
-        // 1. Obtenemos el email del usuario que inicie sesión.
+        // 1. Verificamos si existe una sesión que se encuentre activa. 
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        // 2. Obtenemos el alumno por su correo. Spring Security toma el email como dato para identificar al usuario.
         String email = principal.getName();
 
-        // 2. Buscamos al alumno por su email.
+        // 3. Buscamos al alumno en la DB por su email.
         Alumno al = alumnoRepository.findByEmail(email).orElse(null);
 
+        // 3.1. Si el email del login no existe en la tabla alumnos, hacemos saltar una nueva ventana.
         if (al == null) {
             return "redirect:/login?error=usuario-no-encontrado";
         }
 
-        // 3. Cargamos las solicitudes reales. 
-        List<Solicitud> solicitudes = solicitudService.obtenerPorAlumno(al.getId());
+        // 4. Cargamos las solicitudes reales del alumno encontrado.
+        List <Solicitud> solicitudes = solicitudService.obtenerPorAlumno(al.getId());
 
+        // 5. Pasamos los datos al modelo para que la vista 'dashboard.html' los pinte.
         model.addAttribute("alumno", al);
         model.addAttribute("solicitudes", solicitudes);
 
