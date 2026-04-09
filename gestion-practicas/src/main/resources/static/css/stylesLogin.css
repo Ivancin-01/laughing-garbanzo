@@ -1,0 +1,429 @@
+/* =====================================================
+   FP Connect — stylesLogin.css
+   Misma paleta y fuentes que stylesRegistro.css
+   ===================================================== */
+
+/* --- VARIABLES (mismas que en el resto de la app) --- */
+:root {
+  --verde:        #6A8F6A;
+  --verde-claro:  #8BAF8B;
+  --melocoton:    #F4A87C;
+  --crema:        #FAF7F2;
+  --crema-oscura: #EDE8DF;
+  --texto:        #2C2C2C;
+  --texto-suave:  #666666;
+  --blanco:       #FFFFFF;
+  --error:        #d9534f;
+  --exito:        #5a9e6f;
+
+  --fuente-titulo: 'Poppins', sans-serif;
+  --fuente-texto:  'Lato', sans-serif;
+}
+
+/* --- RESET BÁSICO --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--fuente-texto);
+  background-color: var(--crema);
+  color: var(--texto);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+/* =====================================================
+   NAVBAR — igual que en registro y landing
+   ===================================================== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px;
+  background-color: rgba(250, 247, 242, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(106, 143, 106, 0.15);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.navbar__logo {
+  font-family: var(--fuente-titulo);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+.logo-fp      { color: var(--verde); }
+.logo-connect { color: var(--melocoton); }
+
+.navbar__menu {
+  list-style: none;
+  display: flex;
+  gap: 8px;
+}
+.navbar__menu a {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.navbar__menu a:hover {
+  color: var(--verde);
+  background-color: rgba(106, 143, 106, 0.08);
+}
+
+
+/* =====================================================
+   MAIN — centra la tarjeta verticalmente en pantalla
+   ===================================================== */
+.login-main {
+  min-height: 100vh;
+  padding-top: 80px;
+  padding-bottom: 60px;
+  padding-left: 24px;
+  padding-right: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* =====================================================
+   TARJETA DEL FORMULARIO
+   ===================================================== */
+.login-card {
+  background-color: var(--blanco);
+  border-radius: 20px;
+  border: 1px solid var(--crema-oscura);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  padding: 48px 48px 40px;
+  width: 100%;
+  max-width: 460px;
+}
+
+/* Avatar / icono superior */
+.login-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: rgba(106, 143, 106, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 20px;
+}
+
+/* Cabecera de la tarjeta */
+.login-cabecera {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.login-cabecera h1 {
+  font-family: var(--fuente-titulo);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--texto);
+  margin-bottom: 6px;
+}
+.login-cabecera p {
+  font-size: 0.95rem;
+  color: var(--texto-suave);
+}
+
+
+/* =====================================================
+   MENSAJES DE ÉXITO Y ERROR (Thymeleaf)
+   ===================================================== */
+.mensaje {
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.mensaje--exito {
+  background-color: rgba(90, 158, 111, 0.1);
+  color: var(--exito);
+  border: 1px solid rgba(90, 158, 111, 0.3);
+}
+.mensaje--error {
+  background-color: rgba(217, 83, 79, 0.1);
+  color: var(--error);
+  border: 1px solid rgba(217, 83, 79, 0.3);
+}
+
+
+/* =====================================================
+   GRUPOS DE CAMPOS
+   ===================================================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+/* Estilos comunes para inputs */
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--crema-oscura);
+  border-radius: 10px;
+  font-family: var(--fuente-texto);
+  font-size: 0.95rem;
+  color: var(--texto);
+  background-color: var(--crema);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--verde);
+  box-shadow: 0 0 0 3px rgba(106, 143, 106, 0.15);
+  background-color: var(--blanco);
+}
+
+/* Campo con error: borde rojo */
+input.campo-error {
+  border-color: var(--error);
+}
+
+/* Mensaje de error debajo del campo */
+.error-msg {
+  font-size: 0.8rem;
+  color: var(--error);
+  font-weight: 700;
+  min-height: 16px;
+  display: block;
+}
+
+
+/* =====================================================
+   WRAPPER PARA EL OJO DE CONTRASEÑA
+   ===================================================== */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  padding-right: 44px;
+}
+
+.btn-ojo {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--texto-suave);
+  padding: 4px;
+  line-height: 1;
+  outline: none;
+}
+.btn-ojo:hover {
+  color: var(--verde);
+}
+
+
+/* =====================================================
+   FILA: RECORDARME + OLVIDÉ CONTRASEÑA
+   ===================================================== */
+.form-opciones {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 8px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--verde);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.link-forgot {
+  font-size: 0.88rem;
+  color: var(--verde);
+  font-weight: 700;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+.link-forgot:hover {
+  color: var(--melocoton);
+}
+
+
+/* =====================================================
+   BOTÓN SUBMIT
+   ===================================================== */
+.btn-submit {
+  width: 100%;
+  padding: 15px;
+  background-color: var(--verde);
+  color: var(--blanco);
+  font-family: var(--fuente-titulo);
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: var(--verde-claro);
+  transform: translateY(-2px);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+}
+
+.btn-submit:disabled {
+  background-color: var(--crema-oscura);
+  color: var(--texto-suave);
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* =====================================================
+   SEPARADOR "O continúa con"
+   ===================================================== */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 20px;
+}
+
+.divider__linea {
+  flex: 1;
+  height: 1px;
+  background-color: var(--crema-oscura);
+}
+
+.divider__texto {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   BOTONES SOCIALES
+   ===================================================== */
+.social-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--crema-oscura);
+  border-radius: 10px;
+  background-color: var(--crema);
+  font-family: var(--fuente-texto);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+}
+
+.social-btn:hover {
+  border-color: var(--verde-claro);
+  background-color: rgba(106, 143, 106, 0.06);
+  color: var(--verde);
+}
+
+
+/* =====================================================
+   ENLACE AL REGISTRO
+   ===================================================== */
+.link-registro {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+}
+.link-registro a {
+  color: var(--verde);
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+.link-registro a:hover {
+  color: var(--melocoton);
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media (max-width: 520px) {
+  .navbar {
+    padding: 14px 20px;
+  }
+
+  .login-card {
+    padding: 36px 24px 32px;
+  }
+
+  .login-cabecera h1 {
+    font-size: 1.6rem;
+  }
+
+  .form-opciones {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

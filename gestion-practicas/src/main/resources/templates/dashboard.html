@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FP Connect — Dashboard Alumno</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+  <!-- Para desarrollo sin Thymeleaf, usar: -->
+  <!-- <link rel="stylesheet" href="dashboard.css"> -->
+</head>
+<body>
+
+  <!-- ========================================================
+       TOPBAR — Barra superior fija
+  ======================================================== -->
+  <header class="topbar">
+    <div class="topbar__logo">
+      <span class="logo-fp">FP</span><span class="logo-connect">Connect</span>
+    </div>
+
+    <div class="topbar__acciones">
+      <!-- Notificaciones -->
+      <button class="topbar__icono-btn" id="btn-notificaciones" title="Notificaciones" aria-label="Abrir notificaciones">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <!-- Badge de notificaciones sin leer -->
+        <span class="badge-notif" id="badge-notif">2</span>
+      </button>
+
+      <!-- Avatar + nombre de usuario -->
+      <div class="topbar__usuario" id="btn-menu-usuario">
+        <div class="avatar">AG</div>
+        <span class="topbar__nombre">Ana García</span>
+        <svg class="topbar__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+
+        <!-- Menú desplegable del usuario -->
+        <div class="dropdown-usuario" id="dropdown-usuario">
+          <a href="#perfil" class="dropdown-item" data-seccion="perfil">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            Mi perfil
+          </a>
+          <a href="#documentos" class="dropdown-item" data-seccion="documentos">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Mis documentos
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="/logout" class="dropdown-item dropdown-item--peligro">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Cerrar sesión
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ========================================================
+       LAYOUT PRINCIPAL: sidebar + contenido
+  ======================================================== -->
+  <div class="layout">
+
+    <!-- ======================================================
+         SIDEBAR — Navegación lateral
+    ====================================================== -->
+    <aside class="sidebar" id="sidebar">
+
+      <!-- Perfil compacto en el sidebar -->
+      <div class="sidebar__perfil">
+        <div class="avatar avatar--grande">AG</div>
+        <div class="sidebar__perfil-info">
+          <p class="sidebar__nombre">Ana García</p>
+          <span class="sidebar__ciclo">DAW · 2º Curso</span>
+        </div>
+      </div>
+
+      <!-- Menú de navegación del sidebar -->
+      <nav class="sidebar__nav">
+        <p class="sidebar__nav-label">Principal</p>
+        <ul class="sidebar__menu">
+          <li>
+            <a href="#" class="sidebar__link activo" data-seccion="inicio">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              Inicio
+            </a>
+          </li>
+          <li>
+            <a href="#" class="sidebar__link" data-seccion="solicitudes">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              Mis solicitudes
+              <span class="sidebar__badge">3</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="sidebar__link" data-seccion="ofertas">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Ofertas
+            </a>
+          </li>
+          <li>
+            <a href="#" class="sidebar__link" data-seccion="mensajes">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Mensajes
+              <span class="sidebar__badge sidebar__badge--alerta">2</span>
+            </a>
+          </li>
+        </ul>
+
+        <p class="sidebar__nav-label">Mi cuenta</p>
+        <ul class="sidebar__menu">
+          <li>
+            <a href="#" class="sidebar__link" data-seccion="perfil">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              Mi perfil
+            </a>
+          </li>
+          <li>
+            <a href="#" class="sidebar__link" data-seccion="documentos">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              Documentos
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Toggle del sidebar (para contraer) -->
+      <button class="sidebar__toggle" id="sidebar-toggle" title="Colapsar menú" aria-label="Colapsar menú lateral">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </aside>
+
+
+    <!-- ======================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
+    <main class="contenido" id="contenido-principal">
+
+      <!-- ====================================================
+           SECCIÓN: INICIO (Dashboard principal)
+      ==================================================== -->
+      <section class="seccion activa" id="sec-inicio">
+
+        <!-- Encabezado de bienvenida -->
+        <div class="bienvenida">
+          <div>
+            <h1 class="bienvenida__titulo">¡Buenas, Ana! 👋</h1>
+            <p class="bienvenida__sub">Aquí tienes el resumen de tu proceso de prácticas.</p>
+          </div>
+          <a href="#" class="btn-principal" data-seccion="ofertas">Buscar ofertas</a>
+        </div>
+
+        <!-- ---- Banner de estado actual ---- -->
+        <div class="estado-banner estado-banner--revision" id="banner-estado">
+          <div class="estado-banner__icono">⏳</div>
+          <div class="estado-banner__texto">
+            <strong>Solicitud en revisión</strong>
+            <p>Tu solicitud a <em>TechStart S.L.</em> está siendo revisada por el recruiter. Recibirás una notificación cuando haya novedades.</p>
+          </div>
+          <span class="estado-banner__etiqueta">En revisión</span>
+        </div>
+
+        <!-- ---- Timeline del proceso ---- -->
+        <div class="bloque-titulo">
+          <h2>Estado del proceso</h2>
+          <p>Seguimiento paso a paso de tu candidatura</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline__item completado">
+            <div class="timeline__punto"></div>
+            <div class="timeline__linea"></div>
+            <div class="timeline__contenido">
+              <span class="timeline__fecha">12 mar</span>
+              <h4>Perfil completado</h4>
+              <p>Has rellenado todos los datos de tu perfil y subido tu CV.</p>
+            </div>
+          </div>
+          <div class="timeline__item completado">
+            <div class="timeline__punto"></div>
+            <div class="timeline__linea"></div>
+            <div class="timeline__contenido">
+              <span class="timeline__fecha">18 mar</span>
+              <h4>Solicitud enviada</h4>
+              <p>Enviaste tu candidatura a <strong>TechStart S.L.</strong> para el puesto de Desarrolladora Web.</p>
+            </div>
+          </div>
+          <div class="timeline__item activo">
+            <div class="timeline__punto"></div>
+            <div class="timeline__linea"></div>
+            <div class="timeline__contenido">
+              <span class="timeline__fecha">Ahora</span>
+              <h4>En revisión por la empresa</h4>
+              <p>El recruiter está evaluando tu perfil. Tiempo medio de respuesta: <strong>3–5 días</strong>.</p>
+            </div>
+          </div>
+          <div class="timeline__item pendiente">
+            <div class="timeline__punto"></div>
+            <div class="timeline__linea"></div>
+            <div class="timeline__contenido">
+              <span class="timeline__fecha">Próximo</span>
+              <h4>Validación del tutor</h4>
+              <p>Tu tutor revisará el acuerdo de prácticas antes de la confirmación final.</p>
+            </div>
+          </div>
+          <div class="timeline__item pendiente">
+            <div class="timeline__punto"></div>
+            <div class="timeline__linea"></div>
+            <div class="timeline__contenido">
+              <span class="timeline__fecha">—</span>
+              <h4>Prácticas confirmadas</h4>
+              <p>¡Enhorabuena! Comenzarás tus prácticas en la empresa.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ---- Estadísticas rápidas ---- -->
+        <div class="bloque-titulo">
+          <h2>Resumen rápido</h2>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card__icono stat-card__icono--verde">📋</div>
+            <p class="stat-card__numero">3</p>
+            <p class="stat-card__label">Solicitudes enviadas</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icono stat-card__icono--melocoton">🔍</div>
+            <p class="stat-card__numero">1</p>
+            <p class="stat-card__label">En revisión</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icono stat-card__icono--azul">💬</div>
+            <p class="stat-card__numero">2</p>
+            <p class="stat-card__label">Mensajes nuevos</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icono stat-card__icono--morado">🏢</div>
+            <p class="stat-card__numero">14</p>
+            <p class="stat-card__label">Ofertas disponibles</p>
+          </div>
+        </div>
+
+        <!-- ---- Ofertas recomendadas (preview en inicio) ---- -->
+        <div class="bloque-titulo">
+          <h2>Ofertas recomendadas para ti</h2>
+          <a href="#" class="enlace-ver-mas" data-seccion="ofertas">Ver todas →</a>
+        </div>
+
+        <div class="ofertas-grid">
+          <div class="oferta-card">
+            <div class="oferta-card__cabecera">
+              <div class="oferta-empresa-logo">TS</div>
+              <div>
+                <h4 class="oferta-card__titulo">Desarrolladora Web Frontend</h4>
+                <p class="oferta-card__empresa">TechStart S.L.</p>
+              </div>
+              <span class="oferta-tag oferta-tag--daw">DAW</span>
+            </div>
+            <p class="oferta-card__desc">Desarrollo de interfaces con React y Spring Boot. Buscamos alumnos de 2º de DAW con ganas de aprender.</p>
+            <div class="oferta-card__pie">
+              <span class="oferta-info">📍 Madrid</span>
+              <span class="oferta-info">🕐 6 meses</span>
+              <button class="btn-solicitar" data-estado="solicitada">✔ Solicitada</button>
+            </div>
+          </div>
+
+          <div class="oferta-card">
+            <div class="oferta-card__cabecera">
+              <div class="oferta-empresa-logo oferta-empresa-logo--b">IN</div>
+              <div>
+                <h4 class="oferta-card__titulo">Prácticas Backend Java</h4>
+                <p class="oferta-card__empresa">Innovatech</p>
+              </div>
+              <span class="oferta-tag oferta-tag--daw">DAW</span>
+            </div>
+            <p class="oferta-card__desc">Integración de APIs REST con Spring Boot. Equipo joven y metodología ágil. Posibilidad de contrato.</p>
+            <div class="oferta-card__pie">
+              <span class="oferta-info">📍 Remoto</span>
+              <span class="oferta-info">🕐 3 meses</span>
+              <button class="btn-solicitar" data-estado="disponible">Solicitar</button>
+            </div>
+          </div>
+
+          <div class="oferta-card">
+            <div class="oferta-card__cabecera">
+              <div class="oferta-empresa-logo oferta-empresa-logo--c">DS</div>
+              <div>
+                <h4 class="oferta-card__titulo">Diseño UI/UX y Frontend</h4>
+                <p class="oferta-card__empresa">DigitalSpark</p>
+              </div>
+              <span class="oferta-tag oferta-tag--daw">DAW</span>
+            </div>
+            <p class="oferta-card__desc">Maquetación con Figma y HTML/CSS. Trabajarás con diseñadores senior en proyectos de cliente real.</p>
+            <div class="oferta-card__pie">
+              <span class="oferta-info">📍 Barcelona</span>
+              <span class="oferta-info">🕐 6 meses</span>
+              <button class="btn-solicitar" data-estado="disponible">Solicitar</button>
+            </div>
+          </div>
+        </div>
+
+      </section><!-- fin sec-inicio -->
+
+
+      <!-- ====================================================
+           SECCIÓN: MIS SOLICITUDES
+      ==================================================== -->
+      <section class="seccion" id="sec-solicitudes">
+
+        <div class="bienvenida">
+          <div>
+            <h1 class="bienvenida__titulo">Mis solicitudes</h1>
+            <p class="bienvenida__sub">Historial de todas tus candidaturas enviadas.</p>
+          </div>
+        </div>
+
+        <div class="tabla-contenedor">
+          <table class="tabla-solicitudes">
+            <thead>
+              <tr>
+                <th>Empresa</th>
+                <th>Puesto</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="tabla-empresa">
+                    <div class="oferta-empresa-logo tabla-logo">TS</div>
+                    TechStart S.L.
+                  </div>
+                </td>
+                <td>Desarrolladora Web Frontend</td>
+                <td>18 mar 2025</td>
+                <td><span class="estado-pill estado-pill--revision">En revisión</span></td>
+                <td><button class="btn-tabla">Ver detalle</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="tabla-empresa">
+                    <div class="oferta-empresa-logo oferta-empresa-logo--b tabla-logo">IN</div>
+                    Innovatech
+                  </div>
+                </td>
+                <td>Prácticas Backend Java</td>
+                <td>10 mar 2025</td>
+                <td><span class="estado-pill estado-pill--rechazada">No seleccionada</span></td>
+                <td><button class="btn-tabla">Ver detalle</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="tabla-empresa">
+                    <div class="oferta-empresa-logo oferta-empresa-logo--c tabla-logo">DS</div>
+                    DigitalSpark
+                  </div>
+                </td>
+                <td>Diseño UI/UX y Frontend</td>
+                <td>5 mar 2025</td>
+                <td><span class="estado-pill estado-pill--enviada">Enviada</span></td>
+                <td><button class="btn-tabla">Ver detalle</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section><!-- fin sec-solicitudes -->
+
+
+      <!-- ====================================================
+           SECCIÓN: OFERTAS
+      ==================================================== -->
+      <section class="seccion" id="sec-ofertas">
+
+        <div class="bienvenida">
+          <div>
+            <h1 class="bienvenida__titulo">Ofertas de prácticas</h1>
+            <p class="bienvenida__sub">Filtra por tu ciclo y encuentra tu empresa ideal.</p>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros-barra">
+          <input type="text" class="filtro-input" placeholder="🔍  Buscar empresa o puesto…" id="filtro-busqueda">
+          <select class="filtro-select" id="filtro-ciclo">
+            <option value="">Todos los ciclos</option>
+            <option value="DAW" selected>DAW</option>
+            <option value="DAM">DAM</option>
+            <option value="ASIR">ASIR</option>
+            <option value="SMR">SMR</option>
+          </select>
+          <select class="filtro-select" id="filtro-modalidad">
+            <option value="">Modalidad</option>
+            <option value="presencial">Presencial</option>
+            <option value="remoto">Remoto</option>
+            <option value="hibrido">Híbrido</option>
+          </select>
+        </div>
+
+        <div class="ofertas-grid ofertas-grid--completo" id="lista-ofertas">
+          <!-- Las mismas 3 cards + una cuarta -->
+          <div class="oferta-card">
+            <div class="oferta-card__cabecera">
+              <div class="oferta-empresa-logo">TS</div>
+              <div>
+                <h4 class="oferta-card__titulo">Desarrolladora Web Frontend</h4>
+                <p class="oferta-card__empresa">TechStart S.L.</p>
+              </div>
+              <span class="oferta-tag oferta-tag--daw">DAW</span>
+            </div>
+            <p class="oferta-card__desc">Desarrollo de interfaces con React y Spring Boot. Buscamos alumnos de 2º de DAW con ganas de aprender.</p>
+            <div class="oferta-card__pie">
+              <span class="oferta-info">📍 Madrid</span>
+              <span class="oferta-info">🕐 6 meses</span>
+              <button class="btn-solicitar" data-estado="solicitada">✔ Solicitada</button>
+            </div>
+          </div>
+          <div class="oferta-card">
+            <div class="oferta-card__cabecera">
+              <div class="oferta-empresa-logo oferta-empresa-logo--b">IN</div>
+              <div>
+                <h4 class="oferta-card__titulo">Prácticas Backend Java</h4>
+                <p class="oferta-card__empresa">Innovatech</p>
+              </div>
+              <span class="oferta-tag oferta-tag--daw">DAW</span>
+            </div>
+            <p class="oferta-card__desc">Integración de APIs REST con Spring Boot. Equipo joven y metodología ágil. Posibilidad de contrato.</p>
+            <div class="oferta-card__pie">
+              <span class="oferta-info">📍 Remoto</span>
+              <span class="oferta-info">🕐 3 meses</span>
+              <button class="btn-solicitar" data-estado="disponible">Solicitar</button>
+            </div>
+          </div>
+          <div class="oferta-card">
+            <div class="oferta-card__cabecera">
+              <div class="oferta-empresa-logo oferta-empresa-logo--c">DS</div>
+              <div>
+                <h4 class="oferta-card__titulo">Diseño UI/UX y Frontend</h4>
+                <p class="oferta-card__empresa">DigitalSpark</p>
+              </div>
+              <span class="oferta-tag oferta-tag--daw">DAW</span>
+            </div>
+            <p class="oferta-card__desc">Maquetación con Figma y HTML/CSS. Trabajarás con diseñadores senior en proyectos de cliente real.</p>
+            <div class="oferta-card__pie">
+              <span class="oferta-info">📍 Barcelona</span>
+              <span class="oferta-info">🕐 6 meses</span>
+              <button class="btn-solicitar" data-estado="disponible">Solicitar</button>
+            </div>
+          </div>
+          <div class="oferta-card">
+            <div class="oferta-card__cabecera">
+              <div class="oferta-empresa-logo oferta-empresa-logo--d">NX</div>
+              <div>
+                <h4 class="oferta-card__titulo">Desarrollo Android / DAM</h4>
+                <p class="oferta-card__empresa">NextApp Solutions</p>
+              </div>
+              <span class="oferta-tag oferta-tag--dam">DAM</span>
+            </div>
+            <p class="oferta-card__desc">Desarrollo de aplicación móvil con Kotlin. Integración con Firebase. Proyecto real desde el primer día.</p>
+            <div class="oferta-card__pie">
+              <span class="oferta-info">📍 Valencia</span>
+              <span class="oferta-info">🕐 6 meses</span>
+              <button class="btn-solicitar" data-estado="disponible">Solicitar</button>
+            </div>
+          </div>
+        </div>
+
+      </section><!-- fin sec-ofertas -->
+
+
+      <!-- ====================================================
+           SECCIÓN: MENSAJES
+      ==================================================== -->
+      <section class="seccion" id="sec-mensajes">
+
+        <div class="bienvenida">
+          <div>
+            <h1 class="bienvenida__titulo">Mensajes</h1>
+            <p class="bienvenida__sub">Comunicaciones con empresas y tu tutor.</p>
+          </div>
+        </div>
+
+        <div class="mensajes-layout">
+
+          <!-- Lista de conversaciones -->
+          <div class="mensajes-lista" id="mensajes-lista">
+
+            <div class="conversacion activa" data-conv="1">
+              <div class="oferta-empresa-logo conv-logo">TS</div>
+              <div class="conversacion__info">
+                <p class="conversacion__nombre">TechStart S.L.</p>
+                <p class="conversacion__preview">Hemos revisado tu perfil y nos g...</p>
+              </div>
+              <div class="conversacion__meta">
+                <span class="conv-hora">10:32</span>
+                <span class="conv-badge">1</span>
+              </div>
+            </div>
+
+            <div class="conversacion" data-conv="2">
+              <div class="oferta-empresa-logo oferta-empresa-logo--tutor conv-logo">LP</div>
+              <div class="conversacion__info">
+                <p class="conversacion__nombre">Laura Pérez (Tutora)</p>
+                <p class="conversacion__preview">Ana, ¿has recibido ya respuesta?</p>
+              </div>
+              <div class="conversacion__meta">
+                <span class="conv-hora">Ayer</span>
+                <span class="conv-badge">1</span>
+              </div>
+            </div>
+
+            <div class="conversacion" data-conv="3">
+              <div class="oferta-empresa-logo oferta-empresa-logo--b conv-logo">IN</div>
+              <div class="conversacion__info">
+                <p class="conversacion__nombre">Innovatech</p>
+                <p class="conversacion__preview">Gracias por tu interés, en esta o...</p>
+              </div>
+              <div class="conversacion__meta">
+                <span class="conv-hora">Lun</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Panel del chat activo -->
+          <div class="chat-panel">
+            <div class="chat-panel__cabecera">
+              <div class="oferta-empresa-logo chat-logo">TS</div>
+              <div>
+                <p class="chat-nombre">TechStart S.L.</p>
+                <p class="chat-subtitulo">Desarrolladora Web Frontend</p>
+              </div>
+            </div>
+
+            <div class="chat-mensajes" id="chat-mensajes">
+              <div class="mensaje mensaje--recibido">
+                <div class="mensaje__burbuja">
+                  Hola Ana, hemos recibido tu solicitud y nos ha parecido muy interesante tu perfil. Queremos hacerte una pequeña entrevista de 20 minutos esta semana. ¿Tienes disponibilidad el jueves o el viernes?
+                </div>
+                <span class="mensaje__hora">Hoy, 10:32</span>
+              </div>
+
+              <div class="mensaje mensaje--enviado">
+                <div class="mensaje__burbuja">
+                  ¡Muchas gracias! Me viene bien el jueves por la tarde, a partir de las 16:00. 😊
+                </div>
+                <span class="mensaje__hora">Hoy, 10:45</span>
+              </div>
+
+              <div class="mensaje mensaje--recibido">
+                <div class="mensaje__burbuja">
+                  Perfecto, te enviaré el enlace de la videollamada por correo. ¡Hasta el jueves!
+                </div>
+                <span class="mensaje__hora">Hoy, 10:48</span>
+              </div>
+            </div>
+
+            <div class="chat-input-area">
+              <input type="text" class="chat-input" id="chat-input" placeholder="Escribe un mensaje…">
+              <button class="btn-enviar" id="btn-enviar" aria-label="Enviar mensaje">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </section><!-- fin sec-mensajes -->
+
+
+      <!-- ====================================================
+           SECCIÓN: MI PERFIL
+      ==================================================== -->
+      <section class="seccion" id="sec-perfil">
+
+        <div class="bienvenida">
+          <div>
+            <h1 class="bienvenida__titulo">Mi perfil</h1>
+            <p class="bienvenida__sub">Mantén tu información actualizada para destacar entre las solicitudes.</p>
+          </div>
+        </div>
+
+        <div class="perfil-layout">
+
+          <!-- Columna izquierda: avatar + datos básicos -->
+          <div class="perfil-columna-izq">
+            <div class="perfil-avatar-bloque">
+              <div class="avatar avatar--xl">AG</div>
+              <button class="btn-secundario" style="margin-top:12px;">Cambiar foto</button>
+            </div>
+
+            <div class="perfil-card">
+              <h3>Ciclo formativo</h3>
+              <p>Desarrollo de Aplicaciones Web (DAW)</p>
+              <p class="perfil-sub">2º Curso · IES Tecnológico Madrid</p>
+            </div>
+
+            <div class="perfil-card">
+              <h3>Tutor asignado</h3>
+              <p>Laura Pérez</p>
+              <p class="perfil-sub">laura.perez@iestecnologico.es</p>
+            </div>
+          </div>
+
+          <!-- Columna derecha: formulario de datos -->
+          <div class="perfil-columna-der">
+            <div class="form-bloque">
+              <h3 class="form-bloque__titulo">Información personal</h3>
+              <div class="form-grid">
+                <div class="form-campo">
+                  <label>Nombre</label>
+                  <input type="text" value="Ana" class="form-input">
+                </div>
+                <div class="form-campo">
+                  <label>Apellidos</label>
+                  <input type="text" value="García Martínez" class="form-input">
+                </div>
+                <div class="form-campo">
+                  <label>Email</label>
+                  <input type="email" value="ana.garcia@alumno.es" class="form-input">
+                </div>
+                <div class="form-campo">
+                  <label>Teléfono</label>
+                  <input type="tel" value="612 345 678" class="form-input">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-bloque">
+              <h3 class="form-bloque__titulo">Sobre mí</h3>
+              <textarea class="form-textarea" rows="4" placeholder="Cuéntanos quién eres y qué buscas en tus prácticas…">Alumna de 2º de DAW apasionada por el desarrollo frontend y la experiencia de usuario. Busco prácticas donde pueda aplicar mis conocimientos en HTML, CSS, JavaScript y Spring Boot.</textarea>
+            </div>
+
+            <div class="form-bloque">
+              <h3 class="form-bloque__titulo">Habilidades técnicas</h3>
+              <div class="skills-chips">
+                <span class="skill-chip">HTML/CSS</span>
+                <span class="skill-chip">JavaScript</span>
+                <span class="skill-chip">Spring Boot</span>
+                <span class="skill-chip">React</span>
+                <span class="skill-chip">Git</span>
+                <button class="skill-chip skill-chip--add">+ Añadir</button>
+              </div>
+            </div>
+
+            <div class="form-acciones">
+              <button class="btn-principal">Guardar cambios</button>
+              <button class="btn-secundario">Cancelar</button>
+            </div>
+          </div>
+
+        </div>
+
+      </section><!-- fin sec-perfil -->
+
+
+      <!-- ====================================================
+           SECCIÓN: DOCUMENTOS
+      ==================================================== -->
+      <section class="seccion" id="sec-documentos">
+
+        <div class="bienvenida">
+          <div>
+            <h1 class="bienvenida__titulo">Mis documentos</h1>
+            <p class="bienvenida__sub">Gestiona tu CV y los documentos del proceso de prácticas.</p>
+          </div>
+          <button class="btn-principal" id="btn-subir-doc">+ Subir documento</button>
+        </div>
+
+        <div class="docs-grid">
+
+          <div class="doc-card">
+            <div class="doc-card__icono">📄</div>
+            <div class="doc-card__info">
+              <p class="doc-card__nombre">CV_AnaGarcia_2025.pdf</p>
+              <p class="doc-card__meta">Subido el 12 mar 2025 · 342 KB</p>
+            </div>
+            <div class="doc-card__acciones">
+              <button class="btn-doc" title="Descargar">⬇</button>
+              <button class="btn-doc btn-doc--eliminar" title="Eliminar">🗑</button>
+            </div>
+          </div>
+
+          <div class="doc-card">
+            <div class="doc-card__icono">📋</div>
+            <div class="doc-card__info">
+              <p class="doc-card__nombre">Carta_presentacion.pdf</p>
+              <p class="doc-card__meta">Subido el 15 mar 2025 · 128 KB</p>
+            </div>
+            <div class="doc-card__acciones">
+              <button class="btn-doc" title="Descargar">⬇</button>
+              <button class="btn-doc btn-doc--eliminar" title="Eliminar">🗑</button>
+            </div>
+          </div>
+
+          <div class="doc-card doc-card--pendiente">
+            <div class="doc-card__icono">📝</div>
+            <div class="doc-card__info">
+              <p class="doc-card__nombre">Convenio de prácticas</p>
+              <p class="doc-card__meta">Pendiente de firma · Generado por el tutor</p>
+            </div>
+            <div class="doc-card__acciones">
+              <button class="btn-doc btn-doc--firmar">Firmar</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Zona de subida con drag & drop visual -->
+        <div class="dropzone" id="dropzone">
+          <p class="dropzone__icono">📂</p>
+          <p class="dropzone__texto">Arrastra aquí tus documentos o <span class="dropzone__enlace">haz clic para seleccionar</span></p>
+          <p class="dropzone__hint">PDF, DOC, DOCX — máx. 10 MB</p>
+          <input type="file" id="input-archivo" accept=".pdf,.doc,.docx" style="display:none">
+        </div>
+
+      </section><!-- fin sec-documentos -->
+
+    </main><!-- fin contenido -->
+  </div><!-- fin layout -->
+
+
+  <!-- ====================================================
+       PANEL DE NOTIFICACIONES (overlay)
+  ==================================================== -->
+  <div class="notificaciones-panel" id="notificaciones-panel">
+    <div class="notif-cabecera">
+      <h3>Notificaciones</h3>
+      <button id="marcar-leidas" class="enlace-ver-mas">Marcar todas como leídas</button>
+    </div>
+    <ul class="notif-lista">
+      <li class="notif-item notif-item--nueva">
+        <span class="notif-punto"></span>
+        <div>
+          <p><strong>TechStart S.L.</strong> ha respondido a tu candidatura.</p>
+          <span class="notif-hora">Hace 15 min</span>
+        </div>
+      </li>
+      <li class="notif-item notif-item--nueva">
+        <span class="notif-punto"></span>
+        <div>
+          <p><strong>Laura Pérez</strong> (tutora) te ha enviado un mensaje.</p>
+          <span class="notif-hora">Hace 2 h</span>
+        </div>
+      </li>
+      <li class="notif-item">
+        <span class="notif-punto"></span>
+        <div>
+          <p>Tu solicitud a <strong>Innovatech</strong> fue actualizada.</p>
+          <span class="notif-hora">Ayer</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+
+  <!-- jQuery (necesario si usas jQuery UI en el proyecto) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <script th:src="@{/js/dashboard.js}"></script>
+  <!-- Para desarrollo sin Thymeleaf, usar: -->
+  <!-- <script src="dashboard.js"></script> -->
+
+</body>
+</html>
