@@ -37,6 +37,8 @@ public class Alumno {
     
     private String email;
 
+    private String estadoFct = "PENDIENTE"; // Se le introduce "PENDIENTE" como valor por defecto.
+
     // Configuración correcta de la relación 1:1
     @OneToOne
     @MapsId // IMPORTANTE: Esto dice que el ID de esta tabla es el ID de la tabla Usuario

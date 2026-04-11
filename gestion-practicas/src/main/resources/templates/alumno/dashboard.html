@@ -4,38 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Dashboard - Alumno</title>
+    <!-- Google Fonts: Poppins para títulos, Lato para texto normal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Normalize: resetea estilos raros entre navegadores -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" th:href="@{/css/alumno/styles.css}">
 </head>
 <body>
-    <div class="contenedor">
-        <div class="bloque">
-            <h1>Bienvenido/a, <span th:text="${alumno.nombre}">Alumno</span></h1>
-            <p>Este es tu panel principal. Desde aquí puedes ver ofertas y revisar tus solicitudes.</p>
-            <div class="acciones">
-                <a th:href="@{/ofertas}" class="btn">Ver ofertas</a>
-                <a th:href="@{/alumno/solicitudes}" class="btn secundario">Mis solicitudes</a>
-            </div>
+    <nav class="navbar-superior flex-between">
+        <button id="toggle-sidebar" class="btn-toggle">☰</button>
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
         </div>
 
-        <div class="bloque">
-            <h2>Resumen de mis solicitudes</h2>
-            <div th:if="${#lists.isEmpty(solicitudes)}" class="vacio">Todavía no has enviado ninguna solicitud.</div>
-            <table th:if="${not #lists.isEmpty(solicitudes)}">
-                <thead>
-                    <tr>
-                        <th>Oferta</th>
-                        <th>Fecha</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="solicitud : ${solicitudes}"></tr>
-                    <td th:text="${solicitud.oferta.titulo}">Oferta</td>
-                    <td th:text="${solicitud.fechaSolicitud}">2026-04-09</td>
-                    <td th:text="${solicitud.estado}">PENDIENTE</td>
-                </tbody>
-            </table>
+        <div class="usuario-menu">
+            <div class="perfil-trigger" onclick="toggleDropdown()">
+                <img th:src="${alumno.cvUrl != null ? '/img/avatar.png' : '/img/default-user.png'}" alt="Profile-Pic" class="avatar">
+                <span class="flecha">▼</span>
+            </div>
+            <div id="dropdown-perfil" class="dropdown-contenido">
+                <a href="#">Mi Perfil</a>
+                <a href="#">Configuración</a>
+                <hr>
+                <a th:href="@{/logout}" class="logout">Cerrar Sesión</a>
+            </div>
         </div>
+    </nav>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header flex-between">
+                <div class="logo">FPConnect</div>
+            </div>
+            <nav class="sidebar-nav">
+                <a th:href="@{/alumno/dashboard}" class="sidebar-link active">🏠 Inicio</a>
+                <a th:href="@{/ofertas}" class="sidebar-link">🔍 Buscar Ofertas</a>
+                <a th:href="@{/alumno/solicitudes}" class="sidebar-link">📩 Mis Solicitudes</a>
+            </nav>
+        </aside>
+        <main class="contenedor" style="flex: 1; padding: 40px;">
+            <header class="flex-between">
+                <div>
+                    <h1>¡Bienvenido/a, <span th:text="${alumno.nombre}">Alumno</span>!</h1>
+                    <p>Este es tu panel principal. Desde aquí puedes ver ofertas y revisar tus solicitudes.</p>
+                </div>
+            </header>
+            <div class="bloque" style="margin-bottom: 20px;">
+                <div class="flex-between">
+                    <span>Progreso de tu perfil</span>
+                    <span th:text="${progresoPerfil} + '%'">0%</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" 
+                    th:style="'width:' + ${progresoPerfil} + '%; background-color:' + (${progresoPerfil} < 100 ? 'var(--melocoton)' : 'var(--verde)')">
+                    </div>
+                </div>
+
+                <p th:if="${progresoPerfil < 100}" style="font-size: 0.8rem; margin-top: 5px;">
+                    ⚠️ Completa tus datos y sube tu CV para que las empresas te encuentren.
+                </p>
+                <p th:if="${progresoPerfil == 100}" style="font-size: 0.8rem; margin-top: 5px; color: var(--verde);">
+                    ✅ ¡Perfil completado! Estás listo para las prácticas.
+                </p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="widget">
+                    <div class="widget-icon">🔍</div>
+                    <div class="widget-info">
+                        <h3>Ofertas nuevas</h3>
+                        <p th:text="${totalOfertas}">0 <span>disponibles.</span></p>
+                    </div>
+                </div>
+                <div class="widget">
+                    <div class="widget-icon">📩</div>
+                    <div class="widget-info">
+                        <h3>Mis solicitudes</h3>
+                        <p th:text="${#lists.size(solicitudes)}">0</p>
+                    </div>
+                </div>
+                <div class="widget">
+                    <div class="widget-icon">📅</div>
+                    <div class="widget-info">
+                        <h3>Estado FCT</h3>
+                        <p th:text="${alumno.estadoFct}" 
+                            th:style="${alumno.estadoFct == 'ACEPTADO' ? 'color: var(--verde)' : 'color: var(--melocoton)'}">Pendiente</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bloque">
+                <div class="flex-between">
+                    <h2>Mis últimas solicitudes</h2>
+                    <a th:href="@{/ofertas}" class="btn-dash">Explorar ofertas</a>
+                </div>
+                <div th:if="${#lists.isEmpty(solicitudes)}" clas="vacío">
+                    <p>Todavía no has enviado ninguna solicitud. ¡Empieza hoy!</p>
+                </div>
+                <table th:if="${not #lists.isEmpty(solicitudes)}">
+                    <thead>
+                        <tr>
+                            <th>Empresa y Oferta</th>
+                            <th>Fecha de envío</th>
+                            <th>Estado actual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="solicitud : ${solicitudes}">
+                            <td>
+                                <strong th:text="${solicitud.oferta.titulo}">Desarrollador Java</strong><br>
+                                <small th:text="${solicitud.oferta.empresa.nombre}">Tech Solutions</small>
+                            </td>
+                            <td th:text="${solicitud.fechaSolicitud}">11 Abr 2026</td>
+                            <td>
+                                <span class="badge"
+                                    th:classappend="${solicitud.estado == 'ACEPTADA' ? 'badge-aceptada' : 'badge-pendiente'}"
+                                    th:text="${solicitud.estado}">PENDIENTE</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
     </div>
+    <script th:src="@{/js/alumno/dashboard.js}"></script>
 </body>
 </html>

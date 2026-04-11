@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.tfg.gestion_practicas.model.Alumno;
 import com.tfg.gestion_practicas.model.Solicitud;
 import com.tfg.gestion_practicas.repository.AlumnoRepository;
+import com.tfg.gestion_practicas.repository.OfertaRepository;
 import com.tfg.gestion_practicas.services.SolicitudService;
 
 @Controller
@@ -24,6 +25,9 @@ public class AlumnoController {
 
     @Autowired
     private AlumnoRepository alumnoRepository;
+
+    @Autowired
+    private OfertaRepository ofertaRepository;
 
     AlumnoController(AlumnoService alumnoService, AuthController authController) {
         this.alumnoService = alumnoService;
@@ -51,10 +55,35 @@ public class AlumnoController {
 
         // 4. Cargamos las solicitudes reales del alumno encontrado.
         List <Solicitud> solicitudes = solicitudService.obtenerPorAlumno(al.getId());
+        Long totalOfertas = ofertaRepository.count();
+
+        // EXTRA: PARA LA BARRA DE PROGRESO DE LAS SOLICITUDES. 
+        int progreso = 0;
+        if (al.getDni() != null) {
+            progreso += 20;
+        }
+
+        if (al.getNombre() != null) {
+            progreso += 20;
+        }
+
+        if (al.getEmail() != null) {
+            progreso += 20;
+        }
+
+        if (al.getMatricula() != null) {
+            progreso += 20;
+        }
+
+        if (al.getCvUrl() != null) {
+            progreso += 20;
+        }
 
         // 5. Pasamos los datos al modelo para que la vista 'dashboard.html' los pinte.
         model.addAttribute("alumno", al);
         model.addAttribute("solicitudes", solicitudes);
+        model.addAttribute("totalOfertas", totalOfertas);
+        model.addAttribute("progresoPerfil", progreso);
 
         return "alumno/dashboard";
     }
