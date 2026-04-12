@@ -59,6 +59,8 @@ public class Usuario {
     @NotNull
     @Enumerated(EnumType.STRING)
     private Rol rol;
+    @Column(nullable = true)
+    private String fotoUrl;
     // En Usuario.java
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Alumno alumno;

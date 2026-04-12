@@ -179,6 +179,11 @@ th {
     color: white;
 }
 
+.sidebar-link i {
+    margin-right: 10px;
+    font-size: 1.1rem;
+}
+
 /* Barra de Progreso */
 .progress-container {
     background: #eee;
@@ -262,6 +267,15 @@ th {
     gap: 12px;
     cursor: pointer;
     padding: 10px;
+}
+
+/* Rotar la flecha cuando el dropdown está activo */
+.perfil-trigger .bi-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+.dropdown-contenido.show + .perfil-trigger .bi-chevron-down {
+    transform: rotate(180deg);
 }
 
 .avatar {

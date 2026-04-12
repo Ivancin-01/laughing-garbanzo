@@ -104,4 +104,21 @@ public class AlumnoController {
 
         return "alumno/solicitudes";
     }
+
+    @GetMapping("/perfil") 
+    public String verPerfil(Model model, Principal principal) {
+        // 1. Obtenemos el email del usuario identificado. 
+        String emailLogueado = principal.getName();
+
+        // 2. Buscamos al alumno por el email.
+        Alumno alumno = alumnoService.buscarPorEmail(emailLogueado);
+
+        // Verifica en la consola si realmente encuentra al alumno
+        System.out.println("Datos: " + alumno.getUsuario().getNombre() + " " + alumno.getUsuario().getApellidos());
+        
+        // 3. Pasamos el objeto al modelo. 
+        model.addAttribute("alumno", alumno);
+
+        return "alumno/perfil";
+    }
 }

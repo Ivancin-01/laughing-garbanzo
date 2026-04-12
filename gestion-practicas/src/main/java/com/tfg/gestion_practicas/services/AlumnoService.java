@@ -17,9 +17,14 @@ public class AlumnoService {
 
       // Si no existe, lanzamos un error sencillo. 
       if (alumno == null) {
-        throw new RuntimeException("Alumno no encontrado");
+        throw new RuntimeException("Alumno no encontrado por el ID de usuario.");
       }
 
       return alumno;
+    }
+
+    // Nuevo método: Buscar por email un usuario. 
+    public Alumno buscarPorEmail(String email) {
+      return alumnoRepository.findByUsuarioCorreo(email).orElseThrow(() -> new RuntimeException("Alumno no encontrado con email: " + email));
     }
 }
