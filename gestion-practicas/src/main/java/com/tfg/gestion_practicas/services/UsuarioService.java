@@ -61,11 +61,6 @@ public class UsuarioService {
                 // Vinculamos la relación (esto asigna el ID automáticamente por el @MapsId)
                 nuevoAlumno.setUsuario(usuarioGuardado);
 
-                // Cogemos los datos DIRECTAMENTE del usuario que acabamos de guardar
-                // Asegúrate de tener estos campos (nombre, correo) en tu clase Alumno.java
-                nuevoAlumno.setNombre(usuarioGuardado.getNombre());
-                nuevoAlumno.setEmail(usuarioGuardado.getCorreo()); // O u.getEmail(), según tu atributo
-
                 // Datos específicos del formulario
                 nuevoAlumno.setDni(dni);
                 nuevoAlumno.setMatricula(matricula);

@@ -3,6 +3,8 @@ package com.tfg.gestion_practicas.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,6 +47,7 @@ public class Usuario {
     @Size(max = 100)
     private String apellidos;
     @NotNull(message = "La fecha de nacimiento es obligatoria")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fNac;
     @NotBlank(message = "El nombre es obligatorio")
     @Email(message = "Formato de email invalido")

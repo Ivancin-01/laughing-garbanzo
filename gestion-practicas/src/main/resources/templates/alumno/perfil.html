@@ -41,8 +41,13 @@
         <section class="perfil-header bloque">
             <div class="perfil-info-main">
                 <div class="avatar-grande-container">
-                    <img src="/img/default-user.png" class="avatar-perfil">
+                    <img th:src="${alumno.usuario.fotoUrl != null ? alumno.usuario.fotoUrl : '/img/default-user.png'}" class="avatar-perfil" id="foto-previsualizacion">
+                    <div class="avatar-edit-overlay" onclick="document.getElementById('input-foto').click()">
+                        <i class="bi bi-camera-fill"></i>
+                        <span>Cambiar</span>
+                    </div>
                 </div>
+                <input type="file" id="input-foto" style="display: none;" accept="image/*" onchange="previewImage(this)">
                 <div class="texto-header">
                     <h2 th:text="|${alumno.usuario.nombre} ${alumno.usuario.apellidos}|">Nombre Alumno</h2>
                     <p class="ciclo-tag">Desarrollo de Aplicaciones Web</p>
@@ -50,21 +55,92 @@
             </div>
             <button class="btn-pdf"><i class="bi bi-file-pdf"></i> Descargar CV</button>
         </section>
+        <section class="perfil-stats">
+            <div class="stat-card">
+                <i class="bi bi-info-circle-fill"></i>
+                <div>
+                    <span>Estado</span>
+                    <p th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'Pendiente'}">Estado</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="bi bi-clock-fill"></i>
+                <div>
+                    <span>Horas FCT</span>
+                    <p th:text="${alumno.horasFct != null ? alumno.horasFct + 'h' : '---'}">400h</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="bi bi-building-fill"></i>
+                <div>
+                    <span>Empresa</span>
+                    <p th:text="${alumno.empresaFct != null ? alumno.empresaFct : 'No asignada'}">Pendiente</p>
+                </div>
+            </div>
+        </section>
         <section class="bloque">
             <h3><i class="bi bi-person-lines-fill"></i> Datos Personales</h3>
-            <form class="perfil-form">
+            <form class="perfil-form" th:action="@{/alumno/perfil/actualizar}" th:object="${alumno}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <input type="hidden" th:field="*{usuario.id}">
+                <input type="hidden" th:field="*{usuario.pwd}">
                 <div class="form-group">
                     <label>Nombre</label>
-                    <input type="text" th:value="${alumno.usuario.nombre}">
+                    <input type="text" th:field="*{usuario.nombre}">
                 </div>
                 <div class="form-group">
                     <label>Apellidos</label>
-                    <input type="text" th:value="${alumno.usuario.apellidos}">
+                    <input type="text" th:field="*{usuario.apellidos}">
                 </div>
                 <div class="form-group">
                     <label>Email (No editable)</label>
-                    <input type="email" th:value="${alumno.usuario.correo}" readonly>
+                    <input type="email" th:field="*{usuario.correo}" readonly>
                 </div>
+                <div class="form-group">
+                    <label>Fecha de Nacimiento</label>
+                    <input type="date" th:field="*{usuario.fNac}" th:classappend="${#fields.hasErrors('usuario.fNac')} ? 'input-error' : ''">
+                    <span class="error-message" th:if="${#fields.hasErrors('usuario.fNac')}" th:errors="*{usuario.fNac}">Error en la fecha</span>
+                </div>
+
+                <div class="form-group">
+                    <label>DNI</label>
+                    <input type="text" th:field="*{dni}" placeholder="12345678X">
+                </div>
+                <div class="form-group">
+                    <label>Ciudad / Municipio</label>
+                    <select th:field="*{ciudad}" id="select-ciudad" class="form-control-custom" th:attr="data-actual=${alumno.ciudad}">
+                        <option value="">Selecciona una ciudad...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Centro Educativo</label>
+                    <input type="text" th:field="*{centroEducativo}">
+                </div>
+
+                <div class="form-group">
+                    <label>Estado de las FCT</label>
+                    <select th:field="*{estadoFct}" class="form-control-custom">
+                        <option value="En búsqueda">En búsqueda</option>
+                        <option value="Desarrollando FCT">Desarrollando FCT</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Horas Totales</label>
+                    <select th:field="*{horasFct}" class="form-control-custom">
+                        <option value="200">200h</option>
+                        <option value="300">300h</option>
+                        <option value="400">400h</option>
+                        <option value="500">500h</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Empresa Actual / Preferencia</label>
+                    <input type="text" th:field="*{empresaFct}" placeholder="Ej: Google, Indra...">
+                </div>
+
                 <button type="submit" class="btn-guardar">Actualizar Datos</button>
             </form>
         </section>

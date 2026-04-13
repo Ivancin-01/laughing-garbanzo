@@ -32,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // 1. Buscamos a un alumno por su email. 
-        Alumno alu = alumnoRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con email " + email));
+        Alumno alu = alumnoRepository.findByUsuarioCorreo(email).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con email " + email));
 
         // 2. Accedemos al objeto usuario relacionado con Alumno para obtener la contraseña.
         Usuario user = alu.getUsuario();
@@ -40,9 +40,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         // 3. Devolvemos un objeto USER de Spring Security. 
         // IMPORTANCIA: Aquí usamos como 'username' al EMAIL y la CONTRASEÑA de la DB.
         return User.builder()
-                .username(alu.getEmail())
+                .username(user.getCorreo())
                 .password(user.getPwd())
-                .roles("ALUMNO")
+                .roles(user.getRol().name())
                 .build();
     }
 }

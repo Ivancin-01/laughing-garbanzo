@@ -27,4 +27,8 @@ public class AlumnoService {
     public Alumno buscarPorEmail(String email) {
       return alumnoRepository.findByUsuarioCorreo(email).orElseThrow(() -> new RuntimeException("Alumno no encontrado con email: " + email));
     }
+
+    public void guardar(Alumno alumno) {
+        alumnoRepository.save(alumno);
+    }
 }

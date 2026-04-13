@@ -7,13 +7,18 @@ import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.tfg.gestion_practicas.model.Alumno;
 import com.tfg.gestion_practicas.model.Solicitud;
 import com.tfg.gestion_practicas.repository.AlumnoRepository;
 import com.tfg.gestion_practicas.repository.OfertaRepository;
 import com.tfg.gestion_practicas.services.SolicitudService;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class AlumnoController {
@@ -46,7 +51,7 @@ public class AlumnoController {
         String email = principal.getName();
 
         // 3. Buscamos al alumno en la DB por su email.
-        Alumno al = alumnoRepository.findByEmail(email).orElse(null);
+        Alumno al = alumnoRepository.findByUsuarioCorreo(email).orElse(null);
 
         // 3.1. Si el email del login no existe en la tabla alumnos, hacemos saltar una nueva ventana.
         if (al == null) {
@@ -59,15 +64,17 @@ public class AlumnoController {
 
         // EXTRA: PARA LA BARRA DE PROGRESO DE LAS SOLICITUDES. 
         int progreso = 0;
-        if (al.getDni() != null) {
+        if (al.getDni() != null && !al.getDni().isEmpty()) {
             progreso += 20;
         }
 
-        if (al.getNombre() != null) {
-            progreso += 20;
+        if (al.getUsuario() != null) {
+            if(al.getUsuario().getNombre() != null && !al.getUsuario().getNombre().isEmpty()) {
+                progreso += 20;
+            }
         }
 
-        if (al.getEmail() != null) {
+        if (al.getUsuario().getCorreo() != null && !al.getUsuario().getCorreo().isEmpty()) {
             progreso += 20;
         }
 
@@ -105,7 +112,7 @@ public class AlumnoController {
         return "alumno/solicitudes";
     }
 
-    @GetMapping("/perfil") 
+    @GetMapping("/alumno/perfil") 
     public String verPerfil(Model model, Principal principal) {
         // 1. Obtenemos el email del usuario identificado. 
         String emailLogueado = principal.getName();
@@ -120,5 +127,49 @@ public class AlumnoController {
         model.addAttribute("alumno", alumno);
 
         return "alumno/perfil";
+    }
+
+    @PostMapping("/alumno/perfil/actualizar")
+    public String actualizarPerfil(@Valid @ModelAttribute("alumno") Alumno alumnoForm, BindingResult result, Model model, Principal principal) {
+        // Si hay errores de validación (como la fecha de nacimiento que se encuentre vacía).
+        if (result.hasErrors()) {
+            // Volvemos a cargar los datos necesarios para la vista.
+            model.addAttribute("alumno", alumnoForm); 
+            return "alumno/perfil";
+        }
+        
+        // 1. Obtenemos el alumno real de la DB para no perder sus IDs internos ni su relación con Usuario
+        String email = principal.getName();
+        Alumno alumnoDb = alumnoService.buscarPorEmail(email);
+
+        // 2. Sincronizamos los datos del formulario con el objeto de la base de datos
+        // Datos del Usuario (Relación)
+        alumnoDb.getUsuario().setNombre(alumnoForm.getUsuario().getNombre());
+        alumnoDb.getUsuario().setApellidos(alumnoForm.getUsuario().getApellidos());
+        if (alumnoForm.getUsuario().getFNac() != null) {
+            alumnoDb.getUsuario().setFNac(alumnoForm.getUsuario().getFNac());
+        }
+
+        // Datos del Alumno
+        alumnoDb.setDni(alumnoForm.getDni());
+        alumnoDb.setCiudad(alumnoForm.getCiudad());
+        alumnoDb.setCentroEducativo(alumnoForm.getCentroEducativo());
+        alumnoDb.setEstadoFct(alumnoForm.getEstadoFct());
+        alumnoDb.setHorasFct(alumnoForm.getHorasFct());
+        alumnoDb.setEmpresaFct(alumnoForm.getEmpresaFct());
+
+        // 3. Guardamos el objeto original YA ACTUALIZADO
+        alumnoService.guardar(alumnoDb);
+
+        // 4. Redirigimos a la ruta completa (que ahora sabemos que es /alumno/perfil)
+        return "redirect:/alumno/perfil?exito";
+    }
+
+    @GetMapping("/alumno/config")
+    public String mostrarConfiguracion(Model model, Principal principal) {
+        String email = principal.getName();
+        Alumno alumno = alumnoService.buscarPorEmail(email);
+        model.addAttribute("alumno", alumno);
+        return "alumno/config";
     }
 }
