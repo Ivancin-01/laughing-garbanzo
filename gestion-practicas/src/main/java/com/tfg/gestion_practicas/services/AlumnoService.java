@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import com.tfg.gestion_practicas.model.Alumno;
 import com.tfg.gestion_practicas.repository.AlumnoRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class AlumnoService {
     @Autowired
@@ -28,7 +30,8 @@ public class AlumnoService {
       return alumnoRepository.findByUsuarioCorreo(email).orElseThrow(() -> new RuntimeException("Alumno no encontrado con email: " + email));
     }
 
+    @Transactional
     public void guardar(Alumno alumno) {
-        alumnoRepository.save(alumno);
+        alumnoRepository.saveAndFlush(alumno);
     }
 }

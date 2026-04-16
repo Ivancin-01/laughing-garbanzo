@@ -18,11 +18,12 @@ import com.tfg.gestion_practicas.repository.AlumnoRepository;
 import com.tfg.gestion_practicas.repository.OfertaRepository;
 import com.tfg.gestion_practicas.services.SolicitudService;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @Controller
 public class AlumnoController {
-    private final AuthController authController; 
+    private final AuthController authController;
     private final AlumnoService alumnoService;
 
     @Autowired
@@ -41,35 +42,37 @@ public class AlumnoController {
 
     // Dashboard de alumno simplificada - para trabajar mejor.
     @GetMapping("/alumno/dashboard")
-    public String dashboardAlumno (Model model, Principal principal) {
-        // 1. Verificamos si existe una sesión que se encuentre activa. 
+    public String dashboardAlumno(Model model, Principal principal) {
+        // 1. Verificamos si existe una sesión que se encuentre activa.
         if (principal == null) {
             return "redirect:/login";
         }
 
-        // 2. Obtenemos el alumno por su correo. Spring Security toma el email como dato para identificar al usuario.
+        // 2. Obtenemos el alumno por su correo. Spring Security toma el email como dato
+        // para identificar al usuario.
         String email = principal.getName();
 
         // 3. Buscamos al alumno en la DB por su email.
         Alumno al = alumnoRepository.findByUsuarioCorreo(email).orElse(null);
 
-        // 3.1. Si el email del login no existe en la tabla alumnos, hacemos saltar una nueva ventana.
+        // 3.1. Si el email del login no existe en la tabla alumnos, hacemos saltar una
+        // nueva ventana.
         if (al == null) {
             return "redirect:/login?error=usuario-no-encontrado";
         }
 
         // 4. Cargamos las solicitudes reales del alumno encontrado.
-        List <Solicitud> solicitudes = solicitudService.obtenerPorAlumno(al.getId());
+        List<Solicitud> solicitudes = solicitudService.obtenerPorAlumno(al.getId());
         Long totalOfertas = ofertaRepository.count();
 
-        // EXTRA: PARA LA BARRA DE PROGRESO DE LAS SOLICITUDES. 
+        // EXTRA: PARA LA BARRA DE PROGRESO DE LAS SOLICITUDES.
         int progreso = 0;
         if (al.getDni() != null && !al.getDni().isEmpty()) {
             progreso += 20;
         }
 
         if (al.getUsuario() != null) {
-            if(al.getUsuario().getNombre() != null && !al.getUsuario().getNombre().isEmpty()) {
+            if (al.getUsuario().getNombre() != null && !al.getUsuario().getNombre().isEmpty()) {
                 progreso += 20;
             }
         }
@@ -95,7 +98,8 @@ public class AlumnoController {
         return "alumno/dashboard";
     }
 
-    // Página completa donde nos aparecen todas las solicitudes realizadas por un alumno.
+    // Página completa donde nos aparecen todas las solicitudes realizadas por un
+    // alumno.
     @GetMapping("/alumno/solicitudes")
     public String verSolicitudesAlumno(Model model) {
         Alumno al = alumnoRepository.findById(1L).orElse(null);
@@ -112,9 +116,9 @@ public class AlumnoController {
         return "alumno/solicitudes";
     }
 
-    @GetMapping("/alumno/perfil") 
+    @GetMapping("/alumno/perfil")
     public String verPerfil(Model model, Principal principal) {
-        // 1. Obtenemos el email del usuario identificado. 
+        // 1. Obtenemos el email del usuario identificado.
         String emailLogueado = principal.getName();
 
         // 2. Buscamos al alumno por el email.
@@ -122,35 +126,36 @@ public class AlumnoController {
 
         // Verifica en la consola si realmente encuentra al alumno
         System.out.println("Datos: " + alumno.getUsuario().getNombre() + " " + alumno.getUsuario().getApellidos());
-        
-        // 3. Pasamos el objeto al modelo. 
+
+        // 3. Pasamos el objeto al modelo.
         model.addAttribute("alumno", alumno);
 
         return "alumno/perfil";
     }
 
     @PostMapping("/alumno/perfil/actualizar")
-    public String actualizarPerfil(@Valid @ModelAttribute("alumno") Alumno alumnoForm, BindingResult result, Model model, Principal principal) {
-        // Si hay errores de validación (como la fecha de nacimiento que se encuentre vacía).
+    @Transactional // Asegura que todo ocurra en una sola transacción
+    public String actualizarPerfil(@Valid @ModelAttribute("alumno") Alumno alumnoForm, BindingResult result,
+            Model model, Principal principal) {
+
         if (result.hasErrors()) {
-            // Volvemos a cargar los datos necesarios para la vista.
-            model.addAttribute("alumno", alumnoForm); 
+            System.out.println("Errores detectados: " + result.getAllErrors());
             return "alumno/perfil";
         }
-        
-        // 1. Obtenemos el alumno real de la DB para no perder sus IDs internos ni su relación con Usuario
-        String email = principal.getName();
-        Alumno alumnoDb = alumnoService.buscarPorEmail(email);
 
-        // 2. Sincronizamos los datos del formulario con el objeto de la base de datos
-        // Datos del Usuario (Relación)
-        alumnoDb.getUsuario().setNombre(alumnoForm.getUsuario().getNombre());
-        alumnoDb.getUsuario().setApellidos(alumnoForm.getUsuario().getApellidos());
-        if (alumnoForm.getUsuario().getFNac() != null) {
-            alumnoDb.getUsuario().setFNac(alumnoForm.getUsuario().getFNac());
+        // 1. Cargar el alumno real con su Usuario cargado
+        Alumno alumnoDb = alumnoService.buscarPorEmail(principal.getName());
+
+        // 2. Sincronizar datos de Usuario (IMPORTANTE)
+        if (alumnoForm.getUsuario() != null) {
+            alumnoDb.getUsuario().setNombre(alumnoForm.getUsuario().getNombre());
+            alumnoDb.getUsuario().setApellidos(alumnoForm.getUsuario().getApellidos());
+            if (alumnoForm.getUsuario().getFNac() != null) {
+                alumnoDb.getUsuario().setFNac(alumnoForm.getUsuario().getFNac());
+            }
         }
 
-        // Datos del Alumno
+        // 3. Sincronizar datos de Alumno
         alumnoDb.setDni(alumnoForm.getDni());
         alumnoDb.setCiudad(alumnoForm.getCiudad());
         alumnoDb.setCentroEducativo(alumnoForm.getCentroEducativo());
@@ -158,10 +163,12 @@ public class AlumnoController {
         alumnoDb.setHorasFct(alumnoForm.getHorasFct());
         alumnoDb.setEmpresaFct(alumnoForm.getEmpresaFct());
 
-        // 3. Guardamos el objeto original YA ACTUALIZADO
+        // 4. Guardar
         alumnoService.guardar(alumnoDb);
 
-        // 4. Redirigimos a la ruta completa (que ahora sabemos que es /alumno/perfil)
+        // 5. Mensaje de éxito. 
+        System.out.println("Ciudad recibida: " + alumnoForm.getCiudad());
+
         return "redirect:/alumno/perfil?exito";
     }
 

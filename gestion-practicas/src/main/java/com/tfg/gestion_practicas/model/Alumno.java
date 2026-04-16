@@ -40,7 +40,7 @@ public class Alumno {
 
     // Configuración correcta de la relación 1:1
     @Valid
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @MapsId // IMPORTANTE: Esto dice que el ID de esta tabla es el ID de la tabla Usuario
     @JoinColumn(name = "usuario_id") // Nombre de la columna en Supabase
     private Usuario usuario;
