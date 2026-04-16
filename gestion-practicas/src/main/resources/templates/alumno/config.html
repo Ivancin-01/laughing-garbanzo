@@ -30,8 +30,8 @@
             <img th:src="@{/img/default-user.png}" alt="Avatar" class="avatar-nav" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
             
             <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/alumno/dashboard}"><i class="bi bi-grid-fill"></i> Dashboard</a>
                 <a th:href="@{/alumno/perfil}"><i class="bi bi-person-circle"></i> Mi Perfil</a>
-                <a th:href="@{/alumno/configuracion}"><i class="bi bi-gear-fill"></i> Configuración</a>
                 <hr style="margin: 5px 0; border: 0; border-top: 1px solid #eee;">
                 <a th:href="@{/logout}" style="color: #d9534f;"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
             </div>

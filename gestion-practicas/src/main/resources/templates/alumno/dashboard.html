@@ -17,21 +17,27 @@
 </head>
 <body>
     <nav class="navbar-superior flex-between">
-        <button id="toggle-sidebar" class="btn-toggle"><i class="bi bi-list"></i></button>
+        <div class="nav-izq" style="display: flex; align-items: center; gap: 15px;">
+            <button id="btn-toggle-sidebar" class="btn-toggle" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
         <div class="logo-central">
             <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
         </div>
-
-        <div class="usuario-menu">
-            <div class="perfil-trigger" onclick="toggleDropdown()">
-                <img th:src="${alumno.cvUrl != null ? '/img/avatar.png' : '/img/default-user.png'}" alt="Profile-Pic" class="avatar">
-                <span class="flecha"><i class="bi bi-chevron-down"></i></span>
+        <div class="usuario-nav-container perfil-trigger" onclick="toggleDropdown()">
+            <div class="info-usuario-nav">
+                <p class="nombre-nav" th:text="${alumno.usuario.nombre} + ' ' +  ${alumno.usuario.apellidos}">Nombre Alumno</p>
+                <p class="rol-nav">Alumno</p>
             </div>
-            <div id="dropdown-perfil" class="dropdown-contenido">
-                <a th:href="@{/alumno/perfil}"><i class="bi bi-person"></i> Mi Perfil</a>
-                <a th:href="@{/alumno/config}"><i class="bi bi-gear"></i> Configuración</a>
+            <div class="avatar-wrapper">
+                <img th:src="@{/img/default-user.png}" alt="Avatar" class="avatar-nav">
+            </div>
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/alumno/perfil}"><i class="bi bi-person-circle"></i> <b>Mi Perfil</b></a>
+                <a th:href="@{/alumno/config}"><i class="bi bi-gear-fill"></i> <b>Configuración</b></a>
                 <hr>
-                <a th:href="@{/logout}" class="logout"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
+                <a th:href="@{/logout}" class="text-danger" style="color: #d9534f;"><i class="bi bi-box-arrow-right"></i> <b>Cerrar Sesión</b></a>
             </div>
         </div>
     </nav>
