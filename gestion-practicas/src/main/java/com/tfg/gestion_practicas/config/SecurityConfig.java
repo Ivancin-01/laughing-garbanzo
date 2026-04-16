@@ -31,7 +31,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             // Aseguramos que todas las rutas de alumno y recursos estáticos sean libres
-            .requestMatchers("/", "/login", "/usuarios/**", "/css/**", "/js/**", "/img/**", "/alumno/**", "/ofertas/**").permitAll()
+            .requestMatchers("/", "/login", "/usuarios/**", "/css/**", "/js/**", "/img/**", "/alumno/**", "/ofertas/**", "/tutor/**").permitAll()
             .anyRequest().authenticated())
         .formLogin(form -> form
             .loginPage("/login")

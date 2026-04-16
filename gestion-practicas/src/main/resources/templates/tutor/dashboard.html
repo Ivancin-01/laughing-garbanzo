@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FP Connect — Dashboard Tutor</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar__logo">
+      <span class="logo-fp">FP</span><span class="logo-connect">Connect</span>
+    </div>
+    <div class="topbar__acciones">
+      <div class="topbar__usuario" id="btn-menu-usuario">
+        <div class="avatar" th:text="${#strings.substring(tutor.nombre,0,1) + #strings.substring(tutor.apellidos,0,1)}">TP</div>
+        <span class="topbar__nombre" th:text="${tutor.nombre + ' ' + tutor.apellidos}">Laura Pérez</span>
+        </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar__perfil">
+        <div class="avatar avatar--grande">LP</div>
+        <div class="sidebar__perfil-info">
+          <p class="sidebar__nombre" th:text="${tutor.nombre}">Laura Pérez</p>
+          <span class="sidebar__ciclo">Tutor de Prácticas</span>
+        </div>
+      </div>
+
+      <nav class="sidebar__nav">
+        <p class="sidebar__nav-label">Gestión Académica</p>
+        <ul class="sidebar__menu">
+          <li>
+            <a href="/tutor/dashboard" class="sidebar__link activo">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              Inicio
+            </a>
+          </li>
+          <li>
+            <a href="/tutor/alumnos" class="sidebar__link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Mis Alumnos
+            </a>
+          </li>
+          <li>
+            <a href="/tutor/mensajes" class="sidebar__link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Mensajes
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="contenido">
+      <section class="seccion activa">
+        <div class="bienvenida">
+          <div>
+            <h1 class="bienvenida__titulo">¡Hola, <span th:text="${tutor.nombre}">Laura</span>! 👋</h1>
+            <p class="bienvenida__sub">Resumen del seguimiento de tus alumnos asignados.</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card__icono stat-card__icono--azul">👥</div>
+            <p class="stat-card__numero" th:text="${totalAlumnos}">12</p>
+            <p class="stat-card__label">Alumnos asignados</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icono stat-card__icono--melocoton">⏳</div>
+            <p class="stat-card__numero" th:text="${pendientesRevision}">4</p>
+            <p class="stat-card__label">Pendientes de revisión</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icono stat-card__icono--verde">✅</div>
+            <p class="stat-card__numero" th:text="${enPracticas}">8</p>
+            <p class="stat-card__label">En prácticas actualmente</p>
+          </div>
+        </div>
+
+        <div class="bloque-titulo">
+          <h2>Estado de los Alumnos</h2>
+          <p>Supervisión de solicitudes y convenios</p>
+        </div>
+
+        <div class="tabla-contenedor">
+          <table class="tabla-solicitudes">
+            <thead>
+              <tr>
+                <th>Alumno</th>
+                <th>Ciclo</th>
+                <th>Empresa Destino</th>
+                <th>Estado Solicitud</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="alumno : ${alumnos}">
+                <td>
+                  <div class="tabla-empresa">
+                    <div class="avatar avatar--mini" th:text="${#strings.substring(alumno.nombre,0,1)}">A</div>
+                    <span th:text="${alumno.nombre + ' ' + alumno.apellidos}">Ana García</span>
+                  </div>
+                </td>
+                <td th:text="${alumno.ciclo}">DAW</td>
+                <td th:text="${alumno.solicitudActual?.oferta?.empresa?.nombre ?: 'Sin asignar'}">TechStart S.L.</td>
+                <td>
+                  <span class="estado-pill" 
+                        th:classappend="${alumno.solicitudActual?.estado == 'ACEPTADA' ? 'estado-pill--enviada' : 'estado-pill--revision'}"
+                        th:text="${alumno.solicitudActual?.estado ?: 'PENDIENTE'}">
+                    En revisión
+                  </span>
+                </td>
+                <td><button class="btn-tabla">Ver Seguimiento</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
