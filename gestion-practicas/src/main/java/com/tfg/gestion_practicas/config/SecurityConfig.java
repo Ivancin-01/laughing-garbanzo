@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 /* En esta clase configuramos lo siguiente en cuanto a SEGURIDAD:
     - Contraseñas: Con BCryptPasswordEncoder, las contraseñas se guardan cifradas.
@@ -19,31 +20,63 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+ 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+ 
     @Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> auth
-            // Aseguramos que todas las rutas de alumno y recursos estáticos sean libres
-            .requestMatchers("/", "/login", "/usuarios/**", "/css/**", "/js/**", "/img/**", "/alumno/**", "/ofertas/**", "/tutor/**").permitAll()
-            .anyRequest().authenticated())
-        .formLogin(form -> form
-            .loginPage("/login")
-            .loginProcessingUrl("/login")
-            .defaultSuccessUrl("/alumno/dashboard", true)
-            .failureUrl("/login?error")
-            .permitAll()
-        )
-        .logout(logout -> logout
-            .logoutUrl("/logout").logoutSuccessUrl("/login?logout").permitAll()
-        );
-            
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                // Rutas públicas
+                .requestMatchers(
+                    "/", "/login", "/logout",
+                    "/usuarios/registro", "/usuarios/registrar",
+                    "/css/**", "/js/**", "/img/**", "/lib/**", "/ofertas/**"
+                ).permitAll()
+                // Rutas privadas por rol
+                .requestMatchers("/alumno/**").hasRole("ALUMNO")
+                .requestMatchers("/tutor/**").hasRole("TUTOR")
+                .requestMatchers("/empresa/**").hasRole("EMPRESA")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .successHandler(customSuccessHandler()) // ← redirige según rol
+                .failureUrl("/login?error")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            );
+ 
         return http.build();
     }
+ 
+@Bean
+public AuthenticationSuccessHandler customSuccessHandler() {
+    return (request, response, authentication) -> { 
+
+        String rol = authentication.getAuthorities()
+                .iterator().next()
+                .getAuthority();
+
+        String destino = switch (rol) {
+            case "ROLE_ALUMNO"  -> "/alumno/dashboard";
+            case "ROLE_TUTOR"   -> "/tutor/dashboard";
+            case "ROLE_EMPRESA" -> "/empresa/dashboard";
+            case "ROLE_ADMIN"   -> "/admin/dashboard";
+            default             -> "/";
+        };
+
+        response.sendRedirect(destino);
+    };
+}
 }
