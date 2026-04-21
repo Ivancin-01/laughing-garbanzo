@@ -1,12 +1,16 @@
 // Esperamos a que todo el DOM esté cargado para evitar errores de "not defined"
 document.addEventListener('DOMContentLoaded', function() {
     // Configuración del Sidebar
-    const btnToggle = document.getElementById('toggle-sidebar');
-    if (btnToggle) {
-        btnToggle.addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('oculto');
-        });
-    }
+    const sidebar = document.querySelector('.sidebar');
+    
+    // Definimos GLOBALMENTE la función.
+    window.toggleSidebar = function() {
+        if(sidebar) {
+            sidebar.classList.toggle('oculto');
+        } else {
+            console.error("No se encontró la clase .sidebar");
+        }
+    };
 
     // Definimos la función globalmente para que el onclick del HTML la vea
     window.toggleDropdown = function() {

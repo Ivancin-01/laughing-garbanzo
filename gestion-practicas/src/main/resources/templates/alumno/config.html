@@ -12,9 +12,9 @@
 </head>
 <body>
     <nav class="navbar-superior">
-        <div class="nav-izq" style="width: 250px;">
-            <a th:href="@{/alumno/dashboard}" class="btn-volver" style="text-decoration: none; color: #2c3e50; display: flex; align-items: center; gap: 8px; font-weight: 700;">
-                <i class="bi bi-arrow-left"></i> Volver al Dashboard
+        <div class="nav-izq">
+            <a th:href="@{/alumno/dashboard}" class="btn-volver-nav">
+                <i class="bi bi-house-door-fill"></i> <span>Dashboard</span>
             </a>
         </div> 
 
@@ -22,30 +22,33 @@
             <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
         </div>
 
-        <div class="usuario-nav perfil-trigger" onclick="toggleDropdown()" style="width: 250px; display: flex; justify-content: flex-end; align-items: center; gap: 15px; cursor: pointer; position: relative;">
-            <div class="info-usuario-nav text-right">
-                <p class="nombre-nav" th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}" style="margin: 0; font-weight: 700; font-size: 0.9rem;">Nombre Alumno</p>
-                <p class="rol-nav" style="margin: 0; font-size: 0.8rem; color: #666;">Alumno</p>
+        <div class="usuario-nav-container" onclick="toggleDropdown()">
+            <div class="info-usuario-nav">
+                <p class="nombre-nav" th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">Nombre Alumno</p>
+                <p class="rol-nav">Alumno</p>
             </div>
-            <img th:src="@{/img/default-user.png}" alt="Avatar" class="avatar-nav" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+
+            <div class="avatar-wrapper">
+                <img th:src="@{/img/default-user.png}" alt="Avatar" class="avatar-nav">
+            </div>
             
             <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/alumno/dashboard}"><i class="bi bi-grid-fill"></i> Dashboard</a>
                 <a th:href="@{/alumno/perfil}"><i class="bi bi-person-circle"></i> Mi Perfil</a>
-                <a th:href="@{/alumno/configuracion}"><i class="bi bi-gear-fill"></i> Configuración</a>
-                <hr style="margin: 5px 0; border: 0; border-top: 1px solid #eee;">
-                <a th:href="@{/logout}" style="color: #d9534f;"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
+                <hr>
+                <a th:href="@{/logout}" class="text-danger"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
             </div>
         </div>
     </nav>
 
     <main class="contenedor-perfil">
-        <header class="perfil-header">
-            <h1>Ajustes de Cuenta</h1>
-            <p>Gestiona tu seguridad y preferencias de privacidad.</p>
+        <header class="perfil-header" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+            <h1 style="margin: 0;">Ajustes de Cuenta</h1>
+            <p style="margin: 0; color: #666;">Gestiona tu seguridad y preferencias de privacidad.</p>
         </header>
-        <section class="bloque">
-            <h3><i class="bi bi-shield-lock-fill"> Seguridad</i></h3>
-            <form action="config-form">
+        <section class="bloque config-section">
+            <h3><i class="bi bi-shield-lock-fill"></i> Seguridad</h3>
+            <form action="#" class="config-form">
                 <div class="config-item">
                     <div class="config-info">
                         <h4>Cambiar contraseña</h4>
@@ -53,13 +56,14 @@
                     </div>
                     <div class="config-actions">
                         <input type="password" placeholder="Nueva contraseña" class="form-control-custom">
-                        <button type="button" class="btn-guardar">Actualizar</button>
+                        <button type="button" class="btn-guardar-mini">Actualizar</button>
                     </div>
                 </div>
             </form>
         </section>
-        <section class="bloque">
-            <h3><i class="bi bi-eyefill"> Privacidad</i></h3>
+
+        <section class="bloque config-section">
+            <h3><i class="bi bi-eyefill"></i> Privacidad</h3>
             <div class="config-item">
                 <div class="config-info">
                     <h4>Visibilidad del Perfil</h4>
@@ -71,7 +75,8 @@
                 </label>
             </div>
         </section>
-        <section>
+
+        <section class="bloque zona-critica">
             <h3 class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Zona Crítica</h3>
             <div class="config-item">
                 <div class="config-info">
@@ -82,7 +87,7 @@
             </div>
         </section>
     </main>
-    <script th:src="@{/js/alumno/perfil.js}"></script>
-    <!--<script th:src="@{/js/alumno/config.js}"></script> Lo utilizaremos más adelante para añadir interactividad a la página con JS.--> 
+    <script th:src="@{/js/alumno/config.js}"></script>
+    <!--<script th:src="@{/js/alumno/alumno.js}"></script> Lo utilizaremos más adelante para añadir interactividad a la página con JS.--> 
 </body>
 </html>
