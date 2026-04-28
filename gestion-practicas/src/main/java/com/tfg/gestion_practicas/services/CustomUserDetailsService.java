@@ -1,4 +1,4 @@
-/*package com.tfg.gestion_practicas.services;
+package com.tfg.gestion_practicas.services;
 
 import com.tfg.gestion_practicas.model.Usuario;
 import com.tfg.gestion_practicas.repository.UsuarioRepository;
@@ -11,10 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.tfg.gestion_practicas.repository.AlumnoRepository;
-
- Este servicio se va a utilizar para hacer funcionar el login. 
-        Por el momento, solo funcionará con la tabla "alumnos" de nuestra base de datos en SupaBase.
-
 
 
 @Service
