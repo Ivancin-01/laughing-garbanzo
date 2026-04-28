@@ -1,211 +1,177 @@
-/* =====================================================
-   FP Connect — registro.js
-   JS básico para el formulario de registro:
-     1. Selector de rol (botones visuales)
-     2. Mostrar/ocultar sección alumno
-     3. Mostrar/ocultar contraseña
-     4. Validación básica antes de enviar
-   ===================================================== */
+document.addEventListener('DOMContentLoaded', function() {
 
+  const form = document.getElementById('formRegistro');
+  const rolesGrid = document.getElementById('rolesGrid');
+  const rolSelect = document.getElementById('rolSelect');
+  const btnOjo = document.getElementById('btnOjo');
+  const pwdInput = document.getElementById('pwd');
 
-/* -------------------------------------------------------
-   Recogemos los elementos que vamos a usar
-   ------------------------------------------------------- */
-var formRegistro   = document.getElementById("formRegistro");
-var rolSelect      = document.getElementById("rolSelect");      // Select oculto
-var rolesGrid      = document.getElementById("rolesGrid");      // Contenedor de botones de rol
-var seccionAlumno  = document.getElementById("seccionAlumno");  // Bloque datos alumno
-var btnOjo         = document.getElementById("btnOjo");         // Botón ver contraseña
-var campoPwd       = document.getElementById("pwd");            // Input contraseña
+  const seccionAlumno     = document.getElementById('seccionAlumno');
+  const seccionTutor      = document.getElementById('seccionTutor');
+  const seccionTutorCentro = document.getElementById('seccionTutorCentro');
 
-
-/* -------------------------------------------------------
-   1. SELECTOR DE ROL — botones visuales
-   Cuando el usuario hace clic en uno de los cuatro botones,
-   marcamos ese botón y actualizamos el select oculto.
-   ------------------------------------------------------- */
-
-// Recogemos todos los botones de rol del grid
-var botonesRol = rolesGrid.getElementsByClassName("rol-btn");
-
-// Recorremos los botones y añadimos un evento click a cada uno
-for (var i = 0; i < botonesRol.length; i++) {
-
-  botonesRol[i].addEventListener("click", function () {
-
-    // 1a. Quitamos la clase "seleccionado" a todos los botones
-    for (var j = 0; j < botonesRol.length; j++) {
-      botonesRol[j].classList.remove("seleccionado");
+  // ==========================================
+  // INIT — ocultamos todas las secciones al cargar
+  // ==========================================
+  [seccionAlumno, seccionTutor, seccionTutorCentro].forEach(function(sec) {
+    if (sec) {
+      sec.style.display = 'none';
+      sec.style.opacity = '0';
     }
-
-    // 1b. Añadimos "seleccionado" solo al que se ha pulsado
-    this.classList.add("seleccionado");
-
-    // 1c. Leemos el rol del atributo data-rol del botón
-    var rolElegido = this.getAttribute("data-rol");
-
-    // 1d. Actualizamos el select oculto para que Thymeleaf reciba el valor correcto
-    rolSelect.value = rolElegido;
-
-    // 1e. Limpiamos el mensaje de error del rol si había uno
-    document.getElementById("err-rol").textContent = "";
-
-    // 1f. Mostramos u ocultamos la sección de alumno según el rol
-    mostrarSeccionAlumno(rolElegido);
-
   });
-}
 
-
-/* -------------------------------------------------------
-   2. MOSTRAR / OCULTAR SECCIÓN ALUMNO
-   Esta función se llama desde el evento click de los botones.
-   ------------------------------------------------------- */
-function mostrarSeccionAlumno(rol) {
-
-  if (rol === "ALUMNO") {
-    // Añadimos la clase que en CSS pone display:block y opacity:1
-    seccionAlumno.classList.add("seccion-visible");
-  } else {
-    seccionAlumno.classList.remove("seccion-visible");
+  // ==========================================
+  // 1) MOSTRAR/OCULTAR CONTRASEÑA
+  // ==========================================
+  if (btnOjo && pwdInput) {
+    btnOjo.addEventListener('click', function() {
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        btnOjo.textContent = '🙈';
+      } else {
+        pwdInput.type = 'password';
+        btnOjo.textContent = '👁';
+      }
+    });
   }
 
-}
-
-
-/* -------------------------------------------------------
-   3. MOSTRAR / OCULTAR CONTRASEÑA
-   Al pulsar el ojo, cambiamos el type del input entre
-   "password" (oculta) y "text" (visible).
-   ------------------------------------------------------- */
-btnOjo.addEventListener("click", function () {
-
-  if (campoPwd.type === "password") {
-    campoPwd.type = "text";       // Mostramos el texto
-    btnOjo.textContent = "🙈";    // Cambiamos el icono
-  } else {
-    campoPwd.type = "password";   // Volvemos a ocultar
-    btnOjo.textContent = "👁";    // Icono original
+  // ==========================================
+  // 2) SELECCIÓN DE ROL
+  // ==========================================
+  if (rolesGrid) {
+    const botonesRol = rolesGrid.querySelectorAll('.rol-btn');
+    botonesRol.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        botonesRol.forEach(function(b) { b.classList.remove('seleccionado'); });
+        this.classList.add('seleccionado');
+        rolSelect.value = this.getAttribute('data-rol');
+        mostrarSeccionRol(rolSelect.value);
+      });
+    });
   }
 
-});
+  // ==========================================
+  // 3) MOSTRAR/OCULTAR SECCIONES POR ROL
+  // ==========================================
+  function mostrarSeccionRol(rol) {
+    // Ocultamos todas
+    [seccionAlumno, seccionTutor, seccionTutorCentro].forEach(function(sec) {
+      if (sec) {
+        sec.style.display = 'none';
+        sec.style.opacity = '0';
+      }
+    });
 
+    // Mostramos solo la del rol elegido
+    var seccionActiva = null;
+    if (rol === 'ALUMNO')       seccionActiva = seccionAlumno;
+    if (rol === 'TUTOR')        seccionActiva = seccionTutor;
+    if (rol === 'TUTOR_CENTRO') seccionActiva = seccionTutorCentro;
 
-/* -------------------------------------------------------
-   4. VALIDACIÓN ANTES DE ENVIAR EL FORMULARIO
-   Comprobamos los campos más importantes.
-   Si algo falla, mostramos el error y NO enviamos el form.
-   ------------------------------------------------------- */
-
-formRegistro.addEventListener("submit", function (evento) {
-
-  // Variable para saber si hubo algún error
-  var hayErrores = false;
-
-  // Limpiamos todos los mensajes de error y bordes rojos previos
-  limpiarErrores();
-
-  // --- Validación campo por campo ---
-
-  // USERNAME: no puede estar vacío
-  var username = document.getElementById("username").value.trim();
-  if (username === "") {
-    mostrarError("err-username", "username", "El username es obligatorio.");
-    hayErrores = true;
-  }
-
-  // NOMBRE: no puede estar vacío
-  var nombre = document.getElementById("nombre").value.trim();
-  if (nombre === "") {
-    mostrarError("err-nombre", "nombre", "El nombre es obligatorio.");
-    hayErrores = true;
-  }
-
-  // APELLIDOS: no puede estar vacío
-  var apellidos = document.getElementById("apellidos").value.trim();
-  if (apellidos === "") {
-    mostrarError("err-apellidos", "apellidos", "Los apellidos son obligatorios.");
-    hayErrores = true;
-  }
-
-  // FECHA DE NACIMIENTO: no puede estar vacía
-  var fNac = document.getElementById("fNac").value;
-  if (fNac === "") {
-    mostrarError("err-fNac", "fNac", "La fecha de nacimiento es obligatoria.");
-    hayErrores = true;
-  }
-
-  // EMAIL: no puede estar vacío
-  var correo = document.getElementById("correo").value.trim();
-  if (correo === "") {
-    mostrarError("err-correo", "correo", "El email es obligatorio.");
-    hayErrores = true;
-  }
-
-  // CONTRASEÑA: mínimo 6 caracteres
-  var pwd = document.getElementById("pwd").value;
-  if (pwd.length < 6) {
-    mostrarError("err-pwd", "pwd", "La contraseña debe tener al menos 6 caracteres.");
-    hayErrores = true;
-  }
-
-  // ROL: debe haberse seleccionado uno
-  var rol = rolSelect.value;
-  if (rol === "") {
-    document.getElementById("err-rol").textContent = "Debes seleccionar un rol.";
-    hayErrores = true;
-  }
-
-  // DNI (solo si el rol es ALUMNO): validación de formato básico
-  if (rol === "ALUMNO") {
-    var dni = document.getElementById("dni").value.trim();
-    // Expresión regular básica: 8 dígitos seguidos de una letra
-    var regexDNI = /^\d{8}[A-Za-z]$/;
-    if (dni === "") {
-      mostrarError("err-dni", "dni", "El DNI es obligatorio para alumnos.");
-      hayErrores = true;
-    } else if (!regexDNI.test(dni)) {
-      mostrarError("err-dni", "dni", "Formato de DNI no válido (ej: 12345678A).");
-      hayErrores = true;
+    if (seccionActiva) {
+      seccionActiva.style.display = 'block';
+      // Pequeña animación de entrada
+      setTimeout(function() { seccionActiva.style.opacity = '1'; }, 10);
     }
   }
 
-  // Si hay errores, cancelamos el envío del formulario
-  if (hayErrores) {
-    evento.preventDefault(); // Detenemos el submit
+  // ==========================================
+  // 4) VALIDACIÓN DEL FORMULARIO
+  // ==========================================
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      var hayErrores = false;
 
-    // Hacemos scroll al primer campo con error para que el usuario lo vea
-    var primerError = document.querySelector(".campo-error");
-    if (primerError) {
-      primerError.focus();
-    }
+      document.querySelectorAll('.error-msg').forEach(function(span) {
+        span.textContent = '';
+      });
+
+      var username = document.getElementById('username');
+      if (!username.value.trim()) {
+        mostrarError('err-username', 'El username es obligatorio');
+        hayErrores = true;
+      }
+
+      var correo = document.getElementById('correo');
+      if (!correo.value.trim() || !validarEmail(correo.value)) {
+        mostrarError('err-correo', 'Introduce un email válido');
+        hayErrores = true;
+      }
+
+      var pwd = document.getElementById('pwd');
+      if (!pwd.value || pwd.value.length < 6) {
+        mostrarError('err-pwd', 'La contraseña debe tener al menos 6 caracteres');
+        hayErrores = true;
+      }
+
+      var nombre = document.getElementById('nombre');
+      if (!nombre.value.trim()) {
+        mostrarError('err-nombre', 'El nombre es obligatorio');
+        hayErrores = true;
+      }
+
+      var apellidos = document.getElementById('apellidos');
+      if (!apellidos.value.trim()) {
+        mostrarError('err-apellidos', 'Los apellidos son obligatorios');
+        hayErrores = true;
+      }
+
+      var fNac = document.getElementById('fNac');
+      if (!fNac.value) {
+        mostrarError('err-fNac', 'La fecha de nacimiento es obligatoria');
+        hayErrores = true;
+      }
+
+      if (!rolSelect.value) {
+        mostrarError('err-rol', 'Debes seleccionar un rol');
+        hayErrores = true;
+      }
+
+      if (rolSelect.value === 'ALUMNO') {
+        var matricula = document.getElementById('matricula');
+        if (!matricula.value) {
+          mostrarError('err-matricula', 'Debes seleccionar una especialidad');
+          hayErrores = true;
+        }
+        var dni = document.getElementById('dni');
+        if (!dni.value.trim()) {
+          mostrarError('err-dni', 'El DNI es obligatorio para alumnos');
+          hayErrores = true;
+        }
+      }
+
+      if (rolSelect.value === 'TUTOR') {
+        var departamento = document.getElementById('departamento');
+        var centroEducativo = document.getElementById('centroEducativo');
+        var telefono = document.getElementById('telefono');
+        if (!departamento.value.trim()) { mostrarError('err-rol', 'El departamento es obligatorio'); hayErrores = true; }
+        if (!centroEducativo.value.trim()) { mostrarError('err-rol', 'El centro educativo es obligatorio'); hayErrores = true; }
+        if (!telefono.value.trim()) { mostrarError('err-rol', 'El teléfono es obligatorio'); hayErrores = true; }
+      }
+
+      if (rolSelect.value === 'TUTOR_CENTRO') {
+        var nombreCentro = document.getElementById('nombreCentro');
+        var telefonoTC = document.getElementById('telefonoTC');
+        if (!nombreCentro.value.trim()) { mostrarError('err-rol', 'El nombre del centro es obligatorio'); hayErrores = true; }
+        if (!telefonoTC.value.trim()) { mostrarError('err-rol', 'El teléfono es obligatorio'); hayErrores = true; }
+      }
+
+      if (hayErrores) {
+        e.preventDefault();
+        return false;
+      }
+    });
   }
 
+  // ==========================================
+  // FUNCIONES AUXILIARES
+  // ==========================================
+  function mostrarError(idSpan, mensaje) {
+    var span = document.getElementById(idSpan);
+    if (span) span.textContent = mensaje;
+  }
+
+  function validarEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 });
-
-
-/* -------------------------------------------------------
-   FUNCIONES AUXILIARES
-   ------------------------------------------------------- */
-
-// Muestra un mensaje de error y marca el campo en rojo
-function mostrarError(idMensaje, idCampo, texto) {
-  document.getElementById(idMensaje).textContent = texto;
-  document.getElementById(idCampo).classList.add("campo-error");
-}
-
-// Limpia todos los mensajes y bordes de error del formulario
-function limpiarErrores() {
-
-  // Vaciamos todos los span de error
-  var mensajes = document.getElementsByClassName("error-msg");
-  for (var i = 0; i < mensajes.length; i++) {
-    mensajes[i].textContent = "";
-  }
-
-  // Quitamos el borde rojo de todos los inputs y selects
-  var campos = document.querySelectorAll("input, select");
-  for (var j = 0; j < campos.length; j++) {
-    campos[j].classList.remove("campo-error");
-  }
-}

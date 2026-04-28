@@ -1,0 +1,168 @@
+:root {
+    --verde: #6A8F6A;
+    --verde-claro: #8BAF8B;
+    --melocoton: #F4A87C;
+    --crema: #FAF7F2;
+    --texto: #2C2C2C;
+    --blanco: #FFFFFF;
+    --fuente-titulo: 'Poppins', sans-serif;
+    --fuente-texto: 'Lato', sans-serif;
+}
+
+
+body {
+    font-family: var(--fuente-texto);
+    margin: 0;
+    background-color: var(--crema);
+    color: var(--texto);
+}
+
+/* Sección de configuración */
+.config-section {
+    margin-bottom: 30px;
+}
+
+.config-section h3 {
+    color: var(--verde);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid var(--crema);
+    padding-bottom: 10px;
+}
+
+/* Items de configuración */
+.config-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 0;
+}
+
+.config-info h4 {
+    margin: 0 0 5px 0;
+    color: var(--texto);
+    font-size: 1.1rem;
+}
+
+.config-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+/* Acciones lado derecho */
+.config-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn-guardar-mini {
+    background-color: var(--verde);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-guardar-mini:hover {
+    background-color: var(--verde-claro);
+    transform: translateY(-2px);
+}
+
+/* Switch de Privacidad */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--verde);
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* Zona Crítica */
+.zona-critica {
+    border: 2px solid #ffeded;
+}
+
+.text-danger {
+    color: #d9534f !important;
+}
+
+.btn-danger {
+    background-color: #f8d7da;
+    color: #d9534f;
+    border: 2px solid #d9534f;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-danger:hover {
+    background-color: #d9534f;
+    color: white;
+    box-shadow: 0 4px 12px rgba(217, 83, 79, 0.2);
+}
+
+/* Re-aplicar animaciones del perfil */
+.config-section:nth-child(2) { animation-delay: 0.2s; }
+.config-section:nth-child(3) { animation-delay: 0.3s; }
+.zona-critica { animation-delay: 0.4s; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .config-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .config-actions {
+        width: 100%;
+    }
+    .config-actions input {
+        flex: 1;
+    }
+}

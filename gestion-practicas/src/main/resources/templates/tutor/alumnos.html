@@ -1,92 +1,153 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FP Connect — Mis Alumnos</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Mis Alumnos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor/styles.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
-
-  <header class="topbar">
-    <div class="topbar__logo">
-      <span class="logo-fp">FP</span><span class="logo-connect">Connect</span>
-    </div>
-    <div class="topbar__acciones">
-      <div class="topbar__usuario">
-        <div class="avatar" th:text="${#strings.substring(tutor.nombre,0,1) + #strings.substring(tutor.apellidos,0,1)}">TP</div>
-        <span class="topbar__nombre" th:text="${tutor.nombre + ' ' + tutor.apellidos}">Nombre Tutor</span>
-      </div>
-    </div>
-  </header>
-
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="sidebar__perfil">
-        <div class="avatar avatar--grande" th:text="${#strings.substring(tutor.nombre,0,1)}">L</div>
-        <div class="sidebar__perfil-info">
-          <p class="sidebar__nombre" th:text="${tutor.nombre}">Nombre</p>
-          <span class="sidebar__ciclo">Tutor de Prácticas</span>
+    <!-- Navbar Superior -->
+    <nav class="navbar-superior flex-between">
+        <div class="nav-izq">
+            <a th:href="@{/tutor/dashboard}" class="btn-volver-nav">
+                <i class="bi bi-arrow-left"></i> <span>Volver</span>
+            </a>
         </div>
-      </div>
-      <nav class="sidebar__nav">
-        <p class="sidebar__nav-label">Gestión Académica</p>
-        <ul class="sidebar__menu">
-          <li><a href="/tutor/dashboard" class="sidebar__link">Inicio</a></li>
-          <li><a href="/tutor/alumnos" class="sidebar__link activo">Mis Alumnos</a></li>
-          <li><a href="/tutor/mensajes" class="sidebar__link">Mensajes</a></li>
-        </ul>
-      </nav>
-    </aside>
-
-    <main class="contenido">
-      <section class="seccion activa">
-        <div class="bloque-titulo">
-          <h1>Listado Detallado de Alumnos</h1>
-          <p>Gestión y seguimiento individualizado de las FCT</p>
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
         </div>
-
-        <div class="tabla-contenedor">
-          <table class="tabla-solicitudes">
-            <thead>
-              <tr>
-                <th>Nombre del Alumno</th>
-                <th>Ciclo Formativo</th>
-                <th>Email Contacto</th>
-                <th>Estado FCT</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr th:each="alumno : ${alumnos}">
-                <td>
-                  <div class="tabla-empresa">
-                    <div class="avatar avatar--mini" th:text="${#strings.substring(alumno.nombre,0,1)}">A</div>
-                    <span th:text="${alumno.nombre + ' ' + alumno.apellidos}">Ana García</span>
-                  </div>
-                </td>
-                <td th:text="${alumno.ciclo}">Ciclo</td>
-                <td th:text="${alumno.usuario.correo}">email@ejemplo.com</td>
-                <td>
-                  <span class="estado-pill" 
-                        th:classappend="${alumno.estadoFct == 'EN_PRACTICAS' ? 'estado-pill--enviada' : 'estado-pill--revision'}"
-                        th:text="${alumno.estadoFct}">
-                    Estado
-                  </span>
-                </td>
-                <td>
-                  <button class="btn-tabla">Ver Perfil</button>
-                  <button class="btn-tabla" style="background-color: #e2e8f0; color: #475569;">Editar</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="usuario-nav-container perfil-trigger" onclick="toggleDropdown()">
+            <div class="info-usuario-nav">
+                <p class="nombre-nav" th:text="${tutor.nombre} + ' ' + ${tutor.apellidos}">Nombre Tutor</p>
+                <p class="rol-nav">Tutor</p>
+            </div>
+            <div class="avatar-wrapper">
+                <img th:src="@{/img/default-user.png}" alt="Avatar" class="avatar-nav">
+            </div>
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/tutor/dashboard}"><i class="bi bi-grid-fill"></i> <b>Dashboard</b></a>
+                <a th:href="@{/tutor/perfil}"><i class="bi bi-person-circle"></i> <b>Mi Perfil</b></a>
+                <a th:href="@{/tutor/config}"><i class="bi bi-gear-fill"></i> <b>Configuración</b></a>
+                <hr>
+                <a th:href="@{/logout}" class="text-danger" style="color: #d9534f;"><i class="bi bi-box-arrow-right"></i> <b>Cerrar Sesión</b></a>
+            </div>
         </div>
-      </section>
+    </nav>
+
+    <main class="contenedor-perfil">
+        <header class="perfil-header" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+            <h1 style="margin: 0;">Gestión de Alumnos</h1>
+            <p style="margin: 0; color: #666;">Visualiza y supervisa el progreso de tus alumnos en las FCT.</p>
+        </header>
+
+        <!-- Filtros -->
+        <section class="bloque">
+            <div class="filtros-container" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <input type="text" id="buscarAlumno" placeholder="Buscar por nombre..." class="form-control-custom" style="flex: 1; min-width: 250px;">
+                <select id="filtroEstado" class="form-control-custom" style="min-width: 200px;">
+                    <option value="">Todos los estados</option>
+                    <option value="En búsqueda">En búsqueda</option>
+                    <option value="EN_PRACTICAS">En prácticas</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select>
+                <select id="filtroEspecialidad" class="form-control-custom" style="min-width: 200px;">
+                    <option value="">Todas las especialidades</option>
+                    <option value="Informatica">Informática</option>
+                    <option value="Administracion">Administración</option>
+                    <option value="Peluqueria">Peluquería</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Tabla de alumnos -->
+        <section class="bloque">
+            <div th:if="${#lists.isEmpty(alumnos)}" class="vacío" style="text-align: center; padding: 40px;">
+                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                <p>No tienes alumnos asignados todavía.</p>
+            </div>
+
+            <div th:if="${not #lists.isEmpty(alumnos)}" style="overflow-x: auto;">
+                <table id="tablaAlumnos">
+                    <thead>
+                        <tr>
+                            <th>Foto</th>
+                            <th>Alumno</th>
+                            <th>Especialidad</th>
+                            <th>Estado FCT</th>
+                            <th>Horas</th>
+                            <th>Empresa</th>
+                            <th>Ciudad</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="alumno : ${alumnos}" class="fila-alumno" 
+                            th:attr="data-estado=${alumno.estadoFct}, data-especialidad=${alumno.matricula}">
+                            <td>
+                                <img th:src="${alumno.usuario.fotoUrl != null ? alumno.usuario.fotoUrl : '/img/default-user.png'}" 
+                                     alt="Avatar" 
+                                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            </td>
+                            <td>
+                                <strong th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">Nombre Alumno</strong><br>
+                                <small th:text="${alumno.usuario.correo}" style="color: #666;">correo@ejemplo.com</small>
+                            </td>
+                            <td th:text="${alumno.matricula}">Informática</td>
+                            <td>
+                                <span class="badge"
+                                    th:classappend="${alumno.estadoFct == 'EN_PRACTICAS' ? 'badge-aceptada' : (alumno.estadoFct == 'Pendiente' ? 'badge-pendiente' : 'badge-rechazada')}"
+                                    th:text="${alumno.estadoFct}">En búsqueda</span>
+                            </td>
+                            <td th:text="${alumno.horasFct != null ? alumno.horasFct + 'h' : '---'}">400h</td>
+                            <td th:text="${alumno.empresaFct != null ? alumno.empresaFct : '---'}">---</td>
+                            <td th:text="${alumno.ciudad != null ? alumno.ciudad : '---'}">---</td>
+                            <td>
+                                <a th:href="@{/tutor/alumnos/{id}(id=${alumno.id})}" class="btn-mini" style="margin-right: 5px;">
+                                    <i class="bi bi-eye"></i> Ver
+                                </a>
+                                <a th:href="@{/tutor/alumnos/{id}/editar(id=${alumno.id})}" class="btn-mini btn-secondary">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Estadísticas rápidas -->
+        <section class="bloque">
+            <h3><i class="bi bi-graph-up"></i> Resumen</h3>
+            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                <div class="stat-item" style="background: #e3f2fd; padding: 15px; border-radius: 8px;">
+                    <p style="margin: 0; color: #666; font-size: 0.9rem;">Total alumnos</p>
+                    <p style="margin: 5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #1976d2;" th:text="${#lists.size(alumnos)}">0</p>
+                </div>
+                <div class="stat-item" style="background: #e8f5e9; padding: 15px; border-radius: 8px;">
+                    <p style="margin: 0; color: #666; font-size: 0.9rem;">En prácticas</p>
+                    <p style="margin: 5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #388e3c;" 
+                       th:text="${#lists.size(alumnos.?[estadoFct == 'EN_PRACTICAS'])}">0</p>
+                </div>
+                <div class="stat-item" style="background: #fff3e0; padding: 15px; border-radius: 8px;">
+                    <p style="margin: 0; color: #666; font-size: 0.9rem;">En búsqueda</p>
+                    <p style="margin: 5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #f57c00;" 
+                       th:text="${#lists.size(alumnos.?[estadoFct == 'En búsqueda'])}">0</p>
+                </div>
+                <div class="stat-item" style="background: #fce4ec; padding: 15px; border-radius: 8px;">
+                    <p style="margin: 0; color: #666; font-size: 0.9rem;">Pendientes</p>
+                    <p style="margin: 5px 0 0 0; font-size: 1.5rem; font-weight: bold; color: #c2185b;" 
+                       th:text="${#lists.size(alumnos.?[estadoFct == 'Pendiente'])}">0</p>
+                </div>
+            </div>
+        </section>
     </main>
-  </div>
+
+    <script th:src="@{/js/tutor/alumnos.js}"></script>
 </body>
 </html>
