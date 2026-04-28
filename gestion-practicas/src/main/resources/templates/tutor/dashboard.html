@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Dashboard - Tutor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor/styles.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <!-- Navbar Superior -->
+    <nav class="navbar-superior flex-between">
+        <div class="nav-izq" style="display: flex; align-items: center; gap: 15px;">
+            <button id="btn-toggle-sidebar" class="btn-toggle" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+        <div class="usuario-nav-container perfil-trigger" onclick="toggleDropdown()">
+            <div class="info-usuario-nav">
+                <p class="nombre-nav" th:text="${tutor.nombre} + ' ' + ${tutor.apellidos}">Nombre Tutor</p>
+                <p class="rol-nav">Tutor</p>
+            </div>
+            <div class="avatar-wrapper">
+                <img th:src="@{/img/default-user.png}" alt="Avatar" class="avatar-nav">
+            </div>
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/tutor/perfil}"><i class="bi bi-person-circle"></i> <b>Mi Perfil</b></a>
+                <a th:href="@{/tutor/config}"><i class="bi bi-gear-fill"></i> <b>Configuración</b></a>
+                <hr>
+                <a th:href="@{/logout}" class="text-danger" style="color: #d9534f;"><i class="bi bi-box-arrow-right"></i> <b>Cerrar Sesión</b></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header flex-between">
+                <div class="logo">FPConnect</div>
+            </div>
+            <nav class="sidebar-nav">
+                <a th:href="@{/tutor/dashboard}" class="sidebar-link active">
+                    <i class="bi bi-house-door"></i> Inicio
+                </a>
+                <a th:href="@{/tutor/alumnos}" class="sidebar-link">
+                    <i class="bi bi-people"></i> Mis Alumnos
+                </a>
+                <a th:href="@{/tutor/reportes}" class="sidebar-link">
+                    <i class="bi bi-file-earmark-text"></i> Reportes
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="contenedor" style="flex: 1; padding: 40px;">
+            <header class="flex-between">
+                <div>
+                    <h1>¡Bienvenido/a, <span th:text="${tutor.nombre}">Tutor</span>!</h1>
+                    <p>Gestiona a tus alumnos y supervisa su progreso en las FCT.</p>
+                </div>
+            </header>
+
+            <!-- Widgets de Estadísticas -->
+            <div class="dashboard-grid">
+                <div class="widget">
+                    <div class="widget-icon" style="background: #e3f2fd;">
+                        <i class="bi bi-people" style="color: #1976d2;"></i>
+                    </div>
+                    <div class="widget-info">
+                        <h3>Total de Alumnos</h3>
+                        <p th:text="${totalAlumnos}">0</p>
+                    </div>
+                </div>
+                <div class="widget">
+                    <div class="widget-icon" style="background: #e8f5e9;">
+                        <i class="bi bi-briefcase" style="color: #388e3c;"></i>
+                    </div>
+                    <div class="widget-info">
+                        <h3>En Prácticas</h3>
+                        <p th:text="${enPracticas}">0</p>
+                    </div>
+                </div>
+                <div class="widget">
+                    <div class="widget-icon" style="background: #fff3e0;">
+                        <i class="bi bi-clock-history" style="color: #f57c00;"></i>
+                    </div>
+                    <div class="widget-info">
+                        <h3>Pendientes</h3>
+                        <p th:text="${pendientesRevision}">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Alumnos -->
+            <div class="bloque">
+                <div class="flex-between">
+                    <h2>Mis Alumnos</h2>
+                    <a th:href="@{/tutor/alumnos}" class="btn-dash">Ver todos</a>
+                </div>
+                <div th:if="${#lists.isEmpty(alumnos)}" class="vacío">
+                    <p>No tienes alumnos asignados todavía.</p>
+                </div>
+                <table th:if="${not #lists.isEmpty(alumnos)}">
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Especialidad</th>
+                            <th>Estado FCT</th>
+                            <th>Empresa</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="alumno : ${alumnos}">
+                            <td>
+                                <strong th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">Nombre Alumno</strong><br>
+                                <small th:text="${alumno.usuario.correo}">correo@ejemplo.com</small>
+                            </td>
+                            <td th:text="${alumno.matricula}">Informática</td>
+                            <td>
+                                <span class="badge"
+                                    th:classappend="${alumno.estadoFct == 'EN_PRACTICAS' ? 'badge-aceptada' : 'badge-pendiente'}"
+                                    th:text="${alumno.estadoFct}">En búsqueda</span>
+                            </td>
+                            <td th:text="${alumno.empresaFct != null ? alumno.empresaFct : '---'}">---</td>
+                            <td>
+                                <a th:href="@{/tutor/alumnos/{id}(id=${alumno.id})}" class="btn-mini">Ver detalles</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script th:src="@{/js/tutor/dashboard.js}"></script>
+</body>
+</html>

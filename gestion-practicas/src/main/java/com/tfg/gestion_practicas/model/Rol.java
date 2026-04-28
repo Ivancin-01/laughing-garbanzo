@@ -4,5 +4,6 @@ public enum Rol {
     ALUMNO,
     TUTOR, 
     EMPRESA, 
+    TUTOR_CENTRO,
     ADMIN
 }

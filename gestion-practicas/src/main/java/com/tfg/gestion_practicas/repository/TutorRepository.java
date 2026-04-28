@@ -11,4 +11,5 @@ import com.tfg.gestion_practicas.model.Tutor;
 public interface TutorRepository extends JpaRepository<Tutor, Long> {
 
     Optional<Tutor> findByUsuarioId(Long usuarioId);
+    Optional<Tutor> findByUsuarioCorreo(String usuarioCorreo);
 }

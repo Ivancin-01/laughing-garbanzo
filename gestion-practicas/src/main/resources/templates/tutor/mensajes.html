@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>FP Connect — Mensajes</title>
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+  <style>
+    /* Estilo rápido para la zona de mensajería */
+    .mensajes-grid { display: grid; grid-template-columns: 300px 1fr; gap: 20px; background: white; border-radius: 12px; height: 70vh; overflow: hidden; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+    .lista-chats { border-right: 1px solid #edf2f7; overflow-y: auto; }
+    .chat-item { padding: 15px; border-bottom: 1px solid #f7fafc; cursor: pointer; transition: background 0.2s; }
+    .chat-item:hover { background: #f8fafc; }
+    .chat-item.activo { background: #ebf8ff; border-left: 4px solid #3182ce; }
+    .ventana-chat { display: flex; flex-direction: column; padding: 20px; }
+    .msj-placeholder { margin: auto; text-align: center; color: #a0aec0; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__logo"><span class="logo-fp">FP</span><span class="logo-connect">Connect</span></div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+        <nav class="sidebar__nav">
+            <ul class="sidebar__menu">
+              <li><a href="/tutor/dashboard" class="sidebar__link">Inicio</a></li>
+              <li><a href="/tutor/alumnos" class="sidebar__link">Mis Alumnos</a></li>
+              <li><a href="/tutor/mensajes" class="sidebar__link activo">Mensajes</a></li>
+            </ul>
+          </nav>
+    </aside>
+
+    <main class="contenido">
+      <div class="bloque-titulo">
+        <h1>Bandeja de Mensajes</h1>
+        <p>Comunicación directa con alumnos y empresas</p>
+      </div>
+
+      <div class="mensajes-grid">
+        <div class="lista-chats">
+          <div class="chat-item activo">
+            <strong>Ana García (Alumno)</strong>
+            <p style="font-size: 0.8rem; color: #718096; margin: 0;">¿Cuándo es la entrega...?</p>
+          </div>
+          <div class="chat-item">
+            <strong>TechStart S.L. (Empresa)</strong>
+            <p style="font-size: 0.8rem; color: #718096; margin: 0;">Convenio firmado correctamente.</p>
+          </div>
+        </div>
+        <div class="ventana-chat">
+          <div class="msj-placeholder">
+            <p>Selecciona una conversación para leer los mensajes.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

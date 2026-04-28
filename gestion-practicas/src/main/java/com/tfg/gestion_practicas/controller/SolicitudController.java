@@ -13,6 +13,8 @@ import com.tfg.gestion_practicas.repository.AlumnoRepository;
 import com.tfg.gestion_practicas.services.OfertaService;
 import com.tfg.gestion_practicas.services.SolicitudService;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/solicitudes")
 public class SolicitudController {
@@ -27,33 +29,35 @@ public class SolicitudController {
     private AlumnoRepository alumnoRepository;
 
     @PostMapping("/crear")
-    public String crearSolicitud(@RequestParam("ofertaId") Long ofertaId) {
+    public String crearSolicitud(@RequestParam("ofertaId") Long ofertaId,
+                                  Principal principal) { // ✅ CORRECCIÓN: usamos el alumno logueado
 
         // Buscar la oferta por su id
         Oferta oferta = ofertaService.obtenerPorId(ofertaId);
-
         if (oferta == null) {
             return "redirect:/ofertas?error=oferta-no-existe";
         }
 
-        // Alumno de prueba temporal
-        Alumno alumno = alumnoRepository.findById(1L).orElse(null);
+        // ✅ CORRECCIÓN: antes usaba findById(1L) hardcodeado.
+        // Ahora buscamos el alumno real según el usuario autenticado.
+        if (principal == null) return "redirect:/login";
 
+        Alumno alumno = alumnoRepository.findByUsuarioCorreo(principal.getName()).orElse(null);
         if (alumno == null) {
             return "redirect:/ofertas?error=alumno-no-existe";
         }
 
-        // Crear la solicitud
+        // Crear la solicitud (estado y fecha los asigna SolicitudService automáticamente)
         Solicitud solicitud = new Solicitud();
         solicitud.setOferta(oferta);
         solicitud.setAlumno(alumno);
-        solicitud.setMensaje("Solicitud enviada desde la plataforma");
+        // El mensaje, estado y fecha los gestiona SolicitudService.crearSolicitud()
 
         try {
             solicitudService.crearSolicitud(solicitud);
             return "redirect:/ofertas?exito";
         } catch (RuntimeException e) {
-            return "redirect:/ofertas?error";
+            return "redirect:/ofertas?error=" + e.getMessage();
         }
     }
 }

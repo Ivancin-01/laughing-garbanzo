@@ -4,21 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FP Connect — Registro</title>
- 
-  <!-- Mismas fuentes que la landing -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
- 
-  <!-- Normalize -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
- 
+
   <link rel="stylesheet" th:href="@{/css/stylesRegistro.css}">
+
+  <style>
+    /* Transición suave al mostrar/ocultar secciones de rol */
+    #seccionAlumno,
+    #seccionTutor,
+    #seccionTutorCentro {
+      transition: opacity 0.3s ease;
+    }
+  </style>
 </head>
 <body>
- 
-  <!-- =====================================================
-       NAVBAR — igual que en la landing
-       ===================================================== -->
+
+  <!-- NAVBAR -->
   <nav class="navbar" id="navbar">
     <a th:href="@{/}" class="navbar__logo">
       <span class="logo-fp">FP</span><span class="logo-connect">Connect</span>
@@ -27,21 +32,16 @@
       <li><a th:href="@{/}">← Volver al inicio</a></li>
     </ul>
   </nav>
- 
- 
-  <!-- =====================================================
-       MAIN: formulario centrado en pantalla
-       ===================================================== -->
+
   <main class="registro-main">
- 
     <div class="registro-card">
- 
+
       <!-- Cabecera -->
       <div class="registro-cabecera">
         <h1>Crear cuenta</h1>
         <p>Rellena los datos para registrarte en FP Connect</p>
       </div>
- 
+
       <!-- Mensajes Thymeleaf -->
       <div th:if="${param.exito}" class="mensaje mensaje--exito">
         ✅ ¡Usuario registrado con éxito!
@@ -49,33 +49,27 @@
       <div th:if="${param.error}" class="mensaje mensaje--error">
         ❌ Ha ocurrido un error al registrar. Inténtalo de nuevo.
       </div>
- 
-      <!-- ===================================================
-           FORMULARIO
-           th:action y method igual que en tu código original
-           =================================================== -->
+
       <form th:action="@{/usuarios/registrar}" method="post" id="formRegistro" novalidate>
- 
+
         <!-- BLOQUE 1: Datos de acceso -->
         <fieldset class="bloque">
           <legend class="bloque__titulo">Datos de acceso</legend>
- 
+
           <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" placeholder="ej: ana.garcia" required>
             <span class="error-msg" id="err-username"></span>
           </div>
- 
+
           <div class="form-fila">
             <div class="form-group">
               <label for="correo">Email</label>
               <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com" required>
               <span class="error-msg" id="err-correo"></span>
             </div>
- 
             <div class="form-group">
               <label for="pwd">Contraseña</label>
-              <!-- Wrapper para poner el botón de ojo dentro del input -->
               <div class="input-wrapper">
                 <input type="password" id="pwd" name="pwd" placeholder="Mínimo 6 caracteres" required>
                 <button type="button" id="btnOjo" class="btn-ojo" title="Mostrar u ocultar contraseña">👁</button>
@@ -83,46 +77,38 @@
               <span class="error-msg" id="err-pwd"></span>
             </div>
           </div>
- 
+
         </fieldset>
- 
- 
+
         <!-- BLOQUE 2: Datos personales -->
         <fieldset class="bloque">
           <legend class="bloque__titulo">Datos personales</legend>
- 
+
           <div class="form-fila">
             <div class="form-group">
               <label for="nombre">Nombre</label>
               <input type="text" id="nombre" name="nombre" placeholder="Ana" required>
               <span class="error-msg" id="err-nombre"></span>
             </div>
- 
             <div class="form-group">
               <label for="apellidos">Apellidos</label>
               <input type="text" id="apellidos" name="apellidos" placeholder="García López" required>
               <span class="error-msg" id="err-apellidos"></span>
             </div>
           </div>
- 
+
           <div class="form-group form-group--mitad">
             <label for="fNac">Fecha de nacimiento</label>
             <input type="date" id="fNac" name="fNac" required>
             <span class="error-msg" id="err-fNac"></span>
           </div>
- 
+
         </fieldset>
- 
- 
+
         <!-- BLOQUE 3: Rol -->
         <fieldset class="bloque">
           <legend class="bloque__titulo">Rol en la plataforma</legend>
- 
-          <!--
-            Cuatro botones visuales para elegir el rol.
-            Al hacer clic, JS marca el botón y actualiza el select oculto de abajo.
-            El select oculto es el que envía el dato a Thymeleaf/Spring.
-          -->
+
           <div class="roles-grid" id="rolesGrid">
             <button type="button" class="rol-btn" data-rol="ALUMNO">
               <span>🎓</span> Alumno
@@ -133,26 +119,29 @@
             <button type="button" class="rol-btn" data-rol="TUTOR">
               <span>👨‍🏫</span> Tutor
             </button>
+            <button type="button" class="rol-btn" data-rol="TUTOR_CENTRO">
+              <span>🏫</span> Tutor Centro
+            </button>
           </div>
- 
-          <!-- Select oculto: solo sirve para enviar el valor al servidor -->
+
+          <!-- Select oculto para enviar el valor al servidor -->
           <select name="rol" id="rolSelect" required style="display:none;">
             <option value="">-- Selecciona un rol --</option>
             <option value="ALUMNO">Alumno</option>
             <option value="EMPRESA">Empresa</option>
             <option value="TUTOR">Tutor</option>
+            <option value="TUTOR_CENTRO">Tutor Centro</option>
+            <option value="ADMIN">Administrador</option>
           </select>
- 
+
           <span class="error-msg" id="err-rol"></span>
- 
+
         </fieldset>
- 
- 
-        <!-- BLOQUE 4: Datos de alumno — solo visible si el rol es ALUMNO -->
-        <!-- JS añade/quita la clase "seccion-visible" para mostrarlo u ocultarlo -->
-        <fieldset class="bloque seccion-alumno" id="seccionAlumno">
+
+        <!-- BLOQUE 4: Datos de alumno — oculto por defecto -->
+        <fieldset class="bloque" id="seccionAlumno" style="display:none; opacity:0;">
           <legend class="bloque__titulo">Datos del alumno</legend>
- 
+
           <div class="form-fila">
             <div class="form-group">
               <label for="matricula">Especialidad</label>
@@ -162,74 +151,75 @@
                 <option value="Administracion">Administración</option>
                 <option value="Peluqueria">Peluquería</option>
               </select>
+              <span class="error-msg" id="err-matricula"></span>
             </div>
- 
             <div class="form-group">
               <label for="dni">DNI</label>
               <input type="text" id="dni" name="dni" placeholder="12345678A">
               <span class="error-msg" id="err-dni"></span>
             </div>
           </div>
- 
+
         </fieldset>
 
-        <fieldset class="bloque seccion-tutor" id="seccionTutor">
-          <legend class="bloque__titulo">Datos del Tutor</legend>
- 
+        <!-- BLOQUE 5: Datos de tutor — oculto por defecto -->
+        <fieldset class="bloque" id="seccionTutor" style="display:none; opacity:0;">
+          <legend class="bloque__titulo">Datos del tutor</legend>
+
           <div class="form-fila">
             <div class="form-group">
-              <label for="matriculaTutor">Especialidad</label>
-              <select name="matriculaTutor" id="matriculaTutor">
-                <option value="">-- Selecciona especialidad --</option>
-                <option value="Informatica">Informática</option>
-                <option value="Administracion">Administración</option>
-                <option value="Peluqueria">Peluquería</option>
-              </select>
+              <label for="departamento">Departamento</label>
+              <input type="text" id="departamento" name="departamento" placeholder="Ej: Informática">
             </div>
- 
             <div class="form-group">
-              <label for="telefono">Codigo de Profesor</label>
-              <input type="text" id="telefono" name="telefono" placeholder="123121313">
-              <span class="error-msg" id="err-telefono"></span>
+              <label for="centroEducativo">Centro Educativo</label>
+              <input type="text" id="centroEducativo" name="centroEducativo" placeholder="Ej: IES García Lorca">
             </div>
           </div>
- 
+
+          <div class="form-group form-group--mitad">
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono" placeholder="600123456">
+          </div>
+
         </fieldset>
 
-        <fieldset class="bloque seccion-empresa" id="seccionEmpresa">
-          <legend class="bloque__titulo">Datos de la Empresa</legend>
- 
+        <!-- BLOQUE 6: Datos de tutor centro — oculto por defecto -->
+        <fieldset class="bloque" id="seccionTutorCentro" style="display:none; opacity:0;">
+          <legend class="bloque__titulo">Datos del tutor de centro</legend>
+
           <div class="form-fila">
             <div class="form-group">
-              <label for="matriculaEmpresa">Especialidad</label>
-              <select name="matriculaEmpresa" id="matriculaEmpresa">
-                <option value="">-- Selecciona especialidad --</option>
-                <option value="Informatica">Informática</option>
-                <option value="Administracion">Administración</option>
-                <option value="Peluqueria">Peluquería</option>
-              </select>
+              <label for="nombreCentro">Nombre del Centro</label>
+              <input type="text" id="nombreCentro" name="nombreCentro" placeholder="Ej: IES García Lorca">
             </div>
- 
             <div class="form-group">
-              <label for="cif">DNI</label>
-              <input type="text" id="cif" name="cif" placeholder="12345678A">
-              <span class="error-msg" id="err-cif"></span>
+              <label for="telefonoTC">Teléfono</label>
+              <input type="tel" id="telefonoTC" name="telefonoTC" placeholder="600123456">
             </div>
           </div>
- 
+
         </fieldset>
- 
+
+        <!-- Checkbox cuenta activa -->
+        <div class="form-group form-group--checkbox">
+          <label class="checkbox-label">
+            <input type="checkbox" name="activo" checked>
+            <span>Activar cuenta inmediatamente</span>
+          </label>
+        </div>
+
         <!-- Botón enviar -->
         <button type="submit" class="btn-submit">Crear cuenta</button>
- 
+
         <p class="link-login">
           ¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a>
         </p>
- 
+
       </form>
-    </div><!-- fin registro-card -->
+    </div>
   </main>
- 
+
   <script th:src="@{/js/registro.js}"></script>
 </body>
 </html>

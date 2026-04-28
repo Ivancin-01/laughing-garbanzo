@@ -7,11 +7,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tfg.gestion_practicas.model.Usuario;
-import com.tfg.gestion_practicas.model.Alumno; // Asegúrate de importar tu modelo Alumno
+import com.tfg.gestion_practicas.model.Alumno;
 import com.tfg.gestion_practicas.model.Rol;
+import com.tfg.gestion_practicas.model.Tutor;
+import com.tfg.gestion_practicas.model.TutorCentro;
+import com.tfg.gestion_practicas.model.Usuario;
+import com.tfg.gestion_practicas.repository.AlumnoRepository;
+import com.tfg.gestion_practicas.repository.TutorRepository;
+import com.tfg.gestion_practicas.repository.TutorCentroRepository;
 import com.tfg.gestion_practicas.repository.UsuarioRepository;
-import com.tfg.gestion_practicas.repository.AlumnoRepository; // Asegúrate de importar tu repositorio Alumno
 
 @Service
 public class UsuarioService {
@@ -19,55 +23,79 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // 1. Inyectamos el repositorio de Alumno
     @Autowired
     private AlumnoRepository alumnoRepository;
+
+    @Autowired
+    private TutorRepository tutorRepository;
+
+    @Autowired
+    private TutorCentroRepository tutorCentroRepository;
 
     @Autowired
     private BCryptPasswordEncoder encoder;
 
     @Transactional
-    public Usuario registrar(Usuario u, String matricula, String dni) { // 2. Añadimos el parámetro matricula
+    public Usuario registrar(Usuario u, String matricula, String dni, String departamento,
+                             String centroEducativo, String telefono, String nombreCentro) {
 
-        if (u == null) {
-            throw new RuntimeException("Los datos del usuario no son válidos");
-        }
+        if (u == null) throw new RuntimeException("Los datos del usuario no son válidos");
+        if (u.getRol() == null) throw new RuntimeException("Debes seleccionar un rol");
 
-        if (usuarioRepository.existsByCorreo(u.getCorreo())) {
+        if (usuarioRepository.existsByCorreo(u.getCorreo()))
             throw new RuntimeException("El correo ya está en uso");
-        }
-
-        if (usuarioRepository.existsByUsername(u.getUsername())) {
+        if (usuarioRepository.existsByUsername(u.getUsername()))
             throw new RuntimeException("El nombre de usuario ya está en uso");
-        }
 
-        if (u.getRol() == null) {
-            throw new RuntimeException("Debes seleccionar un rol");
-        }
-
-        // Encriptamos y preparamos el usuario
+        // Encriptamos contraseña y completamos campos automáticos
         u.setPwd(encoder.encode(u.getPwd()));
         u.setFCreacion(LocalDateTime.now());
         u.setActivo(true);
 
-        // 3. Guardamos primero el Usuario para obtener su ID
-        Usuario usuarioGuardado = usuarioRepository.save(u);
+        // ✅ Guardamos primero el usuario y obtenemos el objeto con ID generado
+        Usuario usuarioGuardado = usuarioRepository.saveAndFlush(u);
 
-        // 4. Lógica para insertar en la tabla Alumno
-        if (usuarioGuardado.getRol() == Rol.ALUMNO) {
-            if (usuarioGuardado.getRol() == Rol.ALUMNO) {
-                Alumno nuevoAlumno = new Alumno();
+        System.out.println("=== REGISTRO: Usuario guardado con ID=" + usuarioGuardado.getId()
+                + " ROL=" + usuarioGuardado.getRol());
 
-                // Vinculamos la relación (esto asigna el ID automáticamente por el @MapsId)
-                nuevoAlumno.setUsuario(usuarioGuardado);
+        // ✅ Creamos la entidad específica según el rol
+        Rol rol = usuarioGuardado.getRol();
 
-                // Datos específicos del formulario
-                nuevoAlumno.setDni(dni);
-                nuevoAlumno.setMatricula(matricula);
+        if (rol == Rol.ALUMNO) {
+            Alumno nuevoAlumno = new Alumno();
+            nuevoAlumno.setUsuario(usuarioGuardado);
+            nuevoAlumno.setDni(dni != null ? dni : "");
+            nuevoAlumno.setMatricula(matricula != null ? matricula : "");
+            nuevoAlumno.setEstadoFct("En búsqueda");
+            alumnoRepository.save(nuevoAlumno);
+            System.out.println("=== REGISTRO: Alumno creado OK");
 
-                // Guardamos
-                alumnoRepository.save(nuevoAlumno);
-            }
+        } else if (rol == Rol.TUTOR) {
+            Tutor nuevoTutor = new Tutor();
+            nuevoTutor.setUsuario(usuarioGuardado);
+            nuevoTutor.setDepartamento(departamento);
+            nuevoTutor.setCentroEducativo(centroEducativo);
+            nuevoTutor.setTelefono(telefono);
+            tutorRepository.save(nuevoTutor);
+            System.out.println("=== REGISTRO: Tutor creado OK");
+
+        } else if (rol == Rol.TUTOR_CENTRO) {
+            // ✅ nombreCentro viene del campo "nombreCentro" del formulario
+            // Si viene vacío, usamos centroEducativo como fallback
+            String centro = (nombreCentro != null && !nombreCentro.trim().isEmpty())
+                    ? nombreCentro
+                    : centroEducativo;
+
+            TutorCentro nuevoTutorCentro = new TutorCentro();
+            nuevoTutorCentro.setUsuario(usuarioGuardado);
+            nuevoTutorCentro.setNombreCentro(centro);
+            nuevoTutorCentro.setTelefono(telefono);
+            tutorCentroRepository.save(nuevoTutorCentro);
+            System.out.println("=== REGISTRO: TutorCentro creado OK - centro=" + centro);
+
+        } else {
+            // EMPRESA, ADMIN — solo se guarda el usuario, sin entidad extra
+            System.out.println("=== REGISTRO: Rol " + rol + " sin entidad extra");
         }
 
         return usuarioGuardado;
