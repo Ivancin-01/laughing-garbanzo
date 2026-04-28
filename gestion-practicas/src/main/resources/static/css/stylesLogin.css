@@ -1,9 +1,9 @@
 /* =====================================================
-   FP Connect — stylesRegistro.css
-   Misma paleta y fuentes que style.css de la landing.
+   FP Connect — stylesLogin.css
+   Misma paleta y fuentes que stylesRegistro.css
    ===================================================== */
 
-/* --- VARIABLES (mismas que en style.css) --- */
+/* --- VARIABLES (mismas que en el resto de la app) --- */
 :root {
   --verde:        #6A8F6A;
   --verde-claro:  #8BAF8B;
@@ -45,7 +45,7 @@ a {
 
 
 /* =====================================================
-   NAVBAR — copiado de style.css para ser consistente
+   NAVBAR — igual que en registro y landing
    ===================================================== */
 .navbar {
   position: fixed;
@@ -91,48 +91,59 @@ a {
 
 
 /* =====================================================
-   MAIN — centra la tarjeta en la pantalla
+   MAIN — centra la tarjeta verticalmente en pantalla
    ===================================================== */
-.registro-main {
-  /* Empuja el contenido para que no tape el navbar fijo */
-  padding-top: 100px;
+.login-main {
+  min-height: 100vh;
+  padding-top: 80px;
   padding-bottom: 60px;
   padding-left: 24px;
   padding-right: 24px;
-
-  /* Centra la tarjeta horizontalmente */
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 }
 
 
 /* =====================================================
    TARJETA DEL FORMULARIO
    ===================================================== */
-.registro-card {
+.login-card {
   background-color: var(--blanco);
   border-radius: 20px;
   border: 1px solid var(--crema-oscura);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   padding: 48px 48px 40px;
   width: 100%;
-  max-width: 720px;
+  max-width: 460px;
+}
+
+/* Avatar / icono superior */
+.login-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: rgba(106, 143, 106, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 20px;
 }
 
 /* Cabecera de la tarjeta */
-.registro-cabecera {
+.login-cabecera {
   text-align: center;
-  margin-bottom: 36px;
+  margin-bottom: 32px;
 }
-.registro-cabecera h1 {
+.login-cabecera h1 {
   font-family: var(--fuente-titulo);
   font-size: 2rem;
   font-weight: 700;
   color: var(--texto);
   margin-bottom: 6px;
 }
-.registro-cabecera p {
+.login-cabecera p {
   font-size: 0.95rem;
   color: var(--texto-suave);
 }
@@ -162,28 +173,6 @@ a {
 
 
 /* =====================================================
-   FIELDSETS — bloques del formulario
-   ===================================================== */
-.bloque {
-  border: none;
-  border-top: 2px solid var(--crema-oscura);
-  padding-top: 24px;
-  margin-bottom: 24px;
-}
-
-.bloque__titulo {
-  font-family: var(--fuente-titulo);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--verde);
-  padding: 0 8px 0 0;
-  margin-bottom: 20px;
-}
-
-
-/* =====================================================
    GRUPOS DE CAMPOS
    ===================================================== */
 .form-group {
@@ -193,30 +182,15 @@ a {
   margin-bottom: 16px;
 }
 
-/* Dos campos en la misma fila */
-.form-fila {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-/* Campo que ocupa solo la mitad del ancho */
-.form-group--mitad {
-  max-width: calc(50% - 8px);
-}
-
 label {
   font-size: 0.88rem;
   font-weight: 700;
   color: var(--texto);
 }
 
-/* Estilos comunes para inputs y selects */
+/* Estilos comunes para inputs */
 input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="date"],
-select {
+input[type="password"] {
   width: 100%;
   padding: 11px 14px;
   border: 1.5px solid var(--crema-oscura);
@@ -229,17 +203,14 @@ select {
   outline: none;
 }
 
-/* Al hacer foco el borde se vuelve verde */
-input:focus,
-select:focus {
+input:focus {
   border-color: var(--verde);
   box-shadow: 0 0 0 3px rgba(106, 143, 106, 0.15);
   background-color: var(--blanco);
 }
 
 /* Campo con error: borde rojo */
-input.campo-error,
-select.campo-error {
+input.campo-error {
   border-color: var(--error);
 }
 
@@ -248,7 +219,7 @@ select.campo-error {
   font-size: 0.8rem;
   color: var(--error);
   font-weight: 700;
-  min-height: 16px; /* Para que no salte el layout cuando aparece */
+  min-height: 16px;
   display: block;
 }
 
@@ -257,13 +228,12 @@ select.campo-error {
    WRAPPER PARA EL OJO DE CONTRASEÑA
    ===================================================== */
 .input-wrapper {
-  position: relative; /* Necesario para posicionar el botón dentro */
+  position: relative;
   display: flex;
   align-items: center;
 }
 
 .input-wrapper input {
-  /* Dejamos sitio a la derecha para el botón del ojo */
   padding-right: 44px;
 }
 
@@ -277,7 +247,6 @@ select.campo-error {
   color: var(--texto-suave);
   padding: 4px;
   line-height: 1;
-  /* Para que el botón no tenga el outline por defecto al hacer clic */
   outline: none;
 }
 .btn-ojo:hover {
@@ -286,94 +255,42 @@ select.campo-error {
 
 
 /* =====================================================
-   SELECTOR DE ROL — los cuatro botones en grid
+   FILA: RECORDARME + OLVIDÉ CONTRASEÑA
    ===================================================== */
-.roles-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.rol-btn {
+.form-opciones {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 16px 8px;
-  border: 2px solid var(--crema-oscura);
-  border-radius: 12px;
-  background-color: var(--crema);
-  font-family: var(--fuente-texto);
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--texto-suave);
-  cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-}
-
-.rol-btn span {
-  font-size: 1.6rem;
-  line-height: 1;
-}
-
-.rol-btn:hover {
-  border-color: var(--verde-claro);
-  background-color: rgba(106, 143, 106, 0.06);
-  color: var(--verde);
-}
-
-/* Clase que JS añade al botón seleccionado */
-.rol-btn.seleccionado {
-  border-color: var(--verde);
-  background-color: rgba(106, 143, 106, 0.12);
-  color: var(--verde);
-}
-
-
-/* =====================================================
-   SECCIÓN ALUMNO — oculta por defecto
-   JS añade la clase "seccion-visible" para mostrarla
-   ===================================================== */
-.seccion-alumno,
-.seccion-tutor,
-.seccion-empresa {
-  display: none;
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-/* JS añade esta clase cuando el rol es ALUMNO */
-.seccion-visible {
-  display: block; /* Primero la mostramos en el DOM */
-  opacity: 1;
-}
-
-
-/* =====================================================
-   CHECKBOX "Cuenta activa"
-   ===================================================== */
-.form-group--checkbox {
-  margin-top: 4px;
+  justify-content: space-between;
   margin-bottom: 24px;
+  gap: 8px;
 }
 
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--texto-suave);
 }
 
-/* Checkbox con tamaño razonable (por defecto es muy pequeño) */
 .checkbox-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--verde); /* Color de la marca al activar */
+  width: 16px;
+  height: 16px;
+  accent-color: var(--verde);
   cursor: pointer;
   flex-shrink: 0;
+}
+
+.link-forgot {
+  font-size: 0.88rem;
+  color: var(--verde);
+  font-weight: 700;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+.link-forgot:hover {
+  color: var(--melocoton);
 }
 
 
@@ -399,7 +316,10 @@ select.campo-error {
   transform: translateY(-2px);
 }
 
-/* Cuando el formulario está siendo enviado, desactivamos el botón */
+.btn-submit:active {
+  transform: translateY(0);
+}
+
 .btn-submit:disabled {
   background-color: var(--crema-oscura);
   color: var(--texto-suave);
@@ -409,19 +329,101 @@ select.campo-error {
 
 
 /* =====================================================
-   ENLACE AL LOGIN
+   SEPARADOR "O continúa con"
    ===================================================== */
-.link-login {
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 20px;
+}
+
+.divider__linea {
+  flex: 1;
+  height: 1px;
+  background-color: var(--crema-oscura);
+}
+
+.divider__texto {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   BOTONES SOCIALES
+   ===================================================== */
+.social-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--crema-oscura);
+  border-radius: 10px;
+  background-color: var(--crema);
+  font-family: var(--fuente-texto);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+}
+
+.social-btn:hover {
+  border-color: var(--verde-claro);
+  background-color: rgba(106, 143, 106, 0.06);
+  color: var(--verde);
+}
+
+
+/* =====================================================
+   ENLACE AL REGISTRO
+   ===================================================== */
+.link-registro {
   text-align: center;
   margin-top: 20px;
   font-size: 0.9rem;
   color: var(--texto-suave);
 }
-.link-login a {
+.link-registro a {
   color: var(--verde);
   font-weight: 700;
-  transition: color 0.2s;
+  transition: color 0.2s ease;
 }
-.link-login a:hover {
+.link-registro a:hover {
   color: var(--melocoton);
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media (max-width: 520px) {
+  .navbar {
+    padding: 14px 20px;
+  }
+
+  .login-card {
+    padding: 36px 24px 32px;
+  }
+
+  .login-cabecera h1 {
+    font-size: 1.6rem;
+  }
+
+  .form-opciones {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }

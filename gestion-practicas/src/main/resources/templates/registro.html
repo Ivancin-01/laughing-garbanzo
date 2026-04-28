@@ -133,9 +133,6 @@
             <button type="button" class="rol-btn" data-rol="TUTOR">
               <span>👨‍🏫</span> Tutor
             </button>
-            <button type="button" class="rol-btn" data-rol="ADMIN">
-              <span>🛡️</span> Admin
-            </button>
           </div>
  
           <!-- Select oculto: solo sirve para enviar el valor al servidor -->
@@ -144,7 +141,6 @@
             <option value="ALUMNO">Alumno</option>
             <option value="EMPRESA">Empresa</option>
             <option value="TUTOR">Tutor</option>
-            <option value="ADMIN">Administrador</option>
           </select>
  
           <span class="error-msg" id="err-rol"></span>
@@ -176,21 +172,58 @@
           </div>
  
         </fieldset>
+
+        <fieldset class="bloque seccion-tutor" id="seccionTutor">
+          <legend class="bloque__titulo">Datos del Tutor</legend>
  
+          <div class="form-fila">
+            <div class="form-group">
+              <label for="matriculaTutor">Especialidad</label>
+              <select name="matriculaTutor" id="matriculaTutor">
+                <option value="">-- Selecciona especialidad --</option>
+                <option value="Informatica">Informática</option>
+                <option value="Administracion">Administración</option>
+                <option value="Peluqueria">Peluquería</option>
+              </select>
+            </div>
  
-        <!-- Checkbox cuenta activa -->
-        <div class="form-group form-group--checkbox">
-          <label class="checkbox-label">
-            <input type="checkbox" name="activo" checked>
-            <span>Activar cuenta inmediatamente</span>
-          </label>
-        </div>
+            <div class="form-group">
+              <label for="telefono">Codigo de Profesor</label>
+              <input type="text" id="telefono" name="telefono" placeholder="123121313">
+              <span class="error-msg" id="err-telefono"></span>
+            </div>
+          </div>
+ 
+        </fieldset>
+
+        <fieldset class="bloque seccion-empresa" id="seccionEmpresa">
+          <legend class="bloque__titulo">Datos de la Empresa</legend>
+ 
+          <div class="form-fila">
+            <div class="form-group">
+              <label for="matriculaEmpresa">Especialidad</label>
+              <select name="matriculaEmpresa" id="matriculaEmpresa">
+                <option value="">-- Selecciona especialidad --</option>
+                <option value="Informatica">Informática</option>
+                <option value="Administracion">Administración</option>
+                <option value="Peluqueria">Peluquería</option>
+              </select>
+            </div>
+ 
+            <div class="form-group">
+              <label for="cif">DNI</label>
+              <input type="text" id="cif" name="cif" placeholder="12345678A">
+              <span class="error-msg" id="err-cif"></span>
+            </div>
+          </div>
+ 
+        </fieldset>
  
         <!-- Botón enviar -->
         <button type="submit" class="btn-submit">Crear cuenta</button>
  
         <p class="link-login">
-          ¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a>
+          ¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a>
         </p>
  
       </form>

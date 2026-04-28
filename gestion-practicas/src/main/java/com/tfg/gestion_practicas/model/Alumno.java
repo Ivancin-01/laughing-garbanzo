@@ -2,6 +2,7 @@ package com.tfg.gestion_practicas.model;
 
 import java.util.List;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -15,6 +16,7 @@ import lombok.*;
 public class Alumno {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; 
 
     @NotBlank
@@ -31,13 +33,14 @@ public class Alumno {
     private String ciudad; 
 
     private String cvUrl;
-    
-    private String nombre;
-    
-    private String email;
+
+    private String estadoFct = "PENDIENTE"; // Se le introduce "PENDIENTE" como valor por defecto.
+    private Integer horasFct;
+    private String empresaFct;
 
     // Configuración correcta de la relación 1:1
-    @OneToOne
+    @Valid
+    @OneToOne(cascade = CascadeType.ALL)
     @MapsId // IMPORTANTE: Esto dice que el ID de esta tabla es el ID de la tabla Usuario
     @JoinColumn(name = "usuario_id") // Nombre de la columna en Supabase
     private Usuario usuario;

@@ -5,6 +5,8 @@ import com.tfg.gestion_practicas.model.Usuario;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -15,5 +17,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByUsername(String username);
 
     boolean existsByCorreo(String correo);
-    boolean existsByUsername(String username); 
+    boolean existsByUsername(String username);
+    @Query("SELECT u FROM Usuario u WHERE u.correo = :login OR u.username = :login")
+    Optional<Usuario> encontrarPorEmailONombre(@Param("login") String login); 
 }
