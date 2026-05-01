@@ -38,7 +38,7 @@ public class Usuario {
 
     @NotBlank(message = "El nombre de usuario es obligatorio")
     @Size(max = 50)
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String username;
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 100)
@@ -51,7 +51,7 @@ public class Usuario {
     private LocalDate fNac;
     @NotBlank(message = "El nombre es obligatorio")
     @Email(message = "Formato de email invalido")
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String correo;
     @NotBlank
     private String pwd;
@@ -67,5 +67,8 @@ public class Usuario {
     // En Usuario.java
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Alumno alumno;
-    
+
+    // Relación con empresas.
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private Empresa empresa;
 }

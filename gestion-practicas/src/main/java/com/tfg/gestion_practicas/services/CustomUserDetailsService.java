@@ -10,8 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.tfg.gestion_practicas.repository.AlumnoRepository;
-
+// import com.tfg.gestion_practicas.repository.AlumnoRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -35,9 +34,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                         "No se encontró ningún usuario con: " + input));
 
         return User.builder()
-                .username(user.getCorreo())   // Usamos el correo como identificador interno
+                .username(user.getCorreo()) // Usamos el correo como identificador interno
                 .password(user.getPwd())
-                .roles(user.getRol().name())  // Genera "ROLE_ALUMNO", "ROLE_TUTOR", etc.
+                .roles(user.getRol().name()) // Genera "ROLE_ALUMNO", "ROLE_TUTOR", etc.
                 .build();
     }
 }
