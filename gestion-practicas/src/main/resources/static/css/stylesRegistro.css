@@ -5,19 +5,19 @@
 
 /* --- VARIABLES (mismas que en style.css) --- */
 :root {
-  --verde:        #6A8F6A;
-  --verde-claro:  #8BAF8B;
-  --melocoton:    #F4A87C;
-  --crema:        #FAF7F2;
+  --verde: #6A8F6A;
+  --verde-claro: #8BAF8B;
+  --melocoton: #F4A87C;
+  --crema: #FAF7F2;
   --crema-oscura: #EDE8DF;
-  --texto:        #2C2C2C;
-  --texto-suave:  #666666;
-  --blanco:       #FFFFFF;
-  --error:        #d9534f;
-  --exito:        #5a9e6f;
+  --texto: #2C2C2C;
+  --texto-suave: #666666;
+  --blanco: #FFFFFF;
+  --error: #d9534f;
+  --exito: #5a9e6f;
 
   --fuente-titulo: 'Poppins', sans-serif;
-  --fuente-texto:  'Lato', sans-serif;
+  --fuente-texto: 'Lato', sans-serif;
 }
 
 /* --- RESET BÁSICO --- */
@@ -27,7 +27,9 @@
   padding: 0;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   font-family: var(--fuente-texto);
@@ -60,7 +62,7 @@ a {
   background-color: rgba(250, 247, 242, 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(106, 143, 106, 0.15);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
 .navbar__logo {
@@ -68,14 +70,21 @@ a {
   font-size: 1.4rem;
   font-weight: 700;
 }
-.logo-fp      { color: var(--verde); }
-.logo-connect { color: var(--melocoton); }
+
+.logo-fp {
+  color: var(--verde);
+}
+
+.logo-connect {
+  color: var(--melocoton);
+}
 
 .navbar__menu {
   list-style: none;
   display: flex;
   gap: 8px;
 }
+
 .navbar__menu a {
   font-size: 0.9rem;
   font-weight: 700;
@@ -84,6 +93,7 @@ a {
   border-radius: 8px;
   transition: color 0.2s ease, background-color 0.2s ease;
 }
+
 .navbar__menu a:hover {
   color: var(--verde);
   background-color: rgba(106, 143, 106, 0.08);
@@ -125,6 +135,7 @@ a {
   text-align: center;
   margin-bottom: 36px;
 }
+
 .registro-cabecera h1 {
   font-family: var(--fuente-titulo);
   font-size: 2rem;
@@ -132,6 +143,7 @@ a {
   color: var(--texto);
   margin-bottom: 6px;
 }
+
 .registro-cabecera p {
   font-size: 0.95rem;
   color: var(--texto-suave);
@@ -149,11 +161,13 @@ a {
   margin-bottom: 24px;
   text-align: center;
 }
+
 .mensaje--exito {
   background-color: rgba(90, 158, 111, 0.1);
   color: var(--exito);
   border: 1px solid rgba(90, 158, 111, 0.3);
 }
+
 .mensaje--error {
   background-color: rgba(217, 83, 79, 0.1);
   color: var(--error);
@@ -248,7 +262,8 @@ select.campo-error {
   font-size: 0.8rem;
   color: var(--error);
   font-weight: 700;
-  min-height: 16px; /* Para que no salte el layout cuando aparece */
+  min-height: 16px;
+  /* Para que no salte el layout cuando aparece */
   display: block;
 }
 
@@ -257,7 +272,8 @@ select.campo-error {
    WRAPPER PARA EL OJO DE CONTRASEÑA
    ===================================================== */
 .input-wrapper {
-  position: relative; /* Necesario para posicionar el botón dentro */
+  position: relative;
+  /* Necesario para posicionar el botón dentro */
   display: flex;
   align-items: center;
 }
@@ -280,6 +296,7 @@ select.campo-error {
   /* Para que el botón no tenga el outline por defecto al hacer clic */
   outline: none;
 }
+
 .btn-ojo:hover {
   color: var(--verde);
 }
@@ -335,6 +352,20 @@ select.campo-error {
    SECCIÓN ALUMNO — oculta por defecto
    JS añade la clase "seccion-visible" para mostrarla
    ===================================================== */
+.seccion-rol {
+  display: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.seccion-rol.activa {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
 .seccion-alumno,
 .seccion-tutor,
 .seccion-empresa {
@@ -345,7 +376,8 @@ select.campo-error {
 
 /* JS añade esta clase cuando el rol es ALUMNO */
 .seccion-visible {
-  display: block; /* Primero la mostramos en el DOM */
+  display: block;
+  /* Primero la mostramos en el DOM */
   opacity: 1;
 }
 
@@ -371,7 +403,8 @@ select.campo-error {
 .checkbox-label input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  accent-color: var(--verde); /* Color de la marca al activar */
+  accent-color: var(--verde);
+  /* Color de la marca al activar */
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -417,11 +450,13 @@ select.campo-error {
   font-size: 0.9rem;
   color: var(--texto-suave);
 }
+
 .link-login a {
   color: var(--verde);
   font-weight: 700;
   transition: color 0.2s;
 }
+
 .link-login a:hover {
   color: var(--melocoton);
 }

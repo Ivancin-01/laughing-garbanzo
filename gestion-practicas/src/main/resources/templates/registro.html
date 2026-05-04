@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FP Connect — Registro</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+    rel="stylesheet">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
 
@@ -21,6 +23,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- NAVBAR -->
@@ -139,7 +142,7 @@
         </fieldset>
 
         <!-- BLOQUE 4: Datos de alumno — oculto por defecto -->
-        <fieldset class="bloque" id="seccionAlumno" style="display:none; opacity:0;">
+        <fieldset class="bloque seccion-rol" id="seccionAlumno">
           <legend class="bloque__titulo">Datos del alumno</legend>
 
           <div class="form-fila">
@@ -163,7 +166,7 @@
         </fieldset>
 
         <!-- BLOQUE 5: Datos de tutor — oculto por defecto -->
-        <fieldset class="bloque" id="seccionTutor" style="display:none; opacity:0;">
+        <fieldset class="bloque seccion-rol" id="seccionTutor">
           <legend class="bloque__titulo">Datos del tutor</legend>
 
           <div class="form-fila">
@@ -185,7 +188,7 @@
         </fieldset>
 
         <!-- BLOQUE 6: Datos de tutor centro — oculto por defecto -->
-        <fieldset class="bloque" id="seccionTutorCentro" style="display:none; opacity:0;">
+        <fieldset class="bloque seccion-rol" id="seccionTutorCentro">
           <legend class="bloque__titulo">Datos del tutor de centro</legend>
 
           <div class="form-fila">
@@ -201,13 +204,50 @@
 
         </fieldset>
 
-        <!-- Checkbox cuenta activa -->
-        <div class="form-group form-group--checkbox">
-          <label class="checkbox-label">
-            <input type="checkbox" name="activo" checked>
-            <span>Activar cuenta inmediatamente</span>
-          </label>
-        </div>
+        <fieldset class="bloque seccion-rol" id="seccionEmpresa">
+          <legend class="bloque__titulo">Datos de empresa</legend>
+
+          <div class="form-fila">
+            <div class="form-group">
+              <label for="cif">CIF</label>
+              <input type="text" id="cif" name="cif" placeholder="B12345678">
+              <span class="error-msg" id="err-cif"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="nombreEmpresa">Nombre de la empresa</label>
+              <input type="text" id="nombreEmpresa" name="nombreEmpresa" placeholder="Ej: Tech Solutions SL">
+              <span class="error-msg" id="err-nombreEmpresa"></span>
+            </div>
+          </div>
+
+          <div class="form-fila">
+            <div class="form-group">
+              <label for="sector">Sector</label>
+              <input type="text" id="sector" name="sector" placeholder="Ej: Informática">
+              <span class="error-msg" id="err-sector"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="ciudad">Ciudad</label>
+              <input type="text" id="ciudad" name="ciudad" placeholder="Ej: Madrid">
+              <span class="error-msg" id="err-ciudad"></span>
+            </div>
+          </div>
+
+          <div class="form-fila">
+            <div class="form-group">
+              <label for="telefonoEmpresa">Teléfono opcional</label>
+              <input type="tel" id="telefonoEmpresa" name="telefonoEmpresa" placeholder="600123456">
+            </div>
+
+            <div class="form-group">
+              <label for="web">Web opcional</label>
+              <input type="text" id="web" name="web" placeholder="https://empresa.com">
+            </div>
+          </div>
+
+        </fieldset>
 
         <!-- Botón enviar -->
         <button type="submit" class="btn-submit">Crear cuenta</button>
@@ -222,4 +262,5 @@
 
   <script th:src="@{/js/registro.js}"></script>
 </body>
+
 </html>
