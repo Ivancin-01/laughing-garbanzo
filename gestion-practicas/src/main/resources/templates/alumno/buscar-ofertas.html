@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Ofertas | FP Connect</title>
+    <!-- Mantenemos tus estilos base -->
+    <link rel="stylesheet" th:href="@{/css/alumno/styles.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        /* 1. ANULAR EL FANTASMA SUPERIOR */
+        /* Esa franja verde con texto blanco se llama .sidebar-nav dentro del nav. La borramos: */
+        header nav .sidebar-nav,
+        header nav .sidebar-link,
+        header nav i:not(.bi-list) {
+            display: none !important;
+        }
+
+        /* 2. REPARAR EL SIDEBAR (Cuerpo lateral) */
+        /* Tu imagen image_3c9ee0.png muestra el lateral vacío. Vamos a forzarlo: */
+        aside,
+        .sidebar {
+            background-color: #6d8e6d !important;
+            /* Verde oscuro */
+            min-width: 250px !important;
+            display: block !important;
+            min-height: 100vh;
+        }
+
+        /* Forzamos que los elementos internos del aside se vean */
+        aside * {
+            display: flex !important;
+            color: white !important;
+            background-color: transparent !important;
+            visibility: visible !important;
+        }
+
+        /* 3. LIMPIEZA DE FONDO (El error del blanco) */
+        body {
+            margin: 0;
+            background-color: #f9f9f2 !important;
+        }
+
+        /* Anulamos el fondo blanco que tu styles.css le da a todos los divs */
+        .page-content div:not(.oferta-card) {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* 4. TARJETAS DE OFERTAS */
+        .oferta-card {
+            background-color: white !important;
+            padding: 25px !important;
+            border-radius: 12px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+            display: block !important;
+            border: 1px solid #eee !important;
+        }
+
+        .main-layout {
+            display: flex;
+        }
+
+        /* Estado colapsado (oculto) */
+        aside.collapsed {
+            margin-left: -260px !important;
+            /* Lo mueve fuera de la pantalla */
+            transition: all 0.3s ease;
+        }
+
+        /* Estado normal (visible) */
+        aside {
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        /* Ajuste del contenido principal cuando se oculta el sidebar */
+        aside.collapsed+main {
+            margin-left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar Superior -->
+    <header>
+        <div th:replace="~{alumno/dashboard :: nav}"></div>
+    </header>
+
+    <div class="main-layout">
+        <!-- Sidebar Izquierdo -->
+        <aside th:replace="~{alumno/dashboard :: aside}"></aside>
+
+        <!-- Contenido Central -->
+        <main class="page-content" style="flex: 1; padding: 40px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                <h2 style="color: #4a6d4a; margin: 0; font-family: sans-serif;">Ofertas Disponibles</h2>
+
+                <!-- Buscador -->
+                <div
+                    style="background: white; border-radius: 25px; padding: 5px 15px; border: 1px solid #ddd; display: flex; margin-top: 60px;">
+                    <form th:action="@{/ofertas}" method="get" style="display: flex;">
+                        <input type="text" name="buscar" th:value="${query}" placeholder="Buscar puesto..."
+                            style="border: none; outline: none; padding: 8px;">
+                        <button type="submit" style="background: none; border: none; color: #7ea381;">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Listado de Ofertas -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px;">
+                <div th:each="oferta : ${ofertas}" class="oferta-card">
+                    <h3 th:text="${oferta.titulo}" style="margin: 0; color: #333;">Desarrollador Web</h3>
+                    <div style="margin: 15px 0;">
+                        <p style="color: #7ea381; font-weight: bold; margin: 5px 0;">
+                            <i class="bi bi-building"></i> <span th:text="${oferta.empresa?.nombre}">Empresa</span>
+                        </p>
+                        <p style="color: #666; margin: 5px 0;">
+                            <i class="bi bi-geo-alt"></i> <span th:text="${oferta.modalidad}">Presencial</span>
+                        </p>
+                    </div>
+                    <a th:href="@{/ofertas/detalle/{id}(id=${oferta.id})}"
+                        style="color: #4a90e2; text-decoration: none; font-weight: bold; font-size: 0.9rem;">
+                        Ver detalles de la oferta →
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Script para controlar el Sidebar -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const sidebar = document.querySelector('aside'); // Selecciona el sidebar
+            const toggleBtn = document.querySelector('.btn-toggle'); // El botón del nav
+            const mainContent = document.querySelector('main');
+
+            if (toggleBtn && sidebar) {
+                toggleBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    // Alterna la clase 'active' o 'collapsed' según use tu CSS
+                    sidebar.classList.toggle('collapsed');
+
+                    // Si tu CSS usa 'active' para mostrarlo, usa:
+                    // sidebar.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

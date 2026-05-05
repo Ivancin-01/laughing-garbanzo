@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tfg.gestion_practicas.model.Alumno;
+import com.tfg.gestion_practicas.model.Empresa;
 import com.tfg.gestion_practicas.model.Rol;
 import com.tfg.gestion_practicas.model.Tutor;
 import com.tfg.gestion_practicas.model.TutorCentro;
 import com.tfg.gestion_practicas.model.Usuario;
 import com.tfg.gestion_practicas.repository.AlumnoRepository;
+import com.tfg.gestion_practicas.repository.EmpresaRepository;
 import com.tfg.gestion_practicas.repository.TutorRepository;
 import com.tfg.gestion_practicas.repository.TutorCentroRepository;
 import com.tfg.gestion_practicas.repository.UsuarioRepository;
@@ -33,14 +35,22 @@ public class UsuarioService {
     private TutorCentroRepository tutorCentroRepository;
 
     @Autowired
+    private EmpresaRepository empresaRepository;
+
+    @Autowired
     private BCryptPasswordEncoder encoder;
 
     @Transactional
     public Usuario registrar(Usuario u, String matricula, String dni, String departamento,
-                             String centroEducativo, String telefono, String nombreCentro) {
+            String centroEducativo, String telefono, String nombreCentro,
+            String cif, String nombreEmpresa, String sector,
+            String ciudad, String telefonoEmpresa, String web,
+            String emailContacto, String descripcion) {
 
-        if (u == null) throw new RuntimeException("Los datos del usuario no son válidos");
-        if (u.getRol() == null) throw new RuntimeException("Debes seleccionar un rol");
+        if (u == null)
+            throw new RuntimeException("Los datos del usuario no son válidos");
+        if (u.getRol() == null)
+            throw new RuntimeException("Debes seleccionar un rol");
 
         if (usuarioRepository.existsByCorreo(u.getCorreo()))
             throw new RuntimeException("El correo ya está en uso");
@@ -93,8 +103,24 @@ public class UsuarioService {
             tutorCentroRepository.save(nuevoTutorCentro);
             System.out.println("=== REGISTRO: TutorCentro creado OK - centro=" + centro);
 
+        } else if (rol == Rol.EMPRESA) {
+            Empresa nuevaEmpresa = new Empresa();
+            nuevaEmpresa.setUsuario(usuarioGuardado);
+            nuevaEmpresa.setCif(cif != null ? cif : "");
+            nuevaEmpresa.setNombre(nombreEmpresa != null ? nombreEmpresa : "");
+            nuevaEmpresa.setSector(sector != null ? sector : "");
+            nuevaEmpresa.setCiudad(ciudad != null ? ciudad : "");
+            // Use provided emailContacto, fallback to user's correo
+            nuevaEmpresa.setEmailContacto((emailContacto != null && !emailContacto.trim().isEmpty()) ? emailContacto
+                    : usuarioGuardado.getCorreo());
+            nuevaEmpresa.setTelefono(telefonoEmpresa);
+            nuevaEmpresa.setWeb(web);
+            nuevaEmpresa.setDescripcion(descripcion);
+            empresaRepository.save(nuevaEmpresa);
+            System.out.println("=== REGISTRO: Empresa creada OK - nombre=" + nombreEmpresa);
+
         } else {
-            // EMPRESA, ADMIN — solo se guarda el usuario, sin entidad extra
+            // ADMIN — solo se guarda el usuario, sin entidad extra
             System.out.println("=== REGISTRO: Rol " + rol + " sin entidad extra");
         }
 

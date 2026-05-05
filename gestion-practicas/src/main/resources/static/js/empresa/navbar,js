@@ -1,0 +1,22 @@
+console.log("Navbar JS cargado correctamente");
+
+function toggleDropdown() {
+    console.log("Click en el perfil detectado");
+    const dropdown = document.getElementById("dropdown-perfil");
+    if (dropdown) {
+        dropdown.classList.toggle("show");
+    }
+}
+
+// Cerrar el menú si se hace clic fuera
+window.onclick = function (event) {
+    if (!event.target.closest('.perfil-trigger')) {
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            let openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}

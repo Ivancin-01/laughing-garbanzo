@@ -44,6 +44,14 @@ public class UsuarioController {
             @RequestParam(required = false) String telefono,
             @RequestParam(required = false) String nombreCentro,
             @RequestParam(required = false) String telefonoTC,
+            @RequestParam(required = false) String cif,
+            @RequestParam(required = false) String nombreEmpresa,
+            @RequestParam(required = false) String sector,
+            @RequestParam(required = false) String ciudad,
+            @RequestParam(required = false) String telefonoEmpresa,
+            @RequestParam(required = false) String web,
+            @RequestParam(required = false) String emailContacto,
+            @RequestParam(required = false) String descripcion,
             Model model) {
 
         // Log para depuración — ver exactamente qué llega del formulario
@@ -70,7 +78,9 @@ public class UsuarioController {
             String telefonoFinal = (rol == Rol.TUTOR_CENTRO) ? telefonoTC : telefono;
 
             usuarioService.registrar(nuevoUsuario, matricula, dni, departamento,
-                                     centroEducativo, telefonoFinal, nombreCentro);
+                    centroEducativo, telefonoFinal, nombreCentro,
+                    cif, nombreEmpresa, sector, ciudad, telefonoEmpresa, web,
+                    emailContacto, descripcion);
 
             return "redirect:/login?registrado";
 

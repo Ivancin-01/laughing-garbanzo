@@ -49,21 +49,29 @@ document.addEventListener('DOMContentLoaded', function () {
   // 3) MOSTRAR/OCULTAR SECCIONES POR ROL
   // ==========================================
   function mostrarSeccionRol(rol) {
+    // 1. Buscamos todas las secciones que tengan la clase 'seccion-rol'
     const secciones = document.querySelectorAll('.seccion-rol');
 
+    // 2. Las ocultamos todas eliminando la clase 'activa'
     secciones.forEach(function (sec) {
       sec.classList.remove('activa');
     });
 
+    // 3. Mapeamos el valor del botón con el ID del fieldset
     let idSeccion = null;
-
     if (rol === 'ALUMNO') idSeccion = 'seccionAlumno';
     if (rol === 'EMPRESA') idSeccion = 'seccionEmpresa';
     if (rol === 'TUTOR') idSeccion = 'seccionTutor';
     if (rol === 'TUTOR_CENTRO') idSeccion = 'seccionTutorCentro';
 
+    // 4. Activamos la sección correspondiente
     if (idSeccion) {
-      document.getElementById(idSeccion).classList.add('activa');
+      const seccionObjetivo = document.getElementById(idSeccion);
+      if (seccionObjetivo) {
+        seccionObjetivo.classList.add('activa');
+      } else {
+        console.error("No se encontró la sección con ID: " + idSeccion);
+      }
     }
   }
 
@@ -154,13 +162,51 @@ document.addEventListener('DOMContentLoaded', function () {
         var sector = document.getElementById('sector');
         var ciudad = document.getElementById('ciudad');
         var telefonoEmpresa = document.getElementById('telefonoEmpresa');
+        var emailContacto = document.getElementById('emailContacto');
         var web = document.getElementById('web');
-        if (!cif.value.trim()) { mostrarError('err-rol', 'El CIF es obligatorio'); hayErrores = true; }
-        if (!nombreEmpresa.value.trim()) { mostrarError('err-rol', 'El nombre de la empresa es obligatorio'); hayErrores = true; }
-        if (!sector.value.trim()) { mostrarError('err-rol', 'El sector es obligatorio'); hayErrores = true; }
-        if (!ciudad.value.trim()) { mostrarError('err-rol', 'La ciudad es obligatoria'); hayErrores = true; }
-        if (!telefonoEmpresa.value.trim()) { mostrarError('err-rol', 'El teléfono es obligatorio'); hayErrores = true; }
-        if (!web.value.trim()) { mostrarError('err-rol', 'La web es obligatoria'); hayErrores = true; }
+
+        if (!cif.value.trim()) {
+          mostrarError('err-cif', 'El CIF es obligatorio');
+          hayErrores = true;
+        } else if (!/^[A-Za-z][0-9]{8}$/.test(cif.value.trim())) {
+          mostrarError('err-cif', 'El CIF debe tener una letra y 8 números');
+          hayErrores = true;
+        }
+
+        if (!nombreEmpresa.value.trim()) {
+          mostrarError('err-nombreEmpresa', 'El nombre es obligatorio');
+          hayErrores = true;
+        } else if (nombreEmpresa.value.trim().length < 2) {
+          mostrarError('err-nombreEmpresa', 'El nombre debe tener al menos 2 caracteres');
+          hayErrores = true;
+        }
+
+        if (!sector.value.trim()) {
+          mostrarError('err-sector', 'El sector es obligatorio');
+          hayErrores = true;
+        }
+
+        if (!ciudad.value.trim()) {
+          mostrarError('err-ciudad', 'La ciudad es obligatoria');
+          hayErrores = true;
+        } else if (ciudad.value.trim().length < 2) {
+          mostrarError('err-ciudad', 'La ciudad debe tener al menos 2 caracteres');
+          hayErrores = true;
+        }
+
+        if (emailContacto && emailContacto.value.trim() && !validarEmail(emailContacto.value.trim())) {
+          mostrarError('err-emailContacto', 'Introduce un email válido');
+          hayErrores = true;
+        }
+
+        // Teléfono es obligatorio según el constraint que falló, y debe tener 9 dígitos
+        if (!telefonoEmpresa.value.trim()) {
+          mostrarError('err-telefonoEmpresa', 'El teléfono es obligatorio');
+          hayErrores = true;
+        } else if (!/^[0-9]{9}$/.test(telefonoEmpresa.value.trim())) {
+          mostrarError('err-telefonoEmpresa', 'El teléfono debe tener 9 dígitos');
+          hayErrores = true;
+        }
       }
 
       if (hayErrores) {

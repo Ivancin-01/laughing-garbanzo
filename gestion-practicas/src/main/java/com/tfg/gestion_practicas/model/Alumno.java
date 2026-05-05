@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Entity
-@Table(name="alumnos")
+@Table(name = "alumnos")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,37 +16,34 @@ import lombok.*;
 public class Alumno {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; 
+    @Column(name = "usuario_id") // Ajustado: ahora el ID en la DB se llama usuario_id
+    private Long id;
 
     @NotBlank
     private String dni;
 
-    // Aquí es donde se guardará lo que elijan en el desplegable (Informatica, etc.)
-    // He cambiado el nombre a 'matricula' para que coincida con el Service, 
-    // pero puedes dejarlo como 'cursoAcademico' si prefieres, solo cámbialo en el Service.
     @NotBlank
-    private String matricula; 
+    private String matricula;
 
     private String centroEducativo;
-
-    private String ciudad; 
-
+    private String ciudad;
     private String cvUrl;
 
-    private String estadoFct = "PENDIENTE"; // Se le introduce "PENDIENTE" como valor por defecto.
+    @Column(name = "estado_fct") // Es buena práctica mapear nombres con snake_case de la DB
+    private String estadoFct = "PENDIENTE";
+
     private Integer horasFct;
     private String empresaFct;
 
-    // Configuración correcta de la relación 1:1
+    // Configuración 1:1 Sincronizada
     @Valid
     @OneToOne(cascade = CascadeType.ALL)
-    @MapsId // IMPORTANTE: Esto dice que el ID de esta tabla es el ID de la tabla Usuario
-    @JoinColumn(name = "usuario_id") // Nombre de la columna en Supabase
+    @MapsId // El ID de Alumno será el mismo ID de Usuario
+    @JoinColumn(name = "usuario_id") // Coincide con la PK de la tabla alumnos
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "tutor_id") // Es buena práctica definir el nombre de la columna FK
+    @JoinColumn(name = "tutor_id")
     private Tutor tutor;
 
     @OneToMany(mappedBy = "alumno")

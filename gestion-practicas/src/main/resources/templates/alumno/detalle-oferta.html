@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Oferta | FP Connect</title>
+    <link rel="stylesheet" th:href="@{/css/alumno/styles.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        /* 1. ELIMINAR EL FANTASMA POR SU CLASE DIRECTA (Visto en Inspector) */
+        /* Esto oculta cualquier nav que tenga la clase sidebar-nav y esté suelto arriba */
+        body>nav.sidebar-nav,
+        .navbar-superior+nav.sidebar-nav {
+            display: none !important;
+            height: 0 !important;
+            visibility: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* 2. ARREGLAR VISIBILIDAD DEL USUARIO (Lucas García) */
+        .navbar-superior {
+            color: #333 !important;
+        }
+
+        .navbar-superior .user-info,
+        .navbar-superior .user-details,
+        .navbar-superior span,
+        .navbar-superior strong {
+            color: #333 !important;
+            display: block !important;
+            /* Para que nombre y rol no se pisen */
+        }
+
+        /* 3. SIDEBAR REAL (Izquierda) */
+        .sidebar {
+            transition: all 0.3s ease !important;
+        }
+
+        .sidebar.collapsed {
+            margin-left: -260px !important;
+        }
+
+        .sidebar * {
+            color: white !important;
+        }
+
+        /* 4. TARJETA DE DETALLE */
+        .detalle-container {
+            background: white !important;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body style="margin: 0; background-color: #f9f9f2;">
+
+    <!-- NAV SUPERIOR -->
+    <nav class="navbar-superior flex-between" th:replace="~{alumno/dashboard :: nav}"
+        style="background-color: white !important; height: 70px !important; border-bottom: 1px solid #ddd !important; display: flex !important; align-items: center !important; padding: 0 20px !important; position: relative; z-index: 1001;">
+    </nav>
+
+    <!-- El "fantasma" suele inyectarse aquí según tu imagen, el CSS de arriba lo matará -->
+
+    <div class="dashboard-container"
+        style="display: flex !important; min-height: 100vh; position: relative; z-index: 1000;">
+
+        <!-- SIDEBAR IZQUIERDO -->
+        <aside class="sidebar" th:replace="~{alumno/dashboard :: aside}"
+            style="background-color: #6d8e6d !important; width: 260px !important; min-width: 260px !important; display: block !important; padding-top: 20px;">
+        </aside>
+
+        <!-- CONTENIDO -->
+        <main style="flex: 1; padding: 40px;">
+            <a th:href="@{/ofertas}"
+                style="text-decoration: none; color: #6d8e6d; font-weight: bold; margin-bottom: 20px; display: inline-block;">
+                <i class="bi bi-arrow-left"></i> Volver al listado
+            </a>
+
+            <div class="detalle-container">
+                <div style="border-bottom: 2px solid #f0f0f0; padding-bottom: 20px; margin-bottom: 20px;">
+                    <span style="color: #6d8e6d; font-weight: bold; text-transform: uppercase;"
+                        th:text="${oferta.empresa?.nombre}">Empresa</span>
+                    <h1 th:text="${oferta.titulo}" style="margin: 10px 0; color: #333;">Título de la oferta</h1>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                    <div><i class="bi bi-geo-alt-fill" style="color: #6d8e6d;"></i> <strong
+                            th:text="${oferta.modalidad}">Modalidad</strong></div>
+                    <div><i class="bi bi-people-fill" style="color: #6d8e6d;"></i> <span
+                            th:text="${oferta.plazas}">0</span> plazas</div>
+                </div>
+
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 10px;">
+                    <h3 style="margin-top: 0;"><i class="bi bi-info-circle"></i> Descripción</h3>
+                    <p th:text="${oferta.descripcion}" style="white-space: pre-line; color: #444;">Descripción...</p>
+                </div>
+
+                <form th:action="@{/alumno/solicitar}" method="post" style="margin-top: 30px;">
+                    <input type="hidden" name="ofertaId" th:value="${oferta.id}">
+                    <button type="submit" th:disabled="${yaSolicitada}"
+                        style="width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: bold; color: white; cursor: pointer; transition: 0.3s;"
+                        th:styleappend="${yaSolicitada ? 'background: #6c757d;' : 'background: #28a745;'}">
+                        <span th:text="${yaSolicitada ? 'Ya estás inscrito' : 'Inscribirme ahora'}"></span>
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const sidebar = document.querySelector('.sidebar');
+            // Buscamos el botón de las 3 rayas (hamburguesa)
+            const btn = document.querySelector('.bi-list')?.closest('button') || document.querySelector('.bi-list')?.parentElement;
+
+            if (btn && sidebar) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    sidebar.classList.toggle('collapsed');
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

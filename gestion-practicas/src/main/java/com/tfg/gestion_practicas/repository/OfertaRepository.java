@@ -8,5 +8,10 @@ import com.tfg.gestion_practicas.model.Oferta;
 
 public interface OfertaRepository extends JpaRepository<Oferta, Long> {
     List<Oferta> findByCiudad(String ciudad);
-    List<Oferta> findByEmpresaId(Long empresaId); // Estos son claves para mostrar todas las ofertas, y filtrar por aquellas ofertas que sean únicas de una empresa.
+
+    List<Oferta> findByEmpresaId(Long empresaId); // Estos son claves para mostrar todas las ofertas, y filtrar por
+                                                  // aquellas ofertas que sean únicas de una empresa.
+
+    List<Oferta> findByTituloContainingIgnoreCaseOrEmpresaNombreContainingIgnoreCase(String titulo,
+            String nombreEmpresa);
 }

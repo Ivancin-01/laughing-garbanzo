@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Dashboard - Empresa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor/styles.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+    <!-- Navbar Superior -->
+    <nav class="navbar-superior flex-between">
+        <div class="nav-izq" style="display: flex; align-items: center; gap: 15px;">
+            <button id="btn-toggle-sidebar" class="btn-toggle" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+        <div class="usuario-nav-container perfil-trigger" onclick="toggleDropdown()">
+            <div class="info-usuario-nav">
+                <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
+                <p class="rol-nav">Empresa Colaboradora</p>
+            </div>
+            <div class="avatar-wrapper">
+                <img th:src="@{/img/default-company.png}" alt="Logo Empresa" class="avatar-nav"
+                    style="border-radius: 4px;">
+            </div>
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/empresa/perfil}"><i class="bi bi-building-gear"></i> <b>Perfil Empresa</b></a>
+                <hr>
+                <a th:href="@{/logout}" class="text-danger" style="color: #d9534f;"><i
+                        class="bi bi-box-arrow-right"></i> <b>Cerrar Sesión</b></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/empresa/dashboard}" class="sidebar-link active">
+                    <i class="bi bi-house-door"></i> Inicio
+                </a>
+                <a th:href="@{/empresa/ofertas}" class="sidebar-link">
+                    <i class="bi bi-megaphone"></i> Mis Ofertas
+                </a>
+                <a th:href="@{/empresa/solicitudes}" class="sidebar-link">
+                    <i class="bi bi-person-lines-fill"></i> Solicitudes Recibidas
+                </a>
+                <a th:href="@{/empresa/alumnos-fct}" class="sidebar-link">
+                    <i class="bi bi-mortarboard"></i> Alumnos en Prácticas
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="contenedor" style="flex: 1; padding: 40px;">
+
+            <!-- Mensaje de éxito al crear oferta -->
+            <div th:if="${param.creada}"
+                style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+                <i class="bi bi-check-circle-fill"></i> ¡La oferta ha sido publicada con éxito!
+            </div>
+
+            <header class="flex-between" style="margin-bottom: 30px;">
+                <div>
+                    <h1>Bienvenido/a al panel de <span th:text="${empresa.nombre}">Empresa</span></h1>
+                    <p>Gestiona tus ofertas de FCT y selecciona a los futuros profesionales.</p>
+                </div>
+                <a th:href="@{/empresa/crear-oferta}" class="btn-dash" style="background-color: #388e3c;">
+                    <i class="bi bi-plus-lg"></i> Publicar Nueva Oferta
+                </a>
+            </header>
+
+            <!-- Widgets de Estadísticas -->
+            <div class="dashboard-grid">
+                <div class="widget">
+                    <div class="widget-icon" style="background: #e3f2fd;">
+                        <i class="bi bi-megaphone" style="color: #1976d2;"></i>
+                    </div>
+                    <div class="widget-info">
+                        <h3>Ofertas Activas</h3>
+                        <p th:text="${ofertasActivas.size()}">0</p>
+                    </div>
+                </div>
+                <div class="widget" style="border: 1px solid #ffc107;">
+                    <div class="widget-icon" style="background: #fff3e0;">
+                        <i class="bi bi-person-plus" style="color: #f57c00;"></i>
+                    </div>
+                    <div class="widget-info">
+                        <h3>Solicitudes Pendientes</h3>
+                        <p th:text="${solicitudesPendientes.size()}" style="color: #e65100; font-weight: bold;">0</p>
+                    </div>
+                </div>
+                <div class="widget">
+                    <div class="widget-icon" style="background: #e8f5e9;">
+                        <i class="bi bi-mortarboard" style="color: #388e3c;"></i>
+                    </div>
+                    <div class="widget-info">
+                        <h3>Alumnos Actuales</h3>
+                        <p th:text="${totalAlumnosFct}">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BLOQUE 1: GESTIÓN DE OFERTAS (CORREGIDO) -->
+            <div class="bloque" style="margin-bottom: 30px;">
+                <div class="flex-between">
+                    <h2><i class="bi bi-list-task"></i> Resumen de Mis Ofertas</h2>
+                    <a th:href="@{/empresa/ofertas}" class="btn-dash">Gestionar todas</a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(ofertasActivas)}" class="vacío"
+                    style="padding: 20px; text-align: center; color: #666;">
+                    <p>No tienes ofertas publicadas actualmente.</p>
+                </div>
+
+                <table th:if="${not #lists.isEmpty(ofertasActivas)}">
+                    <thead>
+                        <tr>
+                            <th>Título de la Oferta</th>
+                            <th>Modalidad</th>
+                            <th>Plazas Totales</th>
+                            <th>Solicitudes</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="oferta : ${ofertasActivas}">
+                            <td>
+                                <strong th:text="${oferta.titulo}">Título Oferta</strong><br>
+                                <!-- Corregido: Uso de abreviación segura para la descripción -->
+                                <small th:if="${oferta.descripcion != null}"
+                                    th:text="${#strings.length(oferta.descripcion) > 60 ? #strings.substring(oferta.descripcion,0,60) + '...' : oferta.descripcion}"
+                                    style="color: #666;"></small>
+                            </td>
+                            <td th:text="${oferta.modalidad}">Presencial</td>
+                            <td th:text="${oferta.plazas}">0</td>
+                            <!-- Corregido: Conteo seguro de la lista de solicitudes -->
+                            <td th:text="${oferta.solicitudes != null ? oferta.solicitudes.size() : 0}">0</td>
+                            <td>
+                                <div style="display: flex; gap: 5px;">
+                                    <a th:href="@{/empresa/ofertas/editar/{id}(id=${oferta.id})}" class="btn-mini"
+                                        title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a th:href="@{/empresa/ofertas/detalles/{id}(id=${oferta.id})}" class="btn-mini"
+                                        title="Ver detalles">Ver</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- BLOQUE 2: SOLICITUDES (CORREGIDO) -->
+            <div class="bloque">
+                <div class="flex-between">
+                    <h2><i class="bi bi-person-badge-fill"></i> Solicitantes Pendientes</h2>
+                    <a th:href="@{/empresa/solicitudes}" class="btn-dash">Ver todas</a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(solicitudesPendientes)}" class="vacío"
+                    style="padding: 20px; text-align: center; color: #666;">
+                    <p>No tienes solicitudes pendientes de revisión.</p>
+                </div>
+
+                <table th:if="${not #lists.isEmpty(solicitudesPendientes)}">
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Oferta Solicitada</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Acciones Rápidas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="solicitud : ${solicitudesPendientes}">
+                            <td>
+                                <strong
+                                    th:text="${solicitud.alumno.usuario.nombre} + ' ' + ${solicitud.alumno.usuario.apellidos}">Nombre
+                                    Alumno</strong><br>
+                                <a th:if="${solicitud.alumno.cvUrl != null}" th:href="${solicitud.alumno.cvUrl}"
+                                    target="_blank" class="text-info" style="font-size: 0.85rem;">
+                                    <i class="bi bi-file-earmark-pdf"></i> Ver CV
+                                </a>
+                            </td>
+                            <td th:text="${solicitud.oferta.titulo}">Título Oferta</td>
+                            <td th:text="${#temporals.format(solicitud.fechaSolicitud, 'dd/MM/yyyy')}">01/01/2024</td>
+                            <td>
+                                <div style="display: flex; gap: 5px;">
+                                    <form th:action="@{/empresa/solicitudes/aceptar}" method="POST">
+                                        <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
+                                        <button type="submit" class="btn-mini"
+                                            style="background-color: #388e3c; color: white; border: none; cursor: pointer;">
+                                            <i class="bi bi-check-lg"></i> Aceptar
+                                        </button>
+                                    </form>
+                                    <form th:action="@{/empresa/solicitudes/rechazar}" method="POST">
+                                        <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
+                                        <button type="submit" class="btn-mini"
+                                            style="background-color: #d9534f; color: white; border: none; cursor: pointer;">
+                                            <i class="bi bi-x-lg"></i> Rechazar
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script th:src="@{/js/tutor/dashboard.js}"></script>
+</body>
+
+</html>

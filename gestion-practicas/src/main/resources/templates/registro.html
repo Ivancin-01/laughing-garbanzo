@@ -18,7 +18,8 @@
     /* Transición suave al mostrar/ocultar secciones de rol */
     #seccionAlumno,
     #seccionTutor,
-    #seccionTutorCentro {
+    #seccionTutorCentro,
+    #seccionEmpresa {
       transition: opacity 0.3s ease;
     }
   </style>
@@ -165,6 +166,8 @@
 
         </fieldset>
 
+
+
         <!-- BLOQUE 5: Datos de tutor — oculto por defecto -->
         <fieldset class="bloque seccion-rol" id="seccionTutor">
           <legend class="bloque__titulo">Datos del tutor</legend>
@@ -209,13 +212,13 @@
 
           <div class="form-fila">
             <div class="form-group">
-              <label for="cif">CIF</label>
+              <label for="cif">CIF *</label>
               <input type="text" id="cif" name="cif" placeholder="B12345678">
               <span class="error-msg" id="err-cif"></span>
             </div>
 
             <div class="form-group">
-              <label for="nombreEmpresa">Nombre de la empresa</label>
+              <label for="nombreEmpresa">Nombre de la empresa *</label>
               <input type="text" id="nombreEmpresa" name="nombreEmpresa" placeholder="Ej: Tech Solutions SL">
               <span class="error-msg" id="err-nombreEmpresa"></span>
             </div>
@@ -223,13 +226,20 @@
 
           <div class="form-fila">
             <div class="form-group">
-              <label for="sector">Sector</label>
-              <input type="text" id="sector" name="sector" placeholder="Ej: Informática">
+              <label for="sector">Sector *</label>
+              <select name="sector" id="sector">
+                <option value="">-- Selecciona sector --</option>
+                <option value="Informatica">Tecnología / Informática</option>
+                <option value="Administracion">Administración y Finanzas</option>
+                <option value="Hosteleria">Hostelería</option>
+                <option value="Sanidad">Sanidad</option>
+                <option value="Otros">Otros</option>
+              </select>
               <span class="error-msg" id="err-sector"></span>
             </div>
 
             <div class="form-group">
-              <label for="ciudad">Ciudad</label>
+              <label for="ciudad">Ciudad *</label>
               <input type="text" id="ciudad" name="ciudad" placeholder="Ej: Madrid">
               <span class="error-msg" id="err-ciudad"></span>
             </div>
@@ -237,14 +247,32 @@
 
           <div class="form-fila">
             <div class="form-group">
-              <label for="telefonoEmpresa">Teléfono opcional</label>
-              <input type="tel" id="telefonoEmpresa" name="telefonoEmpresa" placeholder="600123456">
+              <label for="emailContacto">Email de contacto (RRHH)</label>
+              <input type="email" id="emailContacto" name="emailContacto" placeholder="rrhh@empresa.com">
+              <span class="error-msg" id="err-emailContacto"></span>
             </div>
 
             <div class="form-group">
-              <label for="web">Web opcional</label>
-              <input type="text" id="web" name="web" placeholder="https://empresa.com">
+              <label for="telefonoEmpresa">Teléfono *</label>
+              <input type="tel" id="telefonoEmpresa" name="telefonoEmpresa" placeholder="600123456">
+              <span class="error-msg" id="err-telefonoEmpresa"></span>
             </div>
+          </div>
+
+          <div class="form-fila">
+            <div class="form-group">
+              <label for="web">Web opcional</label>
+              <input type="url" id="web" name="web" placeholder="https://empresa.com">
+              <span class="error-msg" id="err-web"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="descripcion">Descripción de la empresa</label>
+            <textarea id="descripcion" name="descripcion" rows="3"
+              style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--crema-oscura); border-radius: 10px; font-family: var(--fuente-texto); font-size: 0.95rem; color: var(--texto); background-color: var(--crema); outline: none;"
+              placeholder="Cuéntanos brevemente a qué se dedica la empresa..."></textarea>
+            <span class="error-msg" id="err-descripcion"></span>
           </div>
 
         </fieldset>

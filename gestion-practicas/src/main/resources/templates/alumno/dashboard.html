@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Dashboard - Alumno</title>
     <!-- Google Fonts: Poppins para títulos, Lato para texto normal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
     <!-- Normalize: resetea estilos raros entre navegadores -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" th:href="@{/css/alumno/styles.css}">
@@ -15,6 +17,7 @@
     <!-- CDN Bootstrap: Necesario para poder utilizar iconos. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
+
 <body>
     <nav class="navbar-superior flex-between">
         <div class="nav-izq" style="display: flex; align-items: center; gap: 15px;">
@@ -27,7 +30,8 @@
         </div>
         <div class="usuario-nav-container perfil-trigger" onclick="toggleDropdown()">
             <div class="info-usuario-nav">
-                <p class="nombre-nav" th:text="${alumno.usuario.nombre} + ' ' +  ${alumno.usuario.apellidos}">Nombre Alumno</p>
+                <p class="nombre-nav" th:text="${alumno.usuario.nombre} + ' ' +  ${alumno.usuario.apellidos}">Nombre
+                    Alumno</p>
                 <p class="rol-nav">Alumno</p>
             </div>
             <div class="avatar-wrapper">
@@ -37,7 +41,8 @@
                 <a th:href="@{/alumno/perfil}"><i class="bi bi-person-circle"></i> <b>Mi Perfil</b></a>
                 <a th:href="@{/alumno/config}"><i class="bi bi-gear-fill"></i> <b>Configuración</b></a>
                 <hr>
-                <a th:href="@{/logout}" class="text-danger" style="color: #d9534f;"><i class="bi bi-box-arrow-right"></i> <b>Cerrar Sesión</b></a>
+                <a th:href="@{/logout}" class="text-danger" style="color: #d9534f;"><i
+                        class="bi bi-box-arrow-right"></i> <b>Cerrar Sesión</b></a>
             </div>
         </div>
     </nav>
@@ -48,13 +53,13 @@
             </div>
             <nav class="sidebar-nav">
                 <a th:href="@{/alumno/dashboard}" class="sidebar-link active">
-                <i class="bi bi-house-door"></i> Inicio
+                    <i class="bi bi-house-door"></i> Inicio
                 </a>
                 <a th:href="@{/ofertas}" class="sidebar-link">
-                <i class="bi bi-search"></i> Buscar Ofertas
+                    <i class="bi bi-search"></i> Buscar Ofertas
                 </a>
                 <a th:href="@{/alumno/solicitudes}" class="sidebar-link">
-                <i class="bi bi-send"></i> Mis Solicitudes
+                    <i class="bi bi-send"></i> Mis Solicitudes
                 </a>
             </nav>
         </aside>
@@ -71,8 +76,8 @@
                     <span th:text="${progresoPerfil} + '%'">0%</span>
                 </div>
                 <div class="progress-container">
-                    <div class="progress-bar" 
-                    th:style="'width:' + ${progresoPerfil} + '%; background-color:' + (${progresoPerfil} < 100 ? 'var(--melocoton)' : 'var(--verde)')">
+                    <div class="progress-bar"
+                        th:style="'width:' + ${progresoPerfil} + '%; background-color:' + (${progresoPerfil} < 100 ? 'var(--melocoton)' : 'var(--verde)')">
                     </div>
                 </div>
 
@@ -103,8 +108,9 @@
                     <div class="widget-icon"><i class="bi-calendar-event"></i></div>
                     <div class="widget-info">
                         <h3>Estado FCT</h3>
-                        <p th:text="${alumno.estadoFct}" 
-                            th:style="${alumno.estadoFct == 'ACEPTADO' ? 'color: var(--verde)' : 'color: var(--melocoton)'}">Pendiente</p>
+                        <p th:text="${alumno.estadoFct}"
+                            th:style="${alumno.estadoFct == 'ACEPTADO' ? 'color: var(--verde)' : 'color: var(--melocoton)'}">
+                            Pendiente</p>
                     </div>
                 </div>
             </div>
@@ -145,4 +151,5 @@
     </div>
     <script th:src="@{/js/alumno/dashboard.js}"></script>
 </body>
+
 </html>

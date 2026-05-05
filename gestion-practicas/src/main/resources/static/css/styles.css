@@ -1,28 +1,40 @@
+/* RESET PARA EVITAR EL FANTASMA */
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
-    margin: 20px;
+    margin: 0;
+    /* IMPORTANTE: 0 para que no haya huecos blancos */
 }
 
-h1 {
-    color: #333;
+/* Solo las tarjetas tienen fondo blanco, NO todos los divs */
+.oferta-card {
+    background-color: white !important;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-div {
-    background-color: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+/* Quitamos el fondo blanco de los contenedores del menú */
+.dashboard-container div,
+.sidebar div,
+.navbar-superior div {
+    background-color: transparent;
+    margin-bottom: 0;
+    padding: 0;
 }
 
-button {
-    background-color: #007bff;
-    color: white;
+/* Botón de ver detalles */
+.btn-detalle {
+    color: #007bff;
+    text-decoration: underline;
+    font-weight: bold;
+    background: none;
     border: none;
-    padding: 8px 12px;
+    padding: 0;
     cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
 }

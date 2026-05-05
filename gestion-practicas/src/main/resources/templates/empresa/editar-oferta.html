@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FP Connect | Editar Oferta</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/alumno/perfil.css}">
+</head>
+
+<body>
+    <nav class="navbar-superior flex-between">
+        <div class="nav-izq">
+            <a th:href="@{/empresa/ofertas}" class="btn-volver-nav"
+                style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px;">
+                <i class="bi bi-arrow-left"></i> <span>Cancelar y Volver</span>
+            </a>
+        </div>
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+        <div class="usuario-nav-container">
+            <div class="info-usuario-nav">
+                <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
+            </div>
+            <img th:src="@{/img/default-company.png}" class="avatar-nav">
+        </div>
+    </nav>
+
+    <main class="contenedor-perfil" style="margin-top: 40px;">
+        <div class="bloque">
+            <header style="margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                <h2 style="margin:0;"><i class="bi bi-pencil-square"></i> Editar Publicación</h2>
+                <p style="color: #666; margin-top: 5px;">Modifica los detalles de tu oferta de prácticas.</p>
+            </header>
+
+            <form th:action="@{/empresa/ofertas/actualizar}" th:object="${oferta}" method="post" class="perfil-form">
+                <!-- ID oculto para que Hibernate sepa qué registro actualizar -->
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Título de la posición</label>
+                    <input type="text" th:field="*{titulo}" placeholder="Ej: Desarrollador Java Junior (FCT)" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Modalidad</label>
+                    <select th:field="*{modalidad}" class="form-control-custom"
+                        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="Presencial">Presencial</option>
+                        <option value="Remoto">Remoto</option>
+                        <option value="Híbrido">Híbrido</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Plazas disponibles</label>
+                    <input type="number" th:field="*{plazas}" min="1" required>
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Descripción detallada</label>
+                    <textarea th:field="*{descripcion}" rows="6"
+                        style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-family: inherit;"
+                        placeholder="Describe las tareas, requisitos y tecnologías..."></textarea>
+                </div>
+
+                <div style="grid-column: span 2; display: flex; gap: 15px; margin-top: 20px;">
+                    <button type="submit" class="btn-guardar" style="flex: 1;">
+                        <i class="bi bi-cloud-arrow-up-fill"></i> Guardar Cambios
+                    </button>
+                    <a th:href="@{/empresa/ofertas}" class="btn-pdf"
+                        style="flex: 1; text-align: center; text-decoration: none; background: #6c757d; display: flex; align-items: center; justify-content: center; color: white;">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById("dropdown-perfil");
+            if (dropdown) {
+                dropdown.classList.toggle("show");
+            }
+        }
+
+        // Cerrar el menú si se hace clic fuera[cite: 2]
+        window.onclick = function (event) {
+            if (!event.target.closest('.perfil-trigger')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    if (dropdowns[i].classList.contains('show')) {
+                        dropdowns[i].classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

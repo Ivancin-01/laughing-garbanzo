@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Perfil - Empresa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor/styles.css}"> <!-- Reutilizamos tus estilos base -->
+    <link rel="stylesheet" th:href="@{/css/alumno/perfil.css}"> <!-- Para la estructura del perfil -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+    <nav class="navbar-superior flex-between">
+        <div class="nav-izq">
+            <a th:href="@{/empresa/dashboard}" class="btn-volver-nav"
+                style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px;">
+                <i class="bi bi-arrow-left"></i> <span>Volver al Panel</span>
+            </a>
+        </div>
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+        <div class="usuario-nav-container perfil-trigger">
+            <div class="info-usuario-nav">
+                <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
+                <p class="rol-nav">Empresa Colaboradora</p>
+            </div>
+            <div class="avatar-wrapper">
+                <img th:src="@{/img/default-company.png}" alt="Logo" class="avatar-nav">
+            </div>
+        </div>
+    </nav>
+
+    <main class="contenedor-perfil">
+        <!-- Header del Perfil -->
+        <section class="perfil-header bloque">
+            <div class="perfil-info-main">
+                <div class="avatar-grande-container">
+                    <img th:src="@{/img/default-company.png}" class="avatar-perfil">
+                </div>
+                <div class="texto-header">
+                    <h2 th:text="${empresa.nombre}">Nombre de la Empresa</h2>
+                    <p class="ciclo-tag" th:text="${empresa.sector != null ? empresa.sector : 'Sector no definido'}">
+                        Tecnología</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Rápidas -->
+        <section class="perfil-stats">
+            <div class="stat-card">
+                <i class="bi bi-building-check"></i>
+                <div>
+                    <span>CIF</span>
+                    <p th:text="${empresa.cif != null ? empresa.cif : '---'}">A12345678</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="bi bi-geo-alt-fill"></i>
+                <div>
+                    <span>Ubicación</span>
+                    <p th:text="${empresa.ciudad != null ? empresa.ciudad : '---'}">Madrid</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="bi bi-people-fill"></i>
+                <div>
+                    <span>Vacantes</span>
+                    <p th:text="${ofertasActivas.size()}">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Formulario de Edición -->
+        <section class="bloque">
+            <h3><i class="bi bi-pencil-square"></i> Datos de la Empresa</h3>
+            <form class="perfil-form" th:action="@{/empresa/perfil/actualizar}" th:object="${empresa}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <!-- Campos del Usuario asociado (ocultos o solo lectura) -->
+                <input type="hidden" th:field="*{usuario.id}">
+
+                <div class="form-group">
+                    <label>Nombre Comercial</label>
+                    <input type="text" th:field="*{nombre}" required>
+                </div>
+                <div class="form-group">
+                    <label>CIF</label>
+                    <input type="text" th:field="*{cif}" placeholder="A00000000" maxlength="9" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Email de Contacto (Usuario)</label>
+                    <input type="email" th:field="*{usuario.correo}" readonly style="background: #f4f4f4;">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" th:field="*{telefono}" maxlength="9" minlength="9" pattern="[0-9]{9}">
+                </div>
+                <div class=" form-group">
+                    <label>Ciudad</label>
+                    <input type="text" th:field="*{ciudad}">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Sector / Actividad</label>
+                    <input type="text" th:field="*{sector}" placeholder="Ej: Desarrollo de Software, Hostelería...">
+                </div>
+
+                <button type="submit" class="btn-guardar">Actualizar Perfil</button>
+            </form>
+        </section>
+    </main>
+</body>
+
+</html>

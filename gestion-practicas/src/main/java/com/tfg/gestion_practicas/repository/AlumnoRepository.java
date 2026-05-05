@@ -36,7 +36,4 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
 
     Optional<Alumno> findByUsuarioCorreo(String correo);
 
-    // @Query("SELECT a FROM Alumno a JOIN a.usuario u WHERE u.correo = :login OR
-    // u.username = :login")
-    // Optional<Alumno> buscarPorCorreoONombre(@Param("login") String login);
 }

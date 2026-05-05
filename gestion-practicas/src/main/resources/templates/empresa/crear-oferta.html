@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Publicar Oferta</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <!-- Reutilizamos tus estilos base -->
+    <link rel="stylesheet" th:href="@{/css/tutor/styles.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .form-crear-oferta {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .instrucciones {
+            background-color: rgba(106, 143, 106, 0.05);
+            border-left: 4px solid var(--verde);
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            color: var(--texto-suave);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar (Mismo que el dashboard) -->
+    <nav class="navbar-superior flex-between">
+        <div class="nav-izq">
+            <a th:href="@{/empresa/dashboard}" class="btn-volver"
+                style="text-decoration: none; color: var(--verde); font-weight: bold;">
+                <i class="bi bi-arrow-left"></i> Volver al Panel
+            </a>
+        </div>
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span" style="color: #F4A87C;">Connect</span>
+        </div>
+        <div class="info-usuario-nav">
+            <span th:text="${empresa.nombre}" style="font-weight: bold;">Nombre Empresa</span>
+        </div>
+    </nav>
+
+    <main class="contenedor" style="padding: 40px 20px;">
+        <div class="form-crear-oferta">
+            <header style="margin-bottom: 30px; text-align: center;">
+                <h1 style="color: var(--verde); font-family: 'Poppins';">Publicar Nueva Oferta de FCT</h1>
+                <p>Define los detalles del puesto para encontrar al alumno ideal.</p>
+            </header>
+
+            <div class="instrucciones">
+                <i class="bi bi-info-circle"></i> Los campos marcados con <strong>*</strong> son obligatorios. La oferta
+                será visible para todos los alumnos de la especialidad seleccionada una vez publicada.
+            </div>
+
+            <!-- TARJETA DEL FORMULARIO -->
+            <div class="bloque" style="padding: 40px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.05);">
+                <form th:action="@{/empresa/ofertas/guardar}" method="POST">
+
+                    <!-- Fila 1: Título -->
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label for="titulo" style="font-weight: bold; margin-bottom: 8px; display: block;">Título de la
+                            vacante *</label>
+                        <input type="text" id="titulo" name="titulo"
+                            placeholder="Ej: Desarrollador Java Junior, Auxiliar Administrativo..." required
+                            style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--crema-oscura);">
+                    </div>
+
+                    <!-- Fila 2: Especialidad y Plazas -->
+                    <div class="form-fila"
+                        style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 25px;">
+                        <div class="form-group">
+                            <label for="especialidad"
+                                style="font-weight: bold; margin-bottom: 8px; display: block;">Especialidad Buscada
+                                *</label>
+                            <select name="especialidad" id="especialidad" required
+                                style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--crema-oscura);">
+                                <option value="">-- Seleccionar Grado --</option>
+                                <option value="Informatica">Informática (DAM/DAW/ASIR)</option>
+                                <option value="Administracion">Administración y Finanzas</option>
+                                <option value="Marketing">Marketing y Publicidad</option>
+                                <option value="Sanidad">Sanidad / Cuidados</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="plazas" style="font-weight: bold; margin-bottom: 8px; display: block;">Nº Plazas
+                                *</label>
+                            <input type="number" id="plazas" name="plazas" min="1" max="10" value="1" required
+                                style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--crema-oscura);">
+                        </div>
+                    </div>
+
+                    <!-- Fila 3: Modalidad y Horario -->
+                    <div class="form-fila"
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                        <div class="form-group">
+                            <label for="modalidad"
+                                style="font-weight: bold; margin-bottom: 8px; display: block;">Modalidad *</label>
+                            <select name="modalidad" id="modalidad" required
+                                style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--crema-oscura);">
+                                <option value="Presencial">Presencial</option>
+                                <option value="Hibrido">Híbrido</option>
+                                <option value="Remoto">Remoto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="horario" style="font-weight: bold; margin-bottom: 8px; display: block;">Horario
+                                aproximado</label>
+                            <input type="text" id="horario" name="horario" placeholder="Ej: 08:00 a 14:00"
+                                style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--crema-oscura);">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ciudad" style="font-weight: bold; margin-bottom: 8px; display: block;">Ciudad
+                            *</label>
+                        <input type="text" id="ciudad" name="ciudad" placeholder="Ej: Madrid, Sevilla..." required
+                            style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--crema-oscura);">
+                    </div>
+                    <!-- Fila 4: Descripción detallada -->
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label for="descripcion"
+                            style="font-weight: bold; margin-bottom: 8px; display: block;">Descripción de tareas y
+                            requisitos *</label>
+                        <textarea id="descripcion" name="descripcion" rows="6"
+                            placeholder="Describe qué hará el alumno y qué herramientas usará..." required
+                            style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--crema-oscura); font-family: 'Lato';"></textarea>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="flex-between" style="margin-top: 40px; gap: 15px;">
+                        <a th:href="@{/empresa/dashboard}" class="btn-cancelar"
+                            style="flex: 1; text-align: center; padding: 15px; background: #eee; border-radius: 30px; text-decoration: none; color: #666; font-weight: bold;">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn-submit"
+                            style="flex: 2; padding: 15px; background: var(--verde); color: white; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 1rem;">
+                            <i class="bi bi-cloud-upload"></i> Publicar Oferta
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Pequeña validación antes de enviar
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const titulo = document.getElementById('titulo').value;
+            if (titulo.length < 5) {
+                alert("Por favor, introduce un título más descriptivo.");
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+
+</html>

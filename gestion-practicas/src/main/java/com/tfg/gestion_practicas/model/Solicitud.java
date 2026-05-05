@@ -23,15 +23,17 @@ public class Solicitud {
 
     @NotBlank
     @Size(min = 10, max = 300)
-    private String mensaje; 
+    private String mensaje;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
 
     @ManyToOne
+    @JoinColumn(name = "oferta_id") // Especificamos el nombre exacto en DB
     private Oferta oferta;
 
     @ManyToOne
+    @JoinColumn(name = "alumno_id", referencedColumnName = "usuario_id")
     private Alumno alumno;
 }

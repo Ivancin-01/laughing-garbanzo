@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FP Connect | Mis Ofertas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor/styles.css}">
+</head>
+
+<body>
+    <!-- Navbar (Igual que el dashboard) -->
+    <nav class="navbar-superior flex-between">
+        <div class="nav-izq">
+            <a th:href="@{/empresa/dashboard}" class="btn-volver-nav" style="text-decoration:none; color:inherit;">
+                <i class="bi bi-arrow-left"></i> Volver al Inicio
+            </a>
+        </div>
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+        <div class="usuario-nav-container perfil-trigger" onclick="toggleDropdown()">
+            <div class="info-usuario-nav">
+                <!-- Mostramos el nombre de la empresa desde el objeto empresa -->
+                <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
+                <p class="rol-nav">Empresa Colaboradora</p>
+            </div>
+            <div class="avatar-wrapper">
+                <img th:src="@{/img/default-company.png}" alt="Logo Empresa" class="avatar-nav"
+                    style="border-radius: 4px;">
+            </div>
+
+            <!-- Este es el menú que aparece al hacer clic[cite: 2] -->
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/empresa/dashboard}"><i class="bi bi-grid-fill"></i> <b>Dashboard</b></a>
+                <a th:href="@{/empresa/perfil}"><i class="bi bi-building-gear"></i> <b>Perfil Empresa</b></a>
+                <hr>
+                <a th:href="@{/logout}" class="text-danger" style="color: #d9534f;"><i
+                        class="bi bi-box-arrow-right"></i> <b>Cerrar Sesión</b></a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="contenedor" style="padding: 40px;">
+        <header class="flex-between" style="margin-bottom: 30px;">
+            <div>
+                <h1>Gestión de Ofertas Publicadas</h1>
+                <p>Aquí puedes editar, pausar o eliminar tus ofertas de prácticas.</p>
+            </div>
+            <a th:href="@{/empresa/crear-oferta}" class="btn-dash"
+                style="background-color: #388e3c; text-decoration:none; color:white; padding: 10px 20px; border-radius: 5px;">
+                <i class="bi bi-plus-lg"></i> Nueva Oferta
+            </a>
+        </header>
+
+        <!-- Mensajes de feedback -->
+        <div th:if="${param.eliminada}"
+            style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <i class="bi bi-trash"></i> Oferta eliminada correctamente.
+        </div>
+
+        <div class="bloque">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #eee; text-align: left;">
+                        <th style="padding: 15px;">Oferta</th>
+                        <th>Fecha Pub.</th>
+                        <th>Plazas</th>
+                        <th>Solicitudes</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="oferta : ${ofertas}" style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 15px;">
+                            <strong th:text="${oferta.titulo}">Título</strong><br>
+                            <small th:text="${oferta.modalidad}" style="color: #666;"></small>
+                        </td>
+                        <td th:text="${#temporals.format(oferta.fechaPublicacion, 'dd/MM/yyyy')}">01/01/2026</td>
+                        <td th:text="${oferta.plazas}">0</td>
+                        <td>
+                            <span class="badge"
+                                style="background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;"
+                                th:text="${oferta.solicitudes != null ? oferta.solicitudes.size() : 0} + ' recibidas'"></span>
+                        </td>
+                        <td>
+                            <span style="color: #388e3c;"><i class="bi bi-check-circle-fill"></i> Activa</span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 10px;">
+                                <a th:href="@{/empresa/ofertas/editar/{id}(id=${oferta.id})}" class="btn-mini"
+                                    title="Editar">
+                                    <i class="bi bi-pencil-fill" style="color: #1976d2;"></i>
+                                </a>
+
+                                <!-- Formulario para eliminar con confirmación JS -->
+                                <form th:action="@{/empresa/ofertas/eliminar/{id}(id=${oferta.id})}" method="post"
+                                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta oferta? Esta acción no se puede deshacer.');">
+                                    <button type="submit"
+                                        style="background:none; border:none; cursor:pointer; color: #d9534f;">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(ofertas)}">
+                        <td colspan="6" style="text-align: center; padding: 30px; color: #999;">
+                            No tienes ninguna oferta publicada todavía.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById("dropdown-perfil");
+            if (dropdown) {
+                dropdown.classList.toggle("show");
+            }
+        }
+
+        // Cerrar el menú si se hace clic fuera[cite: 2]
+        window.onclick = function (event) {
+            if (!event.target.closest('.perfil-trigger')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    if (dropdowns[i].classList.contains('show')) {
+                        dropdowns[i].classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
