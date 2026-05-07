@@ -62,6 +62,10 @@ public class Empresa {
     @Size(max = 200)
     private String web;
 
+    private boolean notificarSolicitudes = true;
+
+    private boolean resumenSemanal = false;
+
     @OneToMany(mappedBy = "empresa") // Una empresa puede publicar una o muchas ofertas.
     private List<Oferta> ofertas;
 

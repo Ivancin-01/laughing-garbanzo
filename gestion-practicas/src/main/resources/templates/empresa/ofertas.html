@@ -3,140 +3,272 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Mis Ofertas</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
-        rel="stylesheet">
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/empresa/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/empresa/ofertas.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" th:href="@{/css/tutor/styles.css}">
 </head>
 
 <body>
-    <!-- Navbar (Igual que el dashboard) -->
-    <nav class="navbar-superior flex-between">
-        <div class="nav-izq">
-            <a th:href="@{/empresa/dashboard}" class="btn-volver-nav" style="text-decoration:none; color:inherit;">
-                <i class="bi bi-arrow-left"></i> Volver al Inicio
+
+<nav class="navbar-superior">
+    <div class="nav-izq">
+        <button id="btn-toggle-sidebar" class="btn-toggle" type="button">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+
+    <div class="logo-central">
+        <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+    </div>
+
+    <div class="usuario-nav-container perfil-trigger">
+        <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de empresa">
+            <div class="info-usuario-nav">
+                <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
+                <p class="rol-nav">Empresa colaboradora</p>
+            </div>
+
+            <div class="avatar-wrapper">
+                <span class="avatar-inicial" th:text="${#strings.substring(empresa.nombre, 0, 1)}">E</span>
+            </div>
+
+            <i class="bi bi-chevron-down perfil-flecha"></i>
+        </button>
+
+        <div id="dropdown-perfil" class="dropdown-content">
+            <a th:href="@{/empresa/dashboard}">
+                <i class="bi bi-grid-fill"></i>
+                <b>Dashboard</b>
+            </a>
+
+            <a th:href="@{/empresa/perfil}">
+                <i class="bi bi-building-gear"></i>
+                <b>Perfil empresa</b>
+            </a>
+
+            <a th:href="@{/empresa/configuracion}">
+                <i class="bi bi-gear"></i>
+                <b>Configuración</b>
+            </a>
+
+            <hr>
+
+            <a th:href="@{/logout}" class="dropdown-danger">
+                <i class="bi bi-box-arrow-right"></i>
+                <b>Cerrar sesión</b>
             </a>
         </div>
-        <div class="logo-central">
-            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
-        </div>
-        <div class="usuario-nav-container perfil-trigger" onclick="toggleDropdown()">
-            <div class="info-usuario-nav">
-                <!-- Mostramos el nombre de la empresa desde el objeto empresa -->
-                <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
-                <p class="rol-nav">Empresa Colaboradora</p>
-            </div>
-            <div class="avatar-wrapper">
-                <img th:src="@{/img/default-company.png}" alt="Logo Empresa" class="avatar-nav"
-                    style="border-radius: 4px;">
-            </div>
+    </div>
+</nav>
 
-            <!-- Este es el menú que aparece al hacer clic[cite: 2] -->
-            <div id="dropdown-perfil" class="dropdown-content">
-                <a th:href="@{/empresa/dashboard}"><i class="bi bi-grid-fill"></i> <b>Dashboard</b></a>
-                <a th:href="@{/empresa/perfil}"><i class="bi bi-building-gear"></i> <b>Perfil Empresa</b></a>
-                <hr>
-                <a th:href="@{/logout}" class="text-danger" style="color: #d9534f;"><i
-                        class="bi bi-box-arrow-right"></i> <b>Cerrar Sesión</b></a>
-            </div>
-        </div>
-    </nav>
+<div class="dashboard-container">
 
-    <main class="contenedor" style="padding: 40px;">
-        <header class="flex-between" style="margin-bottom: 30px;">
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <a th:href="@{/empresa/dashboard}" class="sidebar-link">
+                <i class="bi bi-house-door"></i> Inicio
+            </a>
+
+            <a th:href="@{/empresa/ofertas}" class="sidebar-link active">
+                <i class="bi bi-megaphone"></i> Mis Ofertas
+            </a>
+
+            <a th:href="@{/empresa/solicitudes}" class="sidebar-link">
+                <i class="bi bi-person-lines-fill"></i> Solicitudes Recibidas
+            </a>
+
+            <a th:href="@{/empresa/alumnos-fct}" class="sidebar-link">
+                <i class="bi bi-mortarboard"></i> Alumnos en Prácticas
+            </a>
+
+            <a th:href="@{/empresa/configuracion}" class="sidebar-link">
+                <i class="bi bi-gear"></i> Configuración
+            </a>
+        </nav>
+    </aside>
+
+    <main class="contenedor">
+
+        <header class="dashboard-header ofertas-header flex-between">
             <div>
-                <h1>Gestión de Ofertas Publicadas</h1>
-                <p>Aquí puedes editar, pausar o eliminar tus ofertas de prácticas.</p>
+                <span class="ofertas-badge">Gestión de ofertas</span>
+                <h1>Mis ofertas publicadas</h1>
+                <p>Edita, revisa o elimina las ofertas de prácticas que has publicado.</p>
             </div>
-            <a th:href="@{/empresa/crear-oferta}" class="btn-dash"
-                style="background-color: #388e3c; text-decoration:none; color:white; padding: 10px 20px; border-radius: 5px;">
-                <i class="bi bi-plus-lg"></i> Nueva Oferta
+
+            <a th:href="@{/empresa/crear-oferta}" class="btn-dash">
+                <i class="bi bi-plus-lg"></i>
+                Nueva oferta
             </a>
         </header>
 
-        <!-- Mensajes de feedback -->
-        <div th:if="${param.eliminada}"
-            style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <i class="bi bi-trash"></i> Oferta eliminada correctamente.
+        <div th:if="${param.eliminada}" class="alerta-error ofertas-alerta">
+            <i class="bi bi-trash-fill"></i>
+            <span>Oferta eliminada correctamente.</span>
         </div>
 
-        <div class="bloque">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="border-bottom: 2px solid #eee; text-align: left;">
-                        <th style="padding: 15px;">Oferta</th>
-                        <th>Fecha Pub.</th>
-                        <th>Plazas</th>
-                        <th>Solicitudes</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="oferta : ${ofertas}" style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 15px;">
-                            <strong th:text="${oferta.titulo}">Título</strong><br>
-                            <small th:text="${oferta.modalidad}" style="color: #666;"></small>
-                        </td>
-                        <td th:text="${#temporals.format(oferta.fechaPublicacion, 'dd/MM/yyyy')}">01/01/2026</td>
-                        <td th:text="${oferta.plazas}">0</td>
-                        <td>
-                            <span class="badge"
-                                style="background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;"
-                                th:text="${oferta.solicitudes != null ? oferta.solicitudes.size() : 0} + ' recibidas'"></span>
-                        </td>
-                        <td>
-                            <span style="color: #388e3c;"><i class="bi bi-check-circle-fill"></i> Activa</span>
-                        </td>
-                        <td>
-                            <div style="display: flex; gap: 10px;">
-                                <a th:href="@{/empresa/ofertas/editar/{id}(id=${oferta.id})}" class="btn-mini"
-                                    title="Editar">
-                                    <i class="bi bi-pencil-fill" style="color: #1976d2;"></i>
-                                </a>
-
-                                <!-- Formulario para eliminar con confirmación JS -->
-                                <form th:action="@{/empresa/ofertas/eliminar/{id}(id=${oferta.id})}" method="post"
-                                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta oferta? Esta acción no se puede deshacer.');">
-                                    <button type="submit"
-                                        style="background:none; border:none; cursor:pointer; color: #d9534f;">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(ofertas)}">
-                        <td colspan="6" style="text-align: center; padding: 30px; color: #999;">
-                            No tienes ninguna oferta publicada todavía.
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div th:if="${param.editada}" class="alerta-exito ofertas-alerta">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Oferta actualizada correctamente.</span>
         </div>
+
+        <section class="ofertas-resumen">
+            <article class="oferta-stat oferta-stat--total">
+                <i class="bi bi-megaphone"></i>
+                <div>
+                    <span>Total ofertas</span>
+                    <strong th:text="${ofertas.size()}">0</strong>
+                </div>
+            </article>
+
+            <article class="oferta-stat oferta-stat--plazas">
+                <i class="bi bi-people"></i>
+                <div>
+                    <span>Plazas publicadas</span>
+                    <strong th:text="${#aggregates.sum(ofertas.![plazas])}">0</strong>
+                </div>
+            </article>
+
+            <article class="oferta-stat oferta-stat--solicitudes">
+                <i class="bi bi-person-lines-fill"></i>
+                <div>
+                    <span>Solicitudes recibidas</span>
+                    <strong th:text="${#aggregates.sum(ofertas.![solicitudes != null ? solicitudes.size() : 0])}">0</strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="bloque ofertas-bloque">
+
+            <div class="ofertas-toolbar">
+                <div>
+                    <h2><i class="bi bi-list-task"></i> Listado de ofertas</h2>
+                    <p>Busca una oferta por título, modalidad o número de solicitudes.</p>
+                </div>
+
+                <div class="ofertas-filtros">
+                    <div class="buscador-ofertas">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="buscadorOfertas" placeholder="Buscar oferta...">
+                    </div>
+
+                    <select id="filtroSolicitudes">
+                        <option value="TODAS">Todas</option>
+                        <option value="CON_SOLICITUDES">Con solicitudes</option>
+                        <option value="SIN_SOLICITUDES">Sin solicitudes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(ofertas)}" class="estado-vacio ofertas-vacio">
+                <i class="bi bi-megaphone"></i>
+                <p>No tienes ninguna oferta publicada todavía.</p>
+
+                <a th:href="@{/empresa/crear-oferta}" class="btn-dash">
+                    <i class="bi bi-plus-lg"></i>
+                    Publicar primera oferta
+                </a>
+            </div>
+
+            <div th:if="${not #lists.isEmpty(ofertas)}" class="tabla-wrapper">
+                <table class="tabla-ofertas">
+                    <thead>
+                        <tr>
+                            <th>Oferta</th>
+                            <th>Fecha pub.</th>
+                            <th>Plazas</th>
+                            <th>Solicitudes</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr class="fila-oferta"
+                            th:each="oferta : ${ofertas}"
+                            th:attr="data-titulo=${oferta.titulo},
+                                     data-modalidad=${oferta.modalidad},
+                                     data-solicitudes=${oferta.solicitudes != null ? oferta.solicitudes.size() : 0}">
+
+                            <td>
+                                <div class="oferta-info">
+                                    <div class="oferta-icono">
+                                        <i class="bi bi-briefcase"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong th:text="${oferta.titulo}">Título</strong>
+                                        <small th:text="${oferta.modalidad}">Modalidad</small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td th:text="${#temporals.format(oferta.fechaPublicacion, 'dd/MM/yyyy')}">01/01/2026</td>
+
+                            <td>
+                                <span class="plazas-badge" th:text="${oferta.plazas} + ' plazas'">0 plazas</span>
+                            </td>
+
+                            <td>
+                                <span class="solicitudes-badge-tabla"
+                                      th:text="${oferta.solicitudes != null ? oferta.solicitudes.size() : 0} + ' recibidas'">
+                                    0 recibidas
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="estado-activa">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Activa
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="acciones-tabla">
+                                    <a th:href="@{/empresa/ofertas/editar/{id}(id=${oferta.id})}"
+                                       class="btn-mini btn-mini--editar"
+                                       title="Editar oferta">
+                                        <i class="bi bi-pencil-fill"></i>
+                                        Editar
+                                    </a>
+
+                                    <form th:action="@{/empresa/ofertas/eliminar/{id}(id=${oferta.id})}"
+                                          method="post"
+                                          class="form-eliminar-oferta">
+                                        <button type="submit"
+                                                class="btn-mini btn-mini--rechazar btn-eliminar-oferta"
+                                                data-mensaje="¿Seguro que quieres eliminar esta oferta? Esta acción no se puede deshacer.">
+                                            <i class="bi bi-trash-fill"></i>
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div id="sinResultadosOfertas" class="estado-vacio ofertas-vacio oculto">
+                    <i class="bi bi-search"></i>
+                    <p>No hay ofertas que coincidan con el filtro.</p>
+                </div>
+            </div>
+
+        </section>
+
     </main>
-    <script>
-        function toggleDropdown() {
-            const dropdown = document.getElementById("dropdown-perfil");
-            if (dropdown) {
-                dropdown.classList.toggle("show");
-            }
-        }
+</div>
 
-        // Cerrar el menú si se hace clic fuera[cite: 2]
-        window.onclick = function (event) {
-            if (!event.target.closest('.perfil-trigger')) {
-                const dropdowns = document.getElementsByClassName("dropdown-content");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    if (dropdowns[i].classList.contains('show')) {
-                        dropdowns[i].classList.remove('show');
-                    }
-                }
-            }
-        }
-    </script>
+<script th:src="@{/js/empresa/dashboard.js}"></script>
+<script th:src="@{/js/empresa/ofertas.js}"></script>
+
 </body>
-
 </html>

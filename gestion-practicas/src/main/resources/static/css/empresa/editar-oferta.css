@@ -1,0 +1,285 @@
+/* =====================================================
+   EDITAR OFERTA EMPRESA
+   Página: /empresa/ofertas/editar/{id}
+   ===================================================== */
+
+.editar-oferta-header {
+    margin-bottom: 30px;
+}
+
+.editar-oferta-badge {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background-color: rgba(106, 143, 106, 0.12);
+    color: var(--verde);
+    font-family: var(--fuente-titulo);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.btn-dash--secundario {
+    background-color: #6c757d;
+}
+
+.btn-dash--secundario:hover {
+    background-color: #5b646b;
+}
+
+.editar-oferta-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 26px;
+    align-items: start;
+}
+
+.editar-oferta-card {
+    position: relative;
+    overflow: hidden;
+
+    background-color: var(--blanco);
+    border: 1px solid rgba(106, 143, 106, 0.14);
+    border-radius: 22px;
+    padding: 30px;
+
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07);
+
+    animation: entradaEditarOferta 0.55s ease both;
+}
+
+.editar-oferta-card::before {
+    content: "";
+    position: absolute;
+    top: -70px;
+    right: -70px;
+    width: 155px;
+    height: 155px;
+    border-radius: 50%;
+    background-color: rgba(244, 168, 124, 0.15);
+}
+
+.editar-oferta-card__header {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+
+    padding-bottom: 22px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--crema-oscura);
+}
+
+.editar-oferta-icono {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    border-radius: 17px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(135deg, var(--verde), var(--verde-claro));
+    color: var(--blanco);
+    font-size: 1.4rem;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.editar-oferta-card:hover .editar-oferta-icono {
+    transform: rotate(-4deg) scale(1.06);
+    box-shadow: 0 10px 22px rgba(106, 143, 106, 0.25);
+}
+
+.editar-oferta-card h2 {
+    margin: 0 0 6px;
+    font-family: var(--fuente-titulo);
+    font-size: 1.35rem;
+    color: var(--texto);
+}
+
+.editar-oferta-card p {
+    margin: 0;
+    color: var(--texto-suave);
+    line-height: 1.6;
+}
+
+.oferta-form {
+    position: relative;
+    z-index: 1;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.form-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-grupo--completo {
+    grid-column: 1 / -1;
+}
+
+.form-grupo label {
+    font-weight: 700;
+    color: var(--texto);
+    font-size: 0.92rem;
+}
+
+.form-grupo input,
+.form-grupo select,
+.form-grupo textarea {
+    width: 100%;
+    padding: 13px 14px;
+
+    border-radius: 13px;
+    border: 1px solid var(--crema-oscura);
+    background-color: var(--crema);
+
+    font-family: var(--fuente-texto);
+    color: var(--texto);
+    resize: vertical;
+
+    transition:
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        background-color 0.22s ease,
+        transform 0.22s ease;
+}
+
+.form-grupo input:focus,
+.form-grupo select:focus,
+.form-grupo textarea:focus {
+    outline: none;
+    background-color: var(--blanco);
+    border-color: var(--verde);
+    box-shadow: 0 0 0 4px rgba(106, 143, 106, 0.12);
+    transform: translateY(-1px);
+}
+
+.editar-oferta-acciones {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 8px;
+}
+
+.editar-oferta-acciones .btn-dash,
+.btn-cancelar {
+    width: 100%;
+    min-height: 48px;
+}
+
+.btn-cancelar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 11px 20px;
+    border-radius: 999px;
+
+    background-color: #6c757d;
+    color: var(--blanco);
+
+    font-family: var(--fuente-titulo);
+    font-size: 0.92rem;
+    font-weight: 700;
+
+    transition:
+        background-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.btn-cancelar:hover {
+    background-color: #5b646b;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(108, 117, 125, 0.24);
+}
+
+.editar-oferta-ayuda {
+    position: sticky;
+    top: 100px;
+
+    background:
+        linear-gradient(135deg, rgba(106, 143, 106, 0.08), rgba(244, 168, 124, 0.10)),
+        var(--blanco);
+    border: 1px solid rgba(106, 143, 106, 0.14);
+    border-radius: 20px;
+    padding: 24px;
+
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
+
+    animation: entradaEditarOferta 0.65s ease both;
+}
+
+.editar-oferta-ayuda h3 {
+    margin: 0 0 16px;
+    font-family: var(--fuente-titulo);
+    font-size: 1.1rem;
+    color: var(--texto);
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.editar-oferta-ayuda h3 i {
+    color: var(--melocoton);
+}
+
+.editar-oferta-ayuda ul {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--texto-suave);
+    line-height: 1.75;
+}
+
+.editar-oferta-ayuda li::marker {
+    color: var(--verde);
+}
+
+@keyframes entradaEditarOferta {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 1050px) {
+    .editar-oferta-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .editar-oferta-ayuda {
+        position: static;
+    }
+}
+
+@media (max-width: 700px) {
+    .oferta-form {
+        grid-template-columns: 1fr;
+    }
+
+    .editar-oferta-acciones {
+        grid-template-columns: 1fr;
+    }
+
+    .editar-oferta-card {
+        padding: 24px;
+    }
+}

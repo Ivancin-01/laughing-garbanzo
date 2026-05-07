@@ -16,12 +16,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.tfg.gestion_practicas.model.Empresa;
+import com.tfg.gestion_practicas.model.EstadoPractica;
 import com.tfg.gestion_practicas.model.EstadoSolicitud;
 import com.tfg.gestion_practicas.model.Oferta;
 import com.tfg.gestion_practicas.model.Solicitud;
 import com.tfg.gestion_practicas.repository.EmpresaRepository;
 import com.tfg.gestion_practicas.repository.OfertaRepository;
 import com.tfg.gestion_practicas.repository.SolicitudRepository;
+
+import com.tfg.gestion_practicas.services.EmpresaService;
 
 @Controller
 public class EmpresaController {
@@ -34,6 +37,9 @@ public class EmpresaController {
 
     @Autowired
     private SolicitudRepository solicitudRepository;
+
+    @Autowired
+    private EmpresaService empresaService;
 
     @GetMapping("/empresa/dashboard")
     public String dashboardEmpresa(Model model, Principal principal) {
@@ -165,6 +171,53 @@ public class EmpresaController {
         return "empresa/ofertas"; // Nombre del archivo HTML
     }
 
+
+    @GetMapping("/empresa/ofertas/detalles/{id}")
+    public String verDetallesOferta(@PathVariable Long id, Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String email = principal.getName();
+        Empresa empresa = empresaRepository.findByUsuarioCorreo(email).orElse(null);
+
+        if (empresa == null) {
+            return "redirect:/login";
+        }
+
+        Oferta oferta = ofertaRepository.findById(id).orElse(null);
+
+        if (oferta == null || !oferta.getEmpresa().getId().equals(empresa.getId())) {
+            return "redirect:/empresa/ofertas?error=no-autorizado";
+        }
+
+        List<Solicitud> solicitudesOferta = solicitudRepository.findByOfertaId(id);
+
+        long pendientes = solicitudesOferta.stream()
+            .filter(s -> s.getEstado() == EstadoSolicitud.PENDIENTE)
+            .count();
+
+        long aceptadas = solicitudesOferta.stream()
+                .filter(s -> s.getEstado() == EstadoSolicitud.ACEPTADA)
+                .count();
+
+        long rechazadas = solicitudesOferta.stream()
+                .filter(s -> s.getEstado() == EstadoSolicitud.RECHAZADA)
+                .count();
+
+        model.addAttribute("empresa", empresa);
+        model.addAttribute("oferta", oferta);
+        model.addAttribute("solicitudesOferta", solicitudesOferta);
+        model.addAttribute("pendientes", pendientes);
+        model.addAttribute("aceptadas", aceptadas);
+        model.addAttribute("rechazadas", rechazadas);
+
+        return "empresa/detalles-oferta";
+    }
+
+
+
+
     @PostMapping("/empresa/ofertas/eliminar/{id}")
     public String eliminarOferta(@PathVariable Long id, Principal principal) {
         if (principal == null)
@@ -243,26 +296,44 @@ public class EmpresaController {
     // MÉTODO ÚNICO PARA ACEPTAR O RECHAZAR
     @PostMapping("/empresa/solicitudes/gestionar")
     public String gestionarSolicitud(@RequestParam("solicitudId") Long id,
-            @RequestParam("nuevoEstado") String estadoStr) {
+                                    @RequestParam("nuevoEstado") String estadoStr,
+                                    Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
 
-        // 1. Buscar la solicitud por ID
-        Solicitud solicitud = solicitudRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("ID de solicitud no válido: " + id));
+        String email = principal.getName();
+        Empresa empresa = empresaRepository.findByUsuarioCorreo(email).orElse(null);
+
+        if (empresa == null) {
+            return "redirect:/login";
+        }
+
+        Solicitud solicitud = solicitudRepository.findById(id).orElse(null);
+
+        if (solicitud == null) {
+            return "redirect:/empresa/solicitudes?error=solicitud_no_encontrada";
+        }
+
+        if (!solicitud.getOferta().getEmpresa().getId().equals(empresa.getId())) {
+            return "redirect:/empresa/solicitudes?error=no_autorizado";
+        }
 
         try {
-            // 2. Convertir el String (ACEPTADO/RECHAZADO) al Enum correspondiente
-            // valueOf busca la coincidencia exacta en mayúsculas
-            solicitud.setEstado(EstadoSolicitud.valueOf(estadoStr.toUpperCase()));
+            EstadoSolicitud nuevoEstado = EstadoSolicitud.valueOf(estadoStr.toUpperCase());
 
-            // 3. Guardar en la base de datos
+            solicitud.setEstado(nuevoEstado);
+
+            if (nuevoEstado == EstadoSolicitud.ACEPTADA) {
+                solicitud.setEstadoPractica(EstadoPractica.PENDIENTE_INICIO);
+            }
+
             solicitudRepository.save(solicitud);
 
         } catch (IllegalArgumentException e) {
-            // Manejar error si el String enviado no coincide con el Enum
             return "redirect:/empresa/solicitudes?error=estado_no_valido";
         }
 
-        // 4. Redirigir a la lista para ver el cambio
         return "redirect:/empresa/solicitudes";
     }
 
@@ -283,7 +354,120 @@ public class EmpresaController {
                 EstadoSolicitud.ACEPTADA);
 
         model.addAttribute("empresa", empresa);
-        model.addAttribute("inscripciones", alumnosPracticas);
+        model.addAttribute("alumnosPracticas", alumnosPracticas);
         return "empresa/alumnos-fct";
+    }
+
+
+    @PostMapping("/empresa/alumnos-fct/estado")
+    public String actualizarEstadoPractica(@RequestParam("solicitudId") Long solicitudId,
+                                        @RequestParam("estadoPractica") EstadoPractica estadoPractica,
+                                        Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String email = principal.getName();
+        Empresa empresa = empresaRepository.findByUsuarioCorreo(email).orElse(null);
+
+        if (empresa == null) {
+            return "redirect:/login";
+        }
+
+        Solicitud solicitud = solicitudRepository.findById(solicitudId).orElse(null);
+
+        if (solicitud == null) {
+            return "redirect:/empresa/alumnos-fct?errorEstado=true";
+        }
+
+        if (!solicitud.getOferta().getEmpresa().getId().equals(empresa.getId())) {
+            return "redirect:/empresa/alumnos-fct?errorEstado=true";
+        }
+
+        if (solicitud.getEstado() != EstadoSolicitud.ACEPTADA) {
+            return "redirect:/empresa/alumnos-fct?errorEstado=true";
+        }
+
+        solicitud.setEstadoPractica(estadoPractica);
+        solicitudRepository.save(solicitud);
+
+        return "redirect:/empresa/alumnos-fct?estadoActualizado=true";
+    }
+
+    @GetMapping("/empresa/configuracion")
+    public String mostrarConfiguracion(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String email = principal.getName();
+        Empresa empresa = empresaRepository.findByUsuarioCorreo(email).orElse(null);
+        
+        if (empresa == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("empresa", empresa); 
+
+        return "empresa/configuracion";
+    }
+
+    @PostMapping("/empresa/configuracion/password")
+    public String cambiarPasswordEmpresa(@RequestParam("passwordActual") String passwordActual, @RequestParam("passwordNueva") String passwordNueva, @RequestParam("passwordConfirmacion") String passwordConfirmacion, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        boolean actualizada = empresaService.cambiarPassword(
+            principal.getName(),
+            passwordActual,
+            passwordNueva,
+            passwordConfirmacion
+        );
+
+        if (!actualizada) {
+            return "redirect:/empresa/configuracion?errorPassword=true";
+        }
+
+        return "redirect:/empresa/configuracion?passwordActualizada=true";
+    }
+
+    @PostMapping("/empresa/configuracion/contacto")
+    public String actualizarContactoEmpresa(@RequestParam("emailContacto") String emailContacto, @RequestParam("telefonoContacto") String telefonoContacto, Principal principal) {
+
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        boolean actualizado = empresaService.actualizarContacto(principal.getName(), emailContacto, telefonoContacto);
+
+        if(!actualizado) {
+            return "redirect:/empresa/configuracion?errorContacto=true";
+        }
+
+        return "redirect:/empresa/configuracion?datosActualizados=true";
+    }
+
+    @PostMapping("/empresa/configuracion/notificaciones")
+    public String actualizarNotificacionesEmpresa(@RequestParam(value = "notificarSolicitudes", required = false) String notificarSolicitudes,
+                                                    @RequestParam(value = "resumenSemanal", required = false) String resumenSemanal, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        boolean notificarSolicitudesActivo = notificarSolicitudes != null;
+        boolean resumenSemanalActivo = resumenSemanal != null;
+
+        boolean actualizado = empresaService.actualizarNotificaciones(
+            principal.getName(),
+            notificarSolicitudesActivo,
+            resumenSemanalActivo
+        );
+
+        if (!actualizado) {
+            return "redirect:/empresa/configuracion?errorNotificaciones=true";
+        }
+
+        return "redirect:/empresa/configuracion?notificacionesActualizadas=true";
     }
 }

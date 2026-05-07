@@ -9,35 +9,50 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    <link rel="stylesheet" th:href="@{/css/tutor/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/empresa/dashboard.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
     <!-- Navbar Superior -->
-    <nav class="navbar-superior flex-between">
-        <div class="nav-izq" style="display: flex; align-items: center; gap: 15px;">
-            <button id="btn-toggle-sidebar" class="btn-toggle" onclick="toggleSidebar()">
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button">
                 <i class="bi bi-list"></i>
             </button>
         </div>
         <div class="logo-central">
             <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
         </div>
-        <div class="usuario-nav-container perfil-trigger" onclick="toggleDropdown()">
-            <div class="info-usuario-nav">
-                <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
-                <p class="rol-nav">Empresa Colaboradora</p>
-            </div>
-            <div class="avatar-wrapper">
-                <img th:src="@{/img/default-company.png}" alt="Logo Empresa" class="avatar-nav"
-                    style="border-radius: 4px;">
-            </div>
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de empresa"> <!-- Aria label proporciona una etiqueta de texto invisible que describe el propósito de un elemento (boton, enlace o icono) a los lectores de pantalla y tecnología asistida. Accesibilidad web. -->
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
+                    <p class="rol-nav">Empresa colaboradora</p>
+                </div>
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(empresa.nombre, 0, 1)}">E</span>
+                </div>
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
             <div id="dropdown-perfil" class="dropdown-content">
-                <a th:href="@{/empresa/perfil}"><i class="bi bi-building-gear"></i> <b>Perfil Empresa</b></a>
+                <a th:href="@{/empresa/perfil}">
+                    <i class="bi bi-building-gear"></i>
+                    <b>Perfil empresa</b>
+                </a>
+
+                <a th:href="@{/empresa/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
                 <hr>
-                <a th:href="@{/logout}" class="text-danger" style="color: #d9534f;"><i
-                        class="bi bi-box-arrow-right"></i> <b>Cerrar Sesión</b></a>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
             </div>
         </div>
     </nav>
@@ -62,103 +77,116 @@
         </aside>
 
         <!-- Contenido Principal -->
-        <main class="contenedor" style="flex: 1; padding: 40px;">
+        <main class="contenedor">
 
             <!-- Mensaje de éxito al crear oferta -->
-            <div th:if="${param.creada}"
-                style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
-                <i class="bi bi-check-circle-fill"></i> ¡La oferta ha sido publicada con éxito!
+            <div th:if="${param.creada}" class="alerta-exito">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>¡La oferta ha sido publicada con éxito!</span>
             </div>
 
-            <header class="flex-between" style="margin-bottom: 30px;">
+            <header class="dashboard-header flex-between">
                 <div>
                     <h1>Bienvenido/a al panel de <span th:text="${empresa.nombre}">Empresa</span></h1>
                     <p>Gestiona tus ofertas de FCT y selecciona a los futuros profesionales.</p>
                 </div>
-                <a th:href="@{/empresa/crear-oferta}" class="btn-dash" style="background-color: #388e3c;">
+                <a th:href="@{/empresa/crear-oferta}" class="btn-dash">
                     <i class="bi bi-plus-lg"></i> Publicar Nueva Oferta
                 </a>
             </header>
 
             <!-- Widgets de Estadísticas -->
             <div class="dashboard-grid">
-                <div class="widget">
-                    <div class="widget-icon" style="background: #e3f2fd;">
-                        <i class="bi bi-megaphone" style="color: #1976d2;"></i>
+
+                <div class="widget widget--ofertas">
+                    <div class="widget-icon">
+                        <i class="bi bi-megaphone"></i>
                     </div>
                     <div class="widget-info">
                         <h3>Ofertas Activas</h3>
                         <p th:text="${ofertasActivas.size()}">0</p>
                     </div>
                 </div>
-                <div class="widget" style="border: 1px solid #ffc107;">
-                    <div class="widget-icon" style="background: #fff3e0;">
-                        <i class="bi bi-person-plus" style="color: #f57c00;"></i>
+
+                <div class="widget widget--pendientes">
+                    <div class="widget-icon">
+                        <i class="bi bi-person-plus"></i>
                     </div>
                     <div class="widget-info">
                         <h3>Solicitudes Pendientes</h3>
-                        <p th:text="${solicitudesPendientes.size()}" style="color: #e65100; font-weight: bold;">0</p>
+                        <p th:text="${solicitudesPendientes.size()}">0</p>
                     </div>
                 </div>
-                <div class="widget">
-                    <div class="widget-icon" style="background: #e8f5e9;">
-                        <i class="bi bi-mortarboard" style="color: #388e3c;"></i>
+
+                <div class="widget widget--alumnos">
+                    <div class="widget-icon">
+                        <i class="bi bi-mortarboard"></i>
                     </div>
                     <div class="widget-info">
                         <h3>Alumnos Actuales</h3>
                         <p th:text="${totalAlumnosFct}">0</p>
                     </div>
                 </div>
+
             </div>
 
             <!-- BLOQUE 1: GESTIÓN DE OFERTAS (CORREGIDO) -->
-            <div class="bloque" style="margin-bottom: 30px;">
-                <div class="flex-between">
+            <div class="bloque">
+                <div class="bloque__header flex-between">
                     <h2><i class="bi bi-list-task"></i> Resumen de Mis Ofertas</h2>
                     <a th:href="@{/empresa/ofertas}" class="btn-dash">Gestionar todas</a>
                 </div>
 
-                <div th:if="${#lists.isEmpty(ofertasActivas)}" class="vacío"
-                    style="padding: 20px; text-align: center; color: #666;">
+                <div th:if="${#lists.isEmpty(ofertasActivas)}" class="estado-vacio">
                     <p>No tienes ofertas publicadas actualmente.</p>
                 </div>
 
-                <table th:if="${not #lists.isEmpty(ofertasActivas)}">
-                    <thead>
-                        <tr>
-                            <th>Título de la Oferta</th>
-                            <th>Modalidad</th>
-                            <th>Plazas Totales</th>
-                            <th>Solicitudes</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="oferta : ${ofertasActivas}">
-                            <td>
-                                <strong th:text="${oferta.titulo}">Título Oferta</strong><br>
-                                <!-- Corregido: Uso de abreviación segura para la descripción -->
-                                <small th:if="${oferta.descripcion != null}"
-                                    th:text="${#strings.length(oferta.descripcion) > 60 ? #strings.substring(oferta.descripcion,0,60) + '...' : oferta.descripcion}"
-                                    style="color: #666;"></small>
-                            </td>
-                            <td th:text="${oferta.modalidad}">Presencial</td>
-                            <td th:text="${oferta.plazas}">0</td>
-                            <!-- Corregido: Conteo seguro de la lista de solicitudes -->
-                            <td th:text="${oferta.solicitudes != null ? oferta.solicitudes.size() : 0}">0</td>
-                            <td>
-                                <div style="display: flex; gap: 5px;">
-                                    <a th:href="@{/empresa/ofertas/editar/{id}(id=${oferta.id})}" class="btn-mini"
+                <div th:if="${not #lists.isEmpty(ofertasActivas)}" class="tabla-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Título de la Oferta</th>
+                                <th>Modalidad</th>
+                                <th>Plazas Totales</th>
+                                <th>Solicitudes</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="oferta : ${ofertasActivas}">
+                                <td>
+                                    <strong th:text="${oferta.titulo}">Título Oferta</strong><br>
+
+                                    <small th:if="${oferta.descripcion != null}"
+                                        class="texto-tabla-suave"
+                                        th:text="${#strings.length(oferta.descripcion) > 60 ? #strings.substring(oferta.descripcion,0,60) + '...' : oferta.descripcion}">
+                                    </small>
+                                </td>
+
+                                <td th:text="${oferta.modalidad}">Presencial</td>
+                                <td th:text="${oferta.plazas}">0</td>
+                                <td th:text="${oferta.solicitudes != null ? oferta.solicitudes.size() : 0}">0</td>
+
+                                <td>
+                                    <div class="acciones-tabla">
+                                        <a th:href="@{/empresa/ofertas/editar/{id}(id=${oferta.id})}"
+                                        class="btn-mini"
                                         title="Editar">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a th:href="@{/empresa/ofertas/detalles/{id}(id=${oferta.id})}" class="btn-mini"
-                                        title="Ver detalles">Ver</a>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <a th:href="@{/empresa/ofertas/detalles/{id}(id=${oferta.id})}"
+                                        class="btn-mini"
+                                        title="Ver detalles">
+                                            Ver
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- BLOQUE 2: SOLICITUDES (CORREGIDO) -->
@@ -196,18 +224,16 @@
                             <td th:text="${solicitud.oferta.titulo}">Título Oferta</td>
                             <td th:text="${#temporals.format(solicitud.fechaSolicitud, 'dd/MM/yyyy')}">01/01/2024</td>
                             <td>
-                                <div style="display: flex; gap: 5px;">
+                                <div class="acciones-tabla">
                                     <form th:action="@{/empresa/solicitudes/aceptar}" method="POST">
                                         <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
-                                        <button type="submit" class="btn-mini"
-                                            style="background-color: #388e3c; color: white; border: none; cursor: pointer;">
+                                        <button type="submit" class="btn-mini btn-mini--aceptar">
                                             <i class="bi bi-check-lg"></i> Aceptar
                                         </button>
                                     </form>
                                     <form th:action="@{/empresa/solicitudes/rechazar}" method="POST">
                                         <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
-                                        <button type="submit" class="btn-mini"
-                                            style="background-color: #d9534f; color: white; border: none; cursor: pointer;">
+                                        <button type="submit" class="btn-mini btn-mini--rechazar">
                                             <i class="bi bi-x-lg"></i> Rechazar
                                         </button>
                                     </form>
@@ -221,7 +247,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script th:src="@{/js/tutor/dashboard.js}"></script>
+    <script th:src="@{/js/empresa/dashboard.js}"></script>
 </body>
 
 </html>

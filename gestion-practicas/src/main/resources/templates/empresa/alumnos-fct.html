@@ -3,132 +3,297 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Alumnos en Prácticas</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
-        rel="stylesheet">
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/empresa/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/empresa/alumnos-fct.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" th:href="@{/css/tutor/styles.css}">
-    <link rel="stylesheet" th:href="@{/css/alumno/perfil.css}">
 </head>
 
 <body>
 
-    <nav class="navbar-superior flex-between">
-        <div class="nav-izq">
-            <a th:href="@{/empresa/dashboard}" class="btn-volver-nav" style="text-decoration:none; color:inherit;">
-                <i class="bi bi-arrow-left"></i> Panel de Control
-            </a>
-        </div>
-        <div class="logo-central">
-            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
-        </div>
-        <div class="usuario-nav-container perfil-trigger" onclick="toggleDropdown()">
+<nav class="navbar-superior">
+    <div class="nav-izq">
+        <button id="btn-toggle-sidebar" class="btn-toggle" type="button">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+
+    <div class="logo-central">
+        <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+    </div>
+
+    <div class="usuario-nav-container perfil-trigger">
+        <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de empresa">
             <div class="info-usuario-nav">
                 <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
-                <p class="rol-nav">Empresa Colaboradora</p>
+                <p class="rol-nav">Empresa colaboradora</p>
             </div>
+
             <div class="avatar-wrapper">
-                <img th:src="@{/img/default-company.png}" alt="Logo" class="avatar-nav">
+                <span class="avatar-inicial" th:text="${#strings.substring(empresa.nombre, 0, 1)}">E</span>
             </div>
 
-            <!-- El menú desplegable -->
-            <div id="dropdown-perfil" class="dropdown-content">
-                <a th:href="@{/empresa/dashboard}"><i class="bi bi-grid-fill"></i> <b>Dashboard</b></a>
-                <a th:href="@{/empresa/perfil}"><i class="bi bi-building-gear"></i> <b>Perfil Empresa</b></a>
-                <hr>
-                <a th:href="@{/logout}" class="text-danger" style="color: #d9534f;">
-                    <i class="bi bi-box-arrow-right"></i> <b>Cerrar Sesión</b>
-                </a>
-            </div>
+            <i class="bi bi-chevron-down perfil-flecha"></i>
+        </button>
+
+        <div id="dropdown-perfil" class="dropdown-content">
+            <a th:href="@{/empresa/dashboard}">
+                <i class="bi bi-grid-fill"></i>
+                <b>Dashboard</b>
+            </a>
+
+            <a th:href="@{/empresa/perfil}">
+                <i class="bi bi-building-gear"></i>
+                <b>Perfil empresa</b>
+            </a>
+
+            <a th:href="@{/empresa/configuracion}">
+                <i class="bi bi-gear"></i>
+                <b>Configuración</b>
+            </a>
+
+            <hr>
+
+            <a th:href="@{/logout}" class="dropdown-danger">
+                <i class="bi bi-box-arrow-right"></i>
+                <b>Cerrar sesión</b>
+            </a>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <main class="contenedor" style="padding: 40px;">
-        <header style="margin-bottom: 30px;">
-            <h1><i class="bi bi-people-fill" style="color: #1976d2;"></i> Alumnos en Prácticas</h1>
-            <p>Lista de estudiantes que están realizando actualmente sus FCT en tu empresa.</p>
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <a th:href="@{/empresa/dashboard}" class="sidebar-link">
+                <i class="bi bi-house-door"></i> Inicio
+            </a>
+
+            <a th:href="@{/empresa/ofertas}" class="sidebar-link">
+                <i class="bi bi-megaphone"></i> Mis Ofertas
+            </a>
+
+            <a th:href="@{/empresa/solicitudes}" class="sidebar-link">
+                <i class="bi bi-person-lines-fill"></i> Solicitudes Recibidas
+            </a>
+
+            <a th:href="@{/empresa/alumnos-fct}" class="sidebar-link active">
+                <i class="bi bi-mortarboard"></i> Alumnos en Prácticas
+            </a>
+
+            <a th:href="@{/empresa/configuracion}" class="sidebar-link">
+                <i class="bi bi-gear"></i> Configuración
+            </a>
+        </nav>
+    </aside>
+
+    <main class="contenedor">
+
+        <header class="dashboard-header alumnos-header flex-between">
+            <div>
+                <span class="alumnos-badge">Seguimiento de prácticas</span>
+                <h1>Alumnos en prácticas</h1>
+                <p>Consulta los alumnos aceptados por tu empresa y revisa su información básica.</p>
+            </div>
+
+            <a th:href="@{/empresa/solicitudes}" class="btn-dash">
+                <i class="bi bi-person-lines-fill"></i>
+                Ver solicitudes
+            </a>
         </header>
 
-        <div class="bloque">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="border-bottom: 2px solid #eee; text-align: left;">
-                        <th style="padding: 15px;">Estudiante</th>
-                        <th>Oferta / Puesto</th>
-                        <th>Contacto</th>
-                        <th>Centro Educativo</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="item : ${inscripciones}" style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 15px;">
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <div style="background: #e3f2fd; padding: 10px; border-radius: 50%;">
-                                    <i class="bi bi-person-fill" style="color: #1976d2;"></i>
-                                </div>
-                                <div>
-                                    <strong
-                                        th:text="${item.alumno.usuario.nombre + ' ' + item.alumno.usuario.apellidos}">Juan
-                                        Pérez</strong><br>
-                                    <small th:text="${item.alumno.ciclo}">Desarrollo de Aplicaciones Web</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="badge"
-                                style="background: #f0f4f8; color: #334e68; padding: 5px 10px; border-radius: 15px; font-size: 0.85rem;"
-                                th:text="${item.oferta.titulo}">Backend Dev</span>
-                        </td>
-                        <td>
-                            <a th:href="'mailto:' + ${item.alumno.usuario.correo}"
-                                style="text-decoration: none; color: #1976d2;">
-                                <i class="bi bi-envelope-at"></i> Enviar Email
-                            </a>
-                        </td>
-                        <td>
-                            <span
-                                th:text="${item.alumno.centroEducativo != null ? item.alumno.centroEducativo : 'N/A'}">IES
-                                Ejemplo</span>
-                        </td>
-                        <td>
-                            <button class="btn-pdf" style="padding: 6px 12px; font-size: 0.8rem; background: #2c3e50;">
-                                <i class="bi bi-file-earmark-person"></i> Ver CV
-                            </button>
-                        </td>
-                    </tr>
-                    <!-- Si no hay alumnos aceptados -->
-                    <tr th:if="${#lists.isEmpty(inscripciones)}">
-                        <td colspan="5" style="text-align: center; padding: 50px; color: #999;">
-                            <i class="bi bi-emoji-slight-smile" style="font-size: 2.5rem;"></i><br>
-                            Aún no tienes alumnos asignados. Acepta solicitudes en la sección correspondiente.
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div th:if="${param.estadoActualizado}" class="alerta-exito">
+            <i class="bi bi-check-circle-fill"></i>
+            Estado de la práctica actualizado correctamente.
         </div>
+
+        <div th:if="${param.errorEstado}" class="alerta-error">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            No se pudo actualizar el estado de la práctica.
+        </div>
+
+        <section class="alumnos-resumen">
+            <article class="alumno-stat">
+                <i class="bi bi-mortarboard"></i>
+                <div>
+                    <span>Total alumnos aceptados</span>
+                    <strong th:text="${alumnosPracticas.size()}">0</strong>
+                </div>
+            </article>
+
+            <article class="alumno-stat alumno-stat--ofertas">
+                <i class="bi bi-briefcase"></i>
+                <div>
+                    <span>Prácticas activas</span>
+                    <strong th:text="${alumnosPracticas.size()}">0</strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="alumnos-layout">
+
+            <article class="bloque alumnos-bloque">
+
+                <div class="alumnos-toolbar">
+                    <div>
+                        <h2><i class="bi bi-list-ul"></i> Listado de alumnos aceptados</h2>
+                        <p>Selecciona un alumno para ver su ficha rápida.</p>
+                    </div>
+
+                    <div class="buscador-alumnos">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="buscadorAlumnos" placeholder="Buscar alumno u oferta...">
+                    </div>
+                </div>
+
+                <div th:if="${#lists.isEmpty(alumnosPracticas)}" class="estado-vacio alumnos-vacio">
+                    <i class="bi bi-emoji-slight-smile"></i>
+                    <p>Aún no tienes alumnos asignados. Acepta solicitudes en la sección correspondiente.</p>
+
+                    <a th:href="@{/empresa/solicitudes}" class="btn-dash">
+                        <i class="bi bi-person-lines-fill"></i>
+                        Revisar solicitudes
+                    </a>
+                </div>
+
+                <div th:if="${not #lists.isEmpty(alumnosPracticas)}" class="alumnos-lista">
+
+                    <button type="button"
+                            class="alumno-card"
+                            th:each="item : ${alumnosPracticas}"
+                            th:attr="data-id=${item.id},
+                                data-nombre=${item.alumno.usuario.nombre + ' ' + item.alumno.usuario.apellidos},
+                                data-email=${item.alumno.usuario.correo},
+                                data-ciclo='No indicado',
+                                data-centro='No indicado',
+                                data-oferta=${item.oferta.titulo},
+                                data-estado-practica=${item.estadoPractica},
+                                data-cv=${item.alumno.cvUrl != null ? item.alumno.cvUrl : ''}">
+
+                        <div class="alumno-card__avatar">
+                            <span th:text="${#strings.substring(item.alumno.usuario.nombre, 0, 1)}">A</span>
+                        </div>
+
+                        <div class="alumno-card__info">
+                            <strong th:text="${item.alumno.usuario.nombre + ' ' + item.alumno.usuario.apellidos}">
+                                Nombre Alumno
+                            </strong>
+
+                            <small th:text="${item.oferta.titulo}">Oferta asociada</small>
+                        </div>
+
+                        <span class="alumno-card__estado"
+                            th:classappend="${item.estadoPractica.name() == 'PENDIENTE_INICIO'} ? ' estado-practica-pendiente' :
+                                            (${item.estadoPractica.name() == 'EN_PRACTICAS'} ? ' estado-practica-activa' : ' estado-practica-finalizada')">
+
+                            <i class="bi"
+                            th:classappend="${item.estadoPractica.name() == 'PENDIENTE_INICIO'} ? ' bi-clock-fill' :
+                                            (${item.estadoPractica.name() == 'EN_PRACTICAS'} ? ' bi-play-circle-fill' : ' bi-check-circle-fill')"></i>
+
+                            <span th:text="${item.estadoPractica.name() == 'PENDIENTE_INICIO'} ? 'Pendiente de inicio' :
+                                        (${item.estadoPractica.name() == 'EN_PRACTICAS'} ? 'En prácticas' : 'Finalizada')">
+                                Pendiente de inicio
+                            </span>
+                        </span>
+                    </button>
+
+                </div>
+
+            </article>
+
+            <aside class="ficha-alumno">
+
+                <div class="ficha-alumno__empty" id="fichaVacia">
+                    <i class="bi bi-person-badge"></i>
+                    <h3>Selecciona un alumno</h3>
+                    <p>Haz clic en un alumno aceptado para ver aquí su ficha rápida.</p>
+                </div>
+
+                <div class="ficha-alumno__contenido oculto" id="fichaContenido">
+                    <div class="ficha-alumno__avatar">
+                        <span id="fichaInicial">A</span>
+                    </div>
+
+                    <h2 id="fichaNombre">Nombre Alumno</h2>
+                    <p id="fichaEmail">correo@email.com</p>
+
+                    <div class="ficha-info">
+                        <div class="ficha-info__item">
+                            <span>Oferta asociada</span>
+                            <strong id="fichaOferta">Oferta</strong>
+                        </div>
+
+                        <div class="ficha-info__item">
+                            <span>Ciclo formativo</span>
+                            <strong id="fichaCiclo">Ciclo</strong>
+                        </div>
+
+                        <div class="ficha-info__item">
+                            <span>Centro educativo</span>
+                            <strong id="fichaCentro">Centro</strong>
+                        </div>
+
+                        <div class="ficha-info__item">
+                            <span>Estado de solicitud</span>
+                            <strong class="estado-aceptado">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Solicitud aceptada
+                            </strong>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/empresa/alumnos-fct/estado}" method="post" class="form-estado-practica">
+                        <input type="hidden" name="solicitudId" id="estadoSolicitudId">
+
+                        <label for="estadoPractica">Estado de la práctica</label>
+
+                        <select name="estadoPractica" id="estadoPractica">
+                            <option value="PENDIENTE_INICIO">Pendiente de inicio</option>
+                            <option value="EN_PRACTICAS">En prácticas</option>
+                            <option value="FINALIZADA">Finalizada</option>
+                        </select>
+
+                        <button type="submit" class="btn-dash">
+                            <i class="bi bi-save"></i>
+                            Actualizar estado
+                        </button>
+                    </form>
+
+                    <div class="ficha-acciones">
+                        <a href="#" class="btn-dash" id="fichaEmailLink">
+                            <i class="bi bi-envelope-at"></i>
+                            Enviar email
+                        </a>
+
+                        <a href="#" target="_blank" class="btn-cv" id="fichaCv">
+                            <i class="bi bi-file-earmark-person"></i>
+                            Ver CV
+                        </a>
+                    </div>
+
+                    <span class="ficha-sin-cv oculto" id="fichaSinCv">
+                        <i class="bi bi-file-earmark-x"></i>
+                        Este alumno no tiene CV subido.
+                    </span>
+                </div>
+
+            </aside>
+
+        </section>
+
     </main>
-    <script>
-        function toggleDropdown() {
-            const dropdown = document.getElementById("dropdown-perfil");
-            if (dropdown) {
-                dropdown.classList.toggle("show");
-            }
-        }
+</div>
 
-        // Cerrar el menú si se hace clic fuera[cite: 2]
-        window.onclick = function (event) {
-            if (!event.target.closest('.perfil-trigger')) {
-                const dropdowns = document.getElementsByClassName("dropdown-content");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    if (dropdowns[i].classList.contains('show')) {
-                        dropdowns[i].classList.remove('show');
-                    }
-                }
-            }
-        }
-    </script>
+<script th:src="@{/js/empresa/dashboard.js}"></script>
+<script th:src="@{/js/empresa/alumnos-fct.js}"></script>
+
 </body>
-
 </html>

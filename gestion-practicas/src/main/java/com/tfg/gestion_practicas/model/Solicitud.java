@@ -29,6 +29,11 @@ public class Solicitud {
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
 
+    @Builder.Default
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private EstadoPractica estadoPractica = EstadoPractica.PENDIENTE_INICIO;
+
     @ManyToOne
     @JoinColumn(name = "oferta_id") // Especificamos el nombre exacto en DB
     private Oferta oferta;

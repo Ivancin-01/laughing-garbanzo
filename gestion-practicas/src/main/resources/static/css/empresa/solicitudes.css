@@ -1,0 +1,379 @@
+/* =====================================================
+   SOLICITUDES EMPRESA
+   Página: /empresa/solicitudes
+   ===================================================== */
+
+.solicitudes-header {
+    margin-bottom: 28px;
+}
+
+.solicitudes-badge {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background-color: rgba(244, 168, 124, 0.16);
+    color: #b96b3f;
+    font-family: var(--fuente-titulo);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+/* Estadísticas superiores */
+
+.solicitudes-resumen {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.solicitud-stat {
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    padding: 20px;
+    border-radius: 18px;
+    background-color: var(--blanco);
+    border: 1px solid rgba(106, 143, 106, 0.14);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
+
+    animation: entradaSolicitudes 0.55s ease both;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.solicitud-stat:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.09);
+}
+
+.solicitud-stat > i {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.35rem;
+}
+
+.solicitud-stat span {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--texto-suave);
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+.solicitud-stat strong {
+    font-family: var(--fuente-titulo);
+    font-size: 1.6rem;
+    color: var(--texto);
+}
+
+.solicitud-stat--total > i {
+    background-color: rgba(106, 143, 106, 0.12);
+    color: var(--verde);
+}
+
+.solicitud-stat--pendiente > i {
+    background-color: rgba(244, 168, 124, 0.18);
+    color: #c97831;
+}
+
+.solicitud-stat--aceptada > i {
+    background-color: rgba(56, 142, 60, 0.13);
+    color: #2e7d32;
+}
+
+.solicitud-stat--rechazada > i {
+    background-color: rgba(217, 83, 79, 0.12);
+    color: #c74440;
+}
+
+/* Toolbar */
+
+.solicitudes-bloque {
+    padding: 0;
+    overflow: hidden;
+}
+
+.solicitudes-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 22px;
+
+    padding: 26px 28px;
+    border-bottom: 1px solid var(--crema-oscura);
+    background:
+        linear-gradient(135deg, rgba(106, 143, 106, 0.08), rgba(244, 168, 124, 0.08)),
+        var(--blanco);
+}
+
+.solicitudes-toolbar h2 {
+    margin: 0 0 6px;
+    font-family: var(--fuente-titulo);
+    font-size: 1.32rem;
+    color: var(--texto);
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.solicitudes-toolbar h2 i {
+    color: var(--verde);
+}
+
+.solicitudes-toolbar p {
+    margin: 0;
+    color: var(--texto-suave);
+}
+
+.solicitudes-filtros {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.buscador-solicitudes {
+    min-width: 260px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 11px 14px;
+    border-radius: 999px;
+    background-color: var(--blanco);
+    border: 1px solid var(--crema-oscura);
+
+    transition:
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        transform 0.22s ease;
+}
+
+.buscador-solicitudes:focus-within {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 4px rgba(106, 143, 106, 0.12);
+    transform: translateY(-1px);
+}
+
+.buscador-solicitudes i {
+    color: var(--verde);
+}
+
+.buscador-solicitudes input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--fuente-texto);
+    color: var(--texto);
+}
+
+.solicitudes-filtros select {
+    padding: 11px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--crema-oscura);
+    background-color: var(--blanco);
+    color: var(--texto);
+    font-family: var(--fuente-texto);
+    font-weight: 700;
+    cursor: pointer;
+
+    transition:
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        transform 0.22s ease;
+}
+
+.solicitudes-filtros select:focus {
+    outline: none;
+    border-color: var(--verde);
+    box-shadow: 0 0 0 4px rgba(106, 143, 106, 0.12);
+}
+
+/* Tabla */
+
+.tabla-solicitudes {
+    margin-top: 0;
+}
+
+.tabla-solicitudes th,
+.tabla-solicitudes td {
+    padding: 17px 18px;
+}
+
+.alumno-info {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.alumno-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--verde), var(--verde-claro));
+    color: var(--blanco);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: var(--fuente-titulo);
+    font-weight: 700;
+
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease;
+}
+
+tr:hover .alumno-avatar {
+    transform: rotate(-4deg) scale(1.05);
+    box-shadow: 0 8px 16px rgba(106, 143, 106, 0.22);
+}
+
+.alumno-info strong {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.alumno-info small {
+    display: block;
+    color: var(--texto-suave);
+    font-size: 0.83rem;
+}
+
+.estado-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 12px;
+    border-radius: 999px;
+
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.estado-pendiente {
+    background-color: #fff1db;
+    color: #a86617;
+}
+
+.estado-aceptada {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.estado-rechazada {
+    background-color: #fdeaea;
+    color: #c74440;
+}
+
+.sin-cv {
+    color: var(--texto-suave);
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+.procesada {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    color: var(--texto-suave);
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+.procesada i {
+    color: var(--verde);
+}
+
+.form-accion {
+    margin: 0;
+}
+
+.solicitudes-vacio {
+    margin: 26px;
+}
+
+.solicitudes-vacio i {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--verde);
+    font-size: 2rem;
+}
+
+.oculto {
+    display: none;
+}
+
+/* Animaciones */
+
+@keyframes entradaSolicitudes {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .solicitudes-resumen {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .solicitudes-toolbar {
+        flex-direction: column;
+    }
+
+    .solicitudes-filtros {
+        width: 100%;
+    }
+
+    .buscador-solicitudes {
+        flex: 1;
+        min-width: 220px;
+    }
+}
+
+@media (max-width: 700px) {
+    .solicitudes-resumen {
+        grid-template-columns: 1fr;
+    }
+
+    .solicitudes-filtros {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .buscador-solicitudes {
+        min-width: 100%;
+    }
+
+    .solicitudes-filtros select {
+        width: 100%;
+    }
+}

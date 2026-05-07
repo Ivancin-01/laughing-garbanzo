@@ -3,105 +3,200 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Editar Oferta</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
-        rel="stylesheet">
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/empresa/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/empresa/editar-oferta.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" th:href="@{/css/tutor/styles.css}">
-    <link rel="stylesheet" th:href="@{/css/alumno/perfil.css}">
 </head>
 
 <body>
-    <nav class="navbar-superior flex-between">
-        <div class="nav-izq">
-            <a th:href="@{/empresa/ofertas}" class="btn-volver-nav"
-                style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px;">
-                <i class="bi bi-arrow-left"></i> <span>Cancelar y Volver</span>
-            </a>
-        </div>
-        <div class="logo-central">
-            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
-        </div>
-        <div class="usuario-nav-container">
+
+<nav class="navbar-superior">
+    <div class="nav-izq">
+        <button id="btn-toggle-sidebar" class="btn-toggle" type="button">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+
+    <div class="logo-central">
+        <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+    </div>
+
+    <div class="usuario-nav-container perfil-trigger">
+        <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de empresa">
             <div class="info-usuario-nav">
                 <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
+                <p class="rol-nav">Empresa colaboradora</p>
             </div>
-            <img th:src="@{/img/default-company.png}" class="avatar-nav">
+
+            <div class="avatar-wrapper">
+                <span class="avatar-inicial" th:text="${#strings.substring(empresa.nombre, 0, 1)}">E</span>
+            </div>
+
+            <i class="bi bi-chevron-down perfil-flecha"></i>
+        </button>
+
+        <div id="dropdown-perfil" class="dropdown-content">
+            <a th:href="@{/empresa/dashboard}">
+                <i class="bi bi-grid-fill"></i>
+                <b>Dashboard</b>
+            </a>
+
+            <a th:href="@{/empresa/perfil}">
+                <i class="bi bi-building-gear"></i>
+                <b>Perfil empresa</b>
+            </a>
+
+            <a th:href="@{/empresa/configuracion}">
+                <i class="bi bi-gear"></i>
+                <b>Configuración</b>
+            </a>
+
+            <hr>
+
+            <a th:href="@{/logout}" class="dropdown-danger">
+                <i class="bi bi-box-arrow-right"></i>
+                <b>Cerrar sesión</b>
+            </a>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <main class="contenedor-perfil" style="margin-top: 40px;">
-        <div class="bloque">
-            <header style="margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
-                <h2 style="margin:0;"><i class="bi bi-pencil-square"></i> Editar Publicación</h2>
-                <p style="color: #666; margin-top: 5px;">Modifica los detalles de tu oferta de prácticas.</p>
-            </header>
+<div class="dashboard-container">
 
-            <form th:action="@{/empresa/ofertas/actualizar}" th:object="${oferta}" method="post" class="perfil-form">
-                <!-- ID oculto para que Hibernate sepa qué registro actualizar -->
-                <input type="hidden" th:field="*{id}">
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <a th:href="@{/empresa/dashboard}" class="sidebar-link">
+                <i class="bi bi-house-door"></i> Inicio
+            </a>
 
-                <div class="form-group" style="grid-column: span 2;">
-                    <label>Título de la posición</label>
-                    <input type="text" th:field="*{titulo}" placeholder="Ej: Desarrollador Java Junior (FCT)" required>
+            <a th:href="@{/empresa/ofertas}" class="sidebar-link active">
+                <i class="bi bi-megaphone"></i> Mis Ofertas
+            </a>
+
+            <a th:href="@{/empresa/solicitudes}" class="sidebar-link">
+                <i class="bi bi-person-lines-fill"></i> Solicitudes Recibidas
+            </a>
+
+            <a th:href="@{/empresa/alumnos-fct}" class="sidebar-link">
+                <i class="bi bi-mortarboard"></i> Alumnos en Prácticas
+            </a>
+
+            <a th:href="@{/empresa/configuracion}" class="sidebar-link">
+                <i class="bi bi-gear"></i> Configuración
+            </a>
+        </nav>
+    </aside>
+
+    <main class="contenedor">
+
+        <header class="dashboard-header editar-oferta-header flex-between">
+            <div>
+                <span class="editar-oferta-badge">Edición de oferta</span>
+                <h1>Editar publicación</h1>
+                <p>Modifica los detalles de tu oferta de prácticas antes de guardarla.</p>
+            </div>
+
+            <a th:href="@{/empresa/ofertas}" class="btn-dash btn-dash--secundario">
+                <i class="bi bi-arrow-left"></i>
+                Volver a ofertas
+            </a>
+        </header>
+
+        <section class="editar-oferta-layout">
+
+            <article class="editar-oferta-card">
+
+                <div class="editar-oferta-card__header">
+                    <div class="editar-oferta-icono">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
+
+                    <div>
+                        <h2>Datos de la oferta</h2>
+                        <p>Actualiza título, modalidad, plazas y descripción de la publicación.</p>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Modalidad</label>
-                    <select th:field="*{modalidad}" class="form-control-custom"
-                        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                        <option value="Presencial">Presencial</option>
-                        <option value="Remoto">Remoto</option>
-                        <option value="Híbrido">Híbrido</option>
-                    </select>
-                </div>
+                <form th:action="@{/empresa/ofertas/actualizar}" th:object="${oferta}" method="post" class="oferta-form">
 
-                <div class="form-group">
-                    <label>Plazas disponibles</label>
-                    <input type="number" th:field="*{plazas}" min="1" required>
-                </div>
+                    <input type="hidden" th:field="*{id}">
 
-                <div class="form-group" style="grid-column: span 2;">
-                    <label>Descripción detallada</label>
-                    <textarea th:field="*{descripcion}" rows="6"
-                        style="width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-family: inherit;"
-                        placeholder="Describe las tareas, requisitos y tecnologías..."></textarea>
-                </div>
+                    <div class="form-grupo form-grupo--completo">
+                        <label for="titulo">Título de la posición</label>
+                        <input type="text"
+                               id="titulo"
+                               th:field="*{titulo}"
+                               placeholder="Ej: Desarrollador Java Junior"
+                               required>
+                    </div>
 
-                <div style="grid-column: span 2; display: flex; gap: 15px; margin-top: 20px;">
-                    <button type="submit" class="btn-guardar" style="flex: 1;">
-                        <i class="bi bi-cloud-arrow-up-fill"></i> Guardar Cambios
-                    </button>
-                    <a th:href="@{/empresa/ofertas}" class="btn-pdf"
-                        style="flex: 1; text-align: center; text-decoration: none; background: #6c757d; display: flex; align-items: center; justify-content: center; color: white;">
-                        Cancelar
-                    </a>
-                </div>
-            </form>
-        </div>
+                    <div class="form-grupo">
+                        <label for="modalidad">Modalidad</label>
+                        <select id="modalidad" th:field="*{modalidad}">
+                            <option value="Presencial">Presencial</option>
+                            <option value="Remoto">Remoto</option>
+                            <option value="Híbrido">Híbrido</option>
+                        </select>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="plazas">Plazas disponibles</label>
+                        <input type="number"
+                               id="plazas"
+                               th:field="*{plazas}"
+                               min="1"
+                               required>
+                    </div>
+
+                    <div class="form-grupo form-grupo--completo">
+                        <label for="descripcion">Descripción detallada</label>
+                        <textarea id="descripcion"
+                                  th:field="*{descripcion}"
+                                  rows="6"
+                                  placeholder="Describe las tareas, requisitos, tecnologías y condiciones de la oferta..."></textarea>
+                    </div>
+
+                    <div class="editar-oferta-acciones form-grupo--completo">
+                        <button type="submit" class="btn-dash">
+                            <i class="bi bi-cloud-arrow-up-fill"></i>
+                            Guardar cambios
+                        </button>
+
+                        <a th:href="@{/empresa/ofertas}" class="btn-cancelar">
+                            <i class="bi bi-x-circle"></i>
+                            Cancelar
+                        </a>
+                    </div>
+
+                </form>
+
+            </article>
+
+            <aside class="editar-oferta-ayuda">
+                <h3><i class="bi bi-lightbulb"></i> Consejos</h3>
+
+                <ul>
+                    <li>Usa un título claro y fácil de entender.</li>
+                    <li>Indica modalidad y plazas reales disponibles.</li>
+                    <li>Describe tareas, tecnologías y requisitos básicos.</li>
+                    <li>Evita textos demasiado cortos o poco concretos.</li>
+                </ul>
+            </aside>
+
+        </section>
+
     </main>
+</div>
 
-    <script>
-        function toggleDropdown() {
-            const dropdown = document.getElementById("dropdown-perfil");
-            if (dropdown) {
-                dropdown.classList.toggle("show");
-            }
-        }
+<script th:src="@{/js/empresa/dashboard.js}"></script>
 
-        // Cerrar el menú si se hace clic fuera[cite: 2]
-        window.onclick = function (event) {
-            if (!event.target.closest('.perfil-trigger')) {
-                const dropdowns = document.getElementsByClassName("dropdown-content");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    if (dropdowns[i].classList.contains('show')) {
-                        dropdowns[i].classList.remove('show');
-                    }
-                }
-            }
-        }
-    </script>
 </body>
-
 </html>

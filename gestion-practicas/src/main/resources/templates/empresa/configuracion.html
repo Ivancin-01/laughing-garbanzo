@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Configuración Empresa</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/empresa/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/empresa/configuracion.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+        
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de empresa">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
+                    <p class="rol-nav">Empresa colaboradora</p>
+                </div>
+
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(empresa.nombre, 0, 1)}">E</span>
+                </div>
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/empresa/perfil}">
+                    <i class="bi bi-building-gear"></i>
+                    <b>Perfil empresa</b>
+                </a>
+                <a th:href="@{/empresa/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/empresa/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i> Inicio
+                </a>
+
+                <a th:href="@{/empresa/ofertas}" class="sidebar-link">
+                    <i class="bi bi-megaphone"></i> Mis Ofertas
+                </a>
+
+                <a th:href="@{/empresa/solicitudes}" class="sidebar-link">
+                    <i class="bi bi-person-lines-fill"></i> Solicitudes Recibidas
+                </a>
+
+                <a th:href="@{/empresa/alumnos-fct}" class="sidebar-link">
+                    <i class="bi bi-mortarboard"></i> Alumnos en Prácticas
+                </a>
+                
+                <a th:href="@{/empresa/configuracion}" class="sidebar-link active">
+                    <i class="bi bi-gear"></i> Configuración
+                </a>
+            </nav>
+        </aside>
+        <main class="contenedor">
+            <header class="dashboard-header">
+                <span class="config-badge">Ajustes de empresa</span>
+                <h1>Configuración de <span th:text="${empresa.nombre}">Empresa</span></h1>
+                <p>Actualiza la seguridad, los datos de contacto y las preferencias de tu cuenta.</p>
+            </header>
+
+            <div th:if="${param.passwordActualizada}" class="alerta-exito">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Contraseña actualizada correctamente.</span>
+            </div>
+
+            <div th:if="${param.datosActualizados}" class="alerta-exito">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Datos de contacto actualizados correctamente.</span>
+            </div>
+
+            <div th:if="${param.errorPassword}" class="alerta-error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>No se pudo actualizar la contraseña. Revisa la contraseña actual y que ambas nuevas coincidan.</span>
+            </div>
+
+            <div th:if="${param.errorContacto}" class="alerta-error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>No se pudieron actualizar los datos de contacto. Revisa el email y el teléfono.</span>
+            </div>
+
+            <div th:if="${param.errorNotificaciones}" class="alerta-error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>No se pudieron actualizar las preferencias de notificación.</span>
+            </div>
+
+            <div th:if="${param.notificacionesActualizadas}" class="alerta-exito">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Preferencias de notificación actualizadas correctamente.</span>
+            </div>
+
+
+            <section class="config-grid">
+                <!-- CARD 1: CAMBIAR CONTRASEÑA -->
+                <article class="config-card config-card--principal">
+                    <div class="config-card__header">
+                        <div class="config-card__icono">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <div>
+                            <h2>Cambiar contraseña</h2>
+                            <p>Actualiza tu contraseña para mantener protegida la cuenta de empresa.</p>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/empresa/configuracion/password}" method="post" class="config-form">
+                        <div class="form-grupo">
+                            <label for="passwordActual">Contraseña actual</label>
+                            <input type="password" id="passwordActual" name="passwordActual" required>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="passwordNueva">Nueva contraseña</label>
+                            <input type="password" id="passwordNueva" name="passwordNueva" minlength="6" required>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="passwordConfirmacion">Confirmar nueva contraseña</label>
+                            <input type="password" id="passwordConfirmacion" name="passwordConfirmacion" minlength="6" required>
+                        </div>
+
+                        <button type="submit" class="btn-dash">
+                            <i class="bi bi-key"></i>
+                            Guardar contraseña
+                        </button>
+                    </form>
+                </article>
+
+                <!-- CARD 2: DATOS DE CONTACTO -->
+                <article class="config-card">
+                    <div class="config-card__header">
+                        <div class="config-card__icono">
+                            <i class="bi bi-envelope-paper"></i>
+                        </div>
+
+                        <div>
+                            <h2>Datos de contacto</h2>
+                            <p>Información visible para tutores o alumnos cuando consulten tus ofertas.</p>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/empresa/configuracion/contacto}" method="POST" class="config-form">
+                        <div class="form-grupo">
+                            <label for="emailContacto">Email de contacto</label>
+                            <input type="email" id="emailContacto" name="emailContacto"
+                                th:value="${empresa.emailContacto}" placeholder="contacto@empresa.com">
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="telefonoContacto">Teléfono</label>
+                            <input type="text" id="telefonoContacto" name="telefonoContacto"
+                                th:value="${empresa.telefono}" placeholder="600 000 000">
+                        </div>
+
+                        <button type="submit" class="btn-dash">
+                            <i class="bi bi-save"></i>
+                            Guardar contacto
+                        </button>
+                    </form>
+                </article>
+
+                <!-- CARD 3: NOTIFICACIONES -->
+                <article class="config-card">
+                    <div class="config-card__header">
+                        <div class="config-card__icono">
+                            <i class="bi bi-bell"></i>
+                        </div>
+
+                        <div>
+                            <h2>Notificaciones</h2>
+                            <p>Elige qué avisos quieres recibir relacionados con ofertas y solicitudes.</p>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/empresa/configuracion/notificaciones}" method="POST" class="config-form">
+                        <label class="switch-row">
+                            <span>
+                                <strong>Nuevas solicitudes</strong>
+                                <small>Recibir aviso cuando un alumno solicite una oferta.</small>
+                            </span>
+                            <input type="checkbox" name="notificarSolicitudes" th:checked="${empresa.notificarSolicitudes}">
+                        </label>
+
+                        <label class="switch-row">
+                            <span>
+                                <strong>Resumen semanal</strong>
+                                <small>Recibir un resumen de actividad de la empresa.</small>
+                            </span>
+                            <input type="checkbox" name="resumenSemanal" th:checked="${empresa.resumenSemanal}">
+                        </label>
+
+                        <button type="submit" class="btn-dash">
+                            <i class="bi bi-bell-fill"></i>
+                            Guardar preferencias
+                        </button>
+                    </form>
+                </article>
+
+                <!-- CARD 4: SEGURIDAD -->
+                <article class="config-card config-card--seguridad">
+                    <div class="config-card__header">
+                        <div class="config-card__icono">
+                            <i class="bi bi-person-lock"></i>
+                        </div>
+                        <div>
+                            <h2>Seguridad de la cuenta</h2>
+                            <p>Revisa acciones rápidas relacionadas con el acceso al panel de empresa.</p>
+                        </div>
+                    </div>
+                    <div class="seguridad-lista">
+                        <div class="seguridad-item">
+                            <i class="bi bi-check-circle">
+                                <span>Sesión activa como empresa colaboradora</span>
+                            </i>
+                        </div>
+                        <div class="seguridad-item">
+                            <i class="bi bi-shield-check"></i>
+                            <span>Contraseña protegida mediante cifrado</span>
+                        </div>
+                        <a th:href="@{/logout}" class="btn-mini btn-mini--rechazar">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Cerrar sesión
+                        </a>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+    <script th:src="@{/js/empresa/dashboard.js}"></script>
+</body>
+</html>

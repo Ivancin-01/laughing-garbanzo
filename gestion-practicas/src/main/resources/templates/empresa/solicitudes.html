@@ -3,164 +3,287 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>FP Connect | Gestión de Solicitudes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Solicitudes Recibidas</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+          rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/empresa/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/empresa/solicitudes.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <style>
-        body {
-            font-family: 'Lato', sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-        }
-
-        .contenedor {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .bloque {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 2px solid #eee;
-            color: #555;
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            vertical-align: middle;
-        }
-
-        /* Badges de estado */
-        .estado-pendiente {
-            background: #fff3cd;
-            color: #856404;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .estado-aceptado {
-            background: #d4edda;
-            color: #155724;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .estado-rechazado {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .btn-accion {
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 4px;
-            cursor: pointer;
-            color: white;
-            transition: 0.3s;
-        }
-
-        .btn-aceptar {
-            background: #28a745;
-        }
-
-        .btn-rechazar {
-            background: #dc3545;
-        }
-
-        .btn-aceptar:hover {
-            background: #218838;
-        }
-
-        .btn-rechazar:hover {
-            background: #c82333;
-        }
-    </style>
 </head>
 
 <body>
 
-    <main class="contenedor">
-        <div class="bloque">
-            <h2>Solicitudes Recibidas</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Alumno</th>
-                        <th>Oferta</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="solicitud : ${solicitudes}">
-                        <td th:text="${solicitud.alumno.usuario.nombre + ' ' + solicitud.alumno.usuario.apellidos}">
-                            Nombre</td>
-                        <td th:text="${solicitud.oferta.titulo}">Oferta</td>
+<nav class="navbar-superior">
+    <div class="nav-izq">
+        <button id="btn-toggle-sidebar" class="btn-toggle" type="button">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
 
-                        <!-- Columna Estado -->
-                        <td>
-                            <span th:class="${'estado-' + solicitud.estado.name().toLowerCase()}"
-                                th:text="${solicitud.estado.name()}">PENDIENTE</span>
-                        </td>
+    <div class="logo-central">
+        <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+    </div>
 
-                        <!-- Columna Acciones -->
-                        <td>
-                            <div th:if="${solicitud.estado.name() == 'PENDIENTE'}" style="display: flex; gap: 10px;">
+    <div class="usuario-nav-container perfil-trigger">
+        <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de empresa">
+            <div class="info-usuario-nav">
+                <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
+                <p class="rol-nav">Empresa colaboradora</p>
+            </div>
 
-                                <!-- Botón ACEPTAR -->
-                                <form th:action="@{/empresa/solicitudes/gestionar}" method="post">
-                                    <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
-                                    <input type="hidden" name="nuevoEstado" value="ACEPTADA">
-                                    <button type="submit" class="btn-accion btn-aceptar" title="Aceptar">
-                                        <i class="bi bi-check"></i>
-                                    </button>
-                                </form>
+            <div class="avatar-wrapper">
+                <span class="avatar-inicial" th:text="${#strings.substring(empresa.nombre, 0, 1)}">E</span>
+            </div>
 
-                                <!-- Botón RECHAZAR -->
-                                <form th:action="@{/empresa/solicitudes/gestionar}" method="post">
-                                    <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
-                                    <input type="hidden" name="nuevoEstado" value="RECHAZADA">
-                                    <button type="submit" class="btn-accion btn-rechazar" title="Rechazar">
-                                        <i class="bi bi-x"></i>
-                                    </button>
-                                </form>
+            <i class="bi bi-chevron-down perfil-flecha"></i>
+        </button>
 
-                            </div>
-                            <span th:unless="${solicitud.estado.name() == 'PENDIENTE'}"
-                                style="color: #999; font-size: 0.85rem;">
-                                Procesada
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div id="dropdown-perfil" class="dropdown-content">
+            <a th:href="@{/empresa/perfil}">
+                <i class="bi bi-building-gear"></i>
+                <b>Perfil empresa</b>
+            </a>
+
+            <a th:href="@{/empresa/configuracion}">
+                <i class="bi bi-gear"></i>
+                <b>Configuración</b>
+            </a>
+
+            <hr>
+
+            <a th:href="@{/logout}" class="dropdown-danger">
+                <i class="bi bi-box-arrow-right"></i>
+                <b>Cerrar sesión</b>
+            </a>
         </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <a th:href="@{/empresa/dashboard}" class="sidebar-link">
+                <i class="bi bi-house-door"></i> Inicio
+            </a>
+
+            <a th:href="@{/empresa/ofertas}" class="sidebar-link">
+                <i class="bi bi-megaphone"></i> Mis Ofertas
+            </a>
+
+            <a th:href="@{/empresa/solicitudes}" class="sidebar-link active">
+                <i class="bi bi-person-lines-fill"></i> Solicitudes Recibidas
+            </a>
+
+            <a th:href="@{/empresa/alumnos-fct}" class="sidebar-link">
+                <i class="bi bi-mortarboard"></i> Alumnos en Prácticas
+            </a>
+
+            <a th:href="@{/empresa/configuracion}" class="sidebar-link">
+                <i class="bi bi-gear"></i> Configuración
+            </a>
+        </nav>
+    </aside>
+
+    <main class="contenedor">
+
+        <header class="dashboard-header solicitudes-header flex-between">
+            <div>
+                <span class="solicitudes-badge">Gestión de candidaturas</span>
+                <h1>Solicitudes recibidas</h1>
+                <p>Revisa los alumnos que han solicitado tus ofertas y gestiona su estado.</p>
+            </div>
+
+            <a th:href="@{/empresa/dashboard}" class="btn-dash">
+                <i class="bi bi-arrow-left"></i>
+                Volver al panel
+            </a>
+        </header>
+
+        <section class="solicitudes-resumen">
+            <article class="solicitud-stat solicitud-stat--total">
+                <i class="bi bi-inbox"></i>
+                <div>
+                    <span>Total solicitudes</span>
+                    <strong th:text="${solicitudes.size()}">0</strong>
+                </div>
+            </article>
+
+            <article class="solicitud-stat solicitud-stat--pendiente">
+                <i class="bi bi-hourglass-split"></i>
+                <div>
+                    <span>Pendientes</span>
+                    <strong th:text="${solicitudes.?[estado.name() == 'PENDIENTE'].size()}">0</strong>
+                </div>
+            </article>
+
+            <article class="solicitud-stat solicitud-stat--aceptada">
+                <i class="bi bi-check-circle"></i>
+                <div>
+                    <span>Aceptadas</span>
+                    <strong th:text="${solicitudes.?[estado.name() == 'ACEPTADA'].size()}">0</strong>
+                </div>
+            </article>
+
+            <article class="solicitud-stat solicitud-stat--rechazada">
+                <i class="bi bi-x-circle"></i>
+                <div>
+                    <span>Rechazadas</span>
+                    <strong th:text="${solicitudes.?[estado.name() == 'RECHAZADA'].size()}">0</strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="bloque solicitudes-bloque">
+
+            <div class="solicitudes-toolbar">
+                <div>
+                    <h2><i class="bi bi-person-badge-fill"></i> Listado de solicitudes</h2>
+                    <p>Filtra por alumno, oferta o estado para encontrar candidaturas rápidamente.</p>
+                </div>
+
+                <div class="solicitudes-filtros">
+                    <div class="buscador-solicitudes">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="buscadorSolicitudes" placeholder="Buscar alumno u oferta...">
+                    </div>
+
+                    <select id="filtroEstado">
+                        <option value="TODAS">Todas</option>
+                        <option value="PENDIENTE">Pendientes</option>
+                        <option value="ACEPTADA">Aceptadas</option>
+                        <option value="RECHAZADA">Rechazadas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(solicitudes)}" class="estado-vacio solicitudes-vacio">
+                <i class="bi bi-inbox"></i>
+                <p>No tienes solicitudes recibidas todavía.</p>
+            </div>
+
+            <div th:if="${not #lists.isEmpty(solicitudes)}" class="tabla-wrapper">
+                <table class="tabla-solicitudes">
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Oferta</th>
+                            <th>Estado</th>
+                            <th>CV</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr class="fila-solicitud"
+                            th:each="solicitud : ${solicitudes}"
+                            th:attr="data-estado=${solicitud.estado.name()},
+                                     data-alumno=${solicitud.alumno.usuario.nombre + ' ' + solicitud.alumno.usuario.apellidos},
+                                     data-oferta=${solicitud.oferta.titulo}">
+
+                            <td>
+                                <div class="alumno-info">
+                                    <div class="alumno-avatar">
+                                        <span th:text="${#strings.substring(solicitud.alumno.usuario.nombre, 0, 1)}">A</span>
+                                    </div>
+
+                                    <div>
+                                        <strong th:text="${solicitud.alumno.usuario.nombre + ' ' + solicitud.alumno.usuario.apellidos}">
+                                            Nombre Alumno
+                                        </strong>
+                                        <small th:text="${solicitud.alumno.usuario.correo}">
+                                            alumno@email.com
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <strong th:text="${solicitud.oferta.titulo}">Oferta</strong>
+                                <small class="texto-tabla-suave"
+                                       th:if="${solicitud.oferta.modalidad != null}"
+                                       th:text="${solicitud.oferta.modalidad}">
+                                    Modalidad
+                                </small>
+                            </td>
+
+                            <td>
+                                <span th:class="${'estado-badge estado-' + solicitud.estado.name().toLowerCase()}"
+                                      th:text="${solicitud.estado.name()}">
+                                    PENDIENTE
+                                </span>
+                            </td>
+
+                            <td>
+                                <a th:if="${solicitud.alumno.cvUrl != null}"
+                                   th:href="${solicitud.alumno.cvUrl}"
+                                   target="_blank"
+                                   class="btn-mini">
+                                    <i class="bi bi-file-earmark-pdf"></i>
+                                    Ver CV
+                                </a>
+
+                                <span th:unless="${solicitud.alumno.cvUrl != null}" class="sin-cv">
+                                    Sin CV
+                                </span>
+                            </td>
+
+                            <td>
+                                <div th:if="${solicitud.estado.name() == 'PENDIENTE'}" class="acciones-tabla">
+
+                                    <form th:action="@{/empresa/solicitudes/gestionar}" method="post" class="form-accion">
+                                        <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
+                                        <input type="hidden" name="nuevoEstado" value="ACEPTADA">
+
+                                        <button type="submit"
+                                                class="btn-mini btn-mini--aceptar btn-confirmar"
+                                                data-mensaje="¿Seguro que quieres aceptar esta solicitud?">
+                                            <i class="bi bi-check-lg"></i>
+                                            Aceptar
+                                        </button>
+                                    </form>
+
+                                    <form th:action="@{/empresa/solicitudes/gestionar}" method="post" class="form-accion">
+                                        <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
+                                        <input type="hidden" name="nuevoEstado" value="RECHAZADA">
+
+                                        <button type="submit"
+                                                class="btn-mini btn-mini--rechazar btn-confirmar"
+                                                data-mensaje="¿Seguro que quieres rechazar esta solicitud?">
+                                            <i class="bi bi-x-lg"></i>
+                                            Rechazar
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                                <span th:unless="${solicitud.estado.name() == 'PENDIENTE'}" class="procesada">
+                                    <i class="bi bi-check2-circle"></i>
+                                    Procesada
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div id="sinResultados" class="estado-vacio solicitudes-vacio oculto">
+                    <i class="bi bi-search"></i>
+                    <p>No hay solicitudes que coincidan con el filtro.</p>
+                </div>
+            </div>
+
+        </section>
+
     </main>
+</div>
+
+<script th:src="@{/js/empresa/dashboard.js}"></script>
+<script th:src="@{/js/empresa/solicitudes.js}"></script>
 
 </body>
-
 </html>
