@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FP Connect</title>
+
+  <!-- Favicon personalizado de FP Connect -->
+  <link rel="icon" type="image/svg+xml" th:href="@{/img/favicon.png}">
  
   <!-- Google Fonts: Poppins para títulos, Lato para texto normal -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,16 +48,54 @@
   ======================================================== -->
   <section class="hero" id="inicio">
     <div class="hero__texto">
-      <h1>Tu futuro profesional <span class="texto-verde">empieza aquí</span></h1>
-      <p>FP Connect conecta a los alumnos de Formación Profesional con empresas reales para sus prácticas. Fácil, rápido y supervisado por tu tutor.</p>
-      <a href="#como-funciona" class="btn-principal">Ver cómo funciona</a>
+      <span class="hero__badge">Plataforma de prácticas para FP</span>
+      <h1>Conecta alumnos de FP con <span class="texto-verde">empresas reales</span></h1>
+      <p>FP Connect centraliza ofertas, solicitudes y seguimiento de prácticas para que
+      alumnos, empresas y tutores trabajen de forma más clara, rápida y organizada.</p>
+      
+      <div class="hero_acciones">
+        <a href="/login" class="btn-principal">Empezar ahora</a>
+        <a href="#como-funciona" class="btn-secundario">Ver cómo funciona</a>
+      </div>
+
+      <div class="hero__datos">
+        <div><strong>+320</strong><span>alumnos conectados</span></div>
+        <div><strong>87</strong><span>empresas colaboradoras</span></div>
+        <div><strong>95%</strong><span>satisfacción</span></div>
+      </div>
     </div>
     <div class="hero__imagen">
-      <!-- Imagen decorativa con animación bounce definida en CSS -->
-      <div class="hero__tarjeta animacion-bounce">
-        <p>👨‍💻 Ana García encontró sus prácticas en <strong>DAW</strong></p>
-        <p class="tarjeta-estado">✅ Prácticas confirmadas</p>
-      </div>
+      <div class="hero__decoracion hero__decoracion--dos"></div>
+      <div class="hero__decoracion hero__decoracion--uno"></div>
+      
+      <article class="hero__tarjeta animacion-bounce">
+        
+        <div class="hero__tarjeta-header">
+          <span class="hero__avatar">FP</span>
+          <div>
+            <h3>Ana García</h3>
+            <p>Alumna DAW · 2º curso</p>
+          </div>
+        </div>
+
+        <div class="hero__oferta">
+          <span class="hero__tag">Nueva solicitud</span>
+          <h4>Prácticas Frontend Developer</h4>
+          <p>TechStart S.L. · Modalidad híbrida</p>
+        </div>
+
+        <div class="hero__progreso">
+          <div class="hero__progreso-info">
+            <span>Proceso completado</span>
+            <strong>75%</strong>
+          </div>
+          <div class="hero__barra">
+            <span></span>
+          </div>
+        </div>
+
+        <p class="tarjeta-estado">Solicitud enviada correctamente.</p>
+      </article>
     </div>
   </section>
  
@@ -70,18 +111,21 @@
     <div class="cards-grid">
  
       <div class="card">
+        <span class="card__numero">01</span>
         <div class="card__icono">🎓</div>
         <h3>Alumno</h3>
         <p>Busca ofertas de prácticas, filtra por tu ciclo formativo y envía tu solicitud directamente a la empresa.</p>
       </div>
  
       <div class="card card--destacada">
+        <span class="card__numero">02</span>
         <div class="card__icono">🏢</div>
         <h3>Empresa</h3>
         <p>Publica tus plazas de prácticas y revisa las solicitudes que recibas. El recruiter gestiona todo desde su panel.</p>
       </div>
  
       <div class="card">
+        <span class="card__numero">03</span>
         <div class="card__icono">👨‍🏫</div>
         <h3>Tutor</h3>
         <p>Supervisa las comunicaciones de tus alumnos y haz seguimiento de todo el proceso desde un único sitio.</p>
@@ -165,9 +209,41 @@
        FOOTER
   ======================================================== -->
   <footer class="footer">
-    <p><span class="logo-fp">FP</span><span class="logo-connect">Connect</span> &mdash; Trabajo de Fin de Grado &middot; DAW</p>
-    <p class="footer__sub">Conectando talento FP con empresas reales.</p>
-  </footer>
+    <div class="footer__contenido">
+
+      <div class="footer__marca">
+        <h2><span class="logo-fp">FP</span><span class="logo-connect">Connect</span></h2>
+        <p>Conectando talento de Formación Profesional con empresas reales.</p>
+      </div>
+
+      <div class="footer__columna">
+        <h3>Plataforma</h3>
+        <a href="#inicio">Inicio</a>
+        <a href="#como-funciona">Cómo funciona</a>
+        <a href="#opiniones">Opiniones</a>
+      </div>
+
+      <div class="footer__columna">
+        <h3>Roles</h3>
+        <a href="/login">Alumno</a>
+        <a href="/login">Empresa</a>
+        <a href="/login">Tutor</a>
+      </div>
+
+      <div class="footer__columna">
+        <h3>Proyecto</h3>
+        <span>Trabajo de Fin de Grado</span>
+        <span>DAW</span>
+        <span>FP Connect</span>
+      </div>
+
+    </div>
+
+    <div class="footer__bottom">
+      <p>&copy; 2025 FP Connect. Proyecto académico desarrollado para DAW.</p>
+      <a href="#inicio" class="footer__volver">Volver arriba ↑</a>
+    </div>
+</footer>
  
  
   <!-- jQuery (necesario antes de jQuery UI) -->
