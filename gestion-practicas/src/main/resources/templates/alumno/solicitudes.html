@@ -1,52 +1,266 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 
 <head>
-    <title>Mis Solicitudes</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Mis Solicitudes</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/alumno/solicitudes.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
-<body class="container mt-5">
+<body>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Mis Solicitudes de Prácticas</h1>
-        <a href="/alumno/dashboard" class="btn btn-secondary">Volver al inicio</a>
+    <!-- Navbar Superior -->
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button" aria-label="Abrir menú lateral">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de alumno">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav"
+                       th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                        Nombre Alumno
+                    </p>
+                    <p class="rol-nav">Alumno</p>
+                </div>
+
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(alumno.usuario.nombre, 0, 1)}">A</span>
+                </div>
+
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/alumno/dashboard}">
+                    <i class="bi bi-grid-fill"></i>
+                    <b>Dashboard</b>
+                </a>
+
+                <a th:href="@{/alumno/perfil}">
+                    <i class="bi bi-person-circle"></i>
+                    <b>Mi perfil</b>
+                </a>
+
+                <a th:href="@{/alumno/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/alumno/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i> Inicio
+                </a>
+
+                <a th:href="@{/ofertas}" class="sidebar-link">
+                    <i class="bi bi-search"></i> Buscar Ofertas
+                </a>
+
+                <a th:href="@{/alumno/solicitudes}" class="sidebar-link active">
+                    <i class="bi bi-send"></i> Mis Solicitudes
+                </a>
+
+                <a th:href="@{/alumno/perfil}" class="sidebar-link">
+                    <i class="bi bi-person-vcard"></i> Mi Perfil
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="contenedor">
+
+            <header class="solicitudes-hero">
+                <div class="solicitudes-hero__texto">
+                    <span class="hero-etiqueta">Seguimiento</span>
+                    <h1>Mis solicitudes de prácticas</h1>
+                    <p>
+                        Consulta el estado de las ofertas a las que te has inscrito y revisa cómo avanza cada candidatura.
+                    </p>
+                </div>
+
+                <div class="hero-icono">
+                    <i class="bi bi-send-check"></i>
+                </div>
+            </header>
+
+            <section class="resumen-grid">
+                <article class="resumen-card">
+                    <div class="resumen-icono">
+                        <i class="bi bi-collection"></i>
+                    </div>
+
+                    <div>
+                        <span>Total</span>
+                        <strong th:text="${totalSolicitudes}">0</strong>
+                    </div>
+                </article>
+
+                <article class="resumen-card resumen-card--pendiente">
+                    <div class="resumen-icono">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+
+                    <div>
+                        <span>Pendientes</span>
+                        <strong th:text="${pendientes}">0</strong>
+                    </div>
+                </article>
+
+                <article class="resumen-card resumen-card--aceptada">
+                    <div class="resumen-icono">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+
+                    <div>
+                        <span>Aceptadas</span>
+                        <strong th:text="${aceptadas}">0</strong>
+                    </div>
+                </article>
+
+                <article class="resumen-card resumen-card--rechazada">
+                    <div class="resumen-icono">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+
+                    <div>
+                        <span>Rechazadas</span>
+                        <strong th:text="${rechazadas}">0</strong>
+                    </div>
+                </article>
+            </section>
+
+            <section class="acciones-superiores">
+                <div>
+                    <h2>Historial de candidaturas</h2>
+                    <p>Estas son las solicitudes que has enviado desde tu cuenta.</p>
+                </div>
+
+                <a th:href="@{/ofertas}" class="btn-buscar-ofertas">
+                    <i class="bi bi-search"></i>
+                    Buscar más ofertas
+                </a>
+            </section>
+
+            <!-- Estado vacío -->
+            <section class="estado-vacio" th:if="${#lists.isEmpty(solicitudes)}">
+                <div class="estado-vacio__icono">
+                    <i class="bi bi-inbox"></i>
+                </div>
+
+                <h2>Aún no has enviado solicitudes</h2>
+
+                <p>
+                    Cuando te inscribas en una oferta, aparecerá aquí junto con su estado.
+                </p>
+
+                <a th:href="@{/ofertas}" class="btn-buscar-ofertas">
+                    Ver ofertas disponibles
+                </a>
+            </section>
+
+            <!-- Listado -->
+            <section class="solicitudes-lista" th:if="${not #lists.isEmpty(solicitudes)}">
+
+                <article class="solicitud-card" th:each="s : ${solicitudes}">
+
+                    <div class="solicitud-card__principal">
+                        <div class="empresa-icono">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+                        <div class="solicitud-info">
+                            <span class="empresa-nombre"
+                                  th:text="${s.oferta != null && s.oferta.empresa != null ? s.oferta.empresa.nombre : 'Empresa no asignada'}">
+                                Empresa
+                            </span>
+
+                            <h3 th:text="${s.oferta != null ? s.oferta.titulo : 'Oferta no disponible'}">
+                                Título oferta
+                            </h3>
+
+                            <div class="solicitud-meta">
+                                <span>
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span th:text="${s.fechaSolicitud != null ? #temporals.format(s.fechaSolicitud, 'dd/MM/yyyy') : 'Sin fecha'}">
+                                        01/01/2026
+                                    </span>
+                                </span>
+
+                                <span th:if="${s.oferta != null}">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span th:text="${s.oferta.ciudad != null ? s.oferta.ciudad : 'Sin ciudad'}">
+                                        Madrid
+                                    </span>
+                                </span>
+
+                                <span th:if="${s.oferta != null}">
+                                    <i class="bi bi-laptop"></i>
+                                    <span th:text="${s.oferta.modalidad != null ? s.oferta.modalidad : 'Sin modalidad'}">
+                                        Presencial
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="solicitud-card__estado">
+                        <span class="estado-badge"
+                              th:classappend="${s.estado.name() == 'PENDIENTE' ? ' estado-badge--pendiente' :
+                                              (s.estado.name() == 'ACEPTADA' ? ' estado-badge--aceptada' : ' estado-badge--rechazada')}"
+                              th:text="${s.estado}">
+                            PENDIENTE
+                        </span>
+
+                        <p th:if="${s.mensaje != null and !s.mensaje.isBlank()}" th:text="${s.mensaje}">
+                            Mensaje enviado...
+                        </p>
+
+                        <p th:if="${s.mensaje == null or s.mensaje.isBlank()}">
+                            Solicitud enviada desde FP Connect.
+                        </p>
+                    </div>
+
+                    <div class="solicitud-card__acciones">
+                        <a th:if="${s.oferta != null}"
+                           th:href="@{/ofertas/detalle/{id}(id=${s.oferta.id})}"
+                           class="btn-detalle">
+                            Ver oferta
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+            </section>
+        </main>
     </div>
-
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Fecha</th>
-                <th>Oferta / Empresa</th>
-                <th>Estado</th>
-                <th>Mensaje</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Si no hay solicitudes -->
-            <tr th:if="${#lists.isEmpty(solicitudes)}">
-                <td colspan="4" class="text-center">Aún no te has inscrito en ninguna oferta.</td>
-            </tr>
-
-            <!-- Bucle para mostrar cada solicitud -->
-            <tr th:each="s : ${solicitudes}">
-                <td th:text="${#temporals.format(s.fechaSolicitud, 'dd/MM/yyyy')}">01/01/2026</td>
-                <td>
-                    <strong th:text="${s.oferta.titulo}">Título Oferta</strong><br>
-                    <small th:text="${s.oferta.empresa.nombre}">Nombre Empresa</small>
-                </td>
-                <td>
-                    <span th:classappend="${s.estado.name() == 'PENDIENTE' ? 'badge bg-warning' : 
-                                       (s.estado.name() == 'ACEPTADA' ? 'badge bg-success' : 'badge bg-danger')}"
-                        th:text="${s.estado}">
-                        PENDIENTE
-                    </span>
-                </td>
-                <td th:text="${s.mensaje}">Mensaje enviado...</td>
-            </tr>
-        </tbody>
-    </table>
-
+    <script th:src="@{/js/alumno/solicitudes.js}"></script>
 </body>
-
 </html>

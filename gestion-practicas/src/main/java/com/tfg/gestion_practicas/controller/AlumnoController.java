@@ -85,22 +85,38 @@ public class AlumnoController {
         return "alumno/dashboard";
     }
 
-    // ✅ CORRECCIÓN: antes usaba findById(1L) hardcodeado.
-    // Ahora obtiene el alumno real a partir del usuario autenticado.
     @GetMapping("/alumno/solicitudes")
     public String listarMisSolicitudes(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
         // 1. Buscamos al alumno por el email del usuario autenticado
         Alumno alumno = alumnoRepository.findByUsuarioCorreo(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
 
-        // 2. Obtenemos sus solicitudes (necesitas este método en tu
-        // SolicitudRepository)
         List<Solicitud> misSolicitudes = solicitudRepository.findByAlumno(alumno);
 
-        // 3. Pasamos la lista a la vista
-        model.addAttribute("solicitudes", misSolicitudes);
+        long pendientes = misSolicitudes.stream()
+            .filter(s -> s.getEstado() != null && s.getEstado().name().equals("PENDIENTE"))
+            .count();
 
-        return "alumno/solicitudes"; // Esta es la ruta del archivo que crearemos
+        long aceptadas = misSolicitudes.stream()
+                .filter(s -> s.getEstado() != null && s.getEstado().name().equals("ACEPTADA"))
+                .count();
+
+        long rechazadas = misSolicitudes.stream()
+                .filter(s -> s.getEstado() != null && s.getEstado().name().equals("RECHAZADA"))
+                .count();
+
+        model.addAttribute("alumno", alumno);
+        model.addAttribute("solicitudes", misSolicitudes);
+        model.addAttribute("totalSolicitudes", misSolicitudes.size());
+        model.addAttribute("pendientes", pendientes);
+        model.addAttribute("aceptadas", aceptadas);
+        model.addAttribute("rechazadas", rechazadas);
+
+        return "alumno/solicitudes";
     }
 
     @GetMapping("/alumno/perfil")
