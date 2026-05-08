@@ -371,3 +371,9 @@ tr:hover .oferta-icono {
         width: 100%;
     }
 }
+
+.ofertas-alerta--error {
+    background-color: rgba(220, 53, 69, 0.10);
+    color: #b02a37;
+    border: 1px solid rgba(220, 53, 69, 0.22);
+}

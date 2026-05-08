@@ -1,0 +1,324 @@
+/* =====================================================
+   PERFIL EMPRESA
+   Página: /empresa/perfil
+   ===================================================== */
+
+.perfil-empresa-header {
+    margin-bottom: 28px;
+}
+
+.perfil-badge {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background-color: rgba(106, 143, 106, 0.12);
+    color: var(--verde);
+    font-family: var(--fuente-titulo);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.perfil-layout {
+    display: grid;
+    gap: 24px;
+}
+
+.perfil-card {
+    position: relative;
+    overflow: hidden;
+
+    padding: 28px;
+    border-radius: 24px;
+    background-color: var(--blanco);
+    border: 1px solid rgba(106, 143, 106, 0.14);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07);
+
+    animation: entradaPerfil 0.55s ease both;
+}
+
+.perfil-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--verde), var(--melocoton));
+}
+
+.perfil-card--presentacion {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 24px;
+
+    background:
+        linear-gradient(135deg, rgba(106, 143, 106, 0.08), rgba(244, 168, 124, 0.10)),
+        var(--blanco);
+}
+
+.perfil-avatar-grande {
+    width: 92px;
+    height: 92px;
+    border-radius: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(135deg, var(--verde), var(--verde-claro));
+    color: var(--blanco);
+
+    font-family: var(--fuente-titulo);
+    font-size: 2.2rem;
+    font-weight: 700;
+
+    box-shadow: 0 14px 28px rgba(106, 143, 106, 0.24);
+}
+
+.perfil-sector {
+    display: inline-flex;
+    margin-bottom: 10px;
+    padding: 7px 13px;
+    border-radius: 999px;
+
+    background-color: rgba(106, 143, 106, 0.12);
+    color: var(--verde);
+
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.perfil-presentacion-texto h2 {
+    margin: 0 0 8px;
+    font-family: var(--fuente-titulo);
+    font-size: 1.8rem;
+    color: var(--texto);
+}
+
+.perfil-presentacion-texto p {
+    max-width: 850px;
+    margin: 0;
+    color: var(--texto-suave);
+    line-height: 1.7;
+}
+
+.perfil-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.perfil-stat {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    padding: 20px;
+    border-radius: 18px;
+    background-color: var(--blanco);
+    border: 1px solid rgba(106, 143, 106, 0.14);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.perfil-stat:hover {
+    transform: translateY(-5px);
+    border-color: rgba(106, 143, 106, 0.28);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.09);
+}
+
+.perfil-stat > i {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(106, 143, 106, 0.12);
+    color: var(--verde);
+    font-size: 1.35rem;
+}
+
+.perfil-stat:nth-child(2) > i {
+    background-color: rgba(244, 168, 124, 0.18);
+    color: #c97831;
+}
+
+.perfil-stat:nth-child(3) > i {
+    background-color: rgba(25, 118, 210, 0.12);
+    color: #1976d2;
+}
+
+.perfil-stat span {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--texto-suave);
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+.perfil-stat strong {
+    font-family: var(--fuente-titulo);
+    font-size: 1.15rem;
+    color: var(--texto);
+}
+
+.perfil-card__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.perfil-card__icono {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(106, 143, 106, 0.12);
+    color: var(--verde);
+    font-size: 1.25rem;
+}
+
+.perfil-card__header h2 {
+    margin: 0 0 5px;
+    font-family: var(--fuente-titulo);
+    color: var(--texto);
+}
+
+.perfil-card__header p {
+    margin: 0;
+    color: var(--texto-suave);
+}
+
+.perfil-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 20px;
+}
+
+.form-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-grupo--completo {
+    grid-column: 1 / -1;
+}
+
+.form-grupo label {
+    font-family: var(--fuente-titulo);
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--texto);
+}
+
+.form-grupo input,
+.form-grupo textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--crema-oscura);
+    background-color: var(--blanco);
+    color: var(--texto);
+    font-family: var(--fuente-texto);
+    outline: none;
+
+    transition:
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        transform 0.22s ease;
+}
+
+.form-grupo textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+}
+
+.form-grupo input:focus,
+.form-grupo textarea:focus {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 4px rgba(106, 143, 106, 0.12);
+    transform: translateY(-1px);
+}
+
+.form-grupo input[readonly] {
+    background-color: rgba(250, 247, 242, 0.85);
+    color: var(--texto-suave);
+    cursor: not-allowed;
+}
+
+.form-grupo small {
+    color: var(--texto-suave);
+    font-size: 0.78rem;
+    line-height: 1.4;
+}
+
+.perfil-form__acciones {
+    grid-column: 1 / -1;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.btn-dash--secundario {
+    background: var(--blanco);
+    color: var(--verde);
+    border: 1px solid rgba(106, 143, 106, 0.26);
+    box-shadow: none;
+}
+
+.btn-dash--secundario:hover {
+    background-color: rgba(106, 143, 106, 0.08);
+    color: var(--verde);
+}
+
+@keyframes entradaPerfil {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 950px) {
+    .perfil-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .perfil-card--presentacion {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .perfil-avatar-grande {
+        margin: 0 auto;
+    }
+
+    .perfil-form {
+        grid-template-columns: 1fr;
+    }
+
+    .perfil-form__acciones {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

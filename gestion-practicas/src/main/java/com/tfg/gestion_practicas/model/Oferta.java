@@ -45,6 +45,6 @@ public class Oferta {
     @ManyToOne
     private Empresa empresa;
 
-    @OneToMany(mappedBy = "oferta", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "oferta")
     private List<Solicitud> solicitudes = new ArrayList<>(); // Inicializada para evitar errores en el dashboard
 }

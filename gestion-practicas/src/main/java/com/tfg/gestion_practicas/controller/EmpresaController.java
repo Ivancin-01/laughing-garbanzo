@@ -145,6 +145,8 @@ public class EmpresaController {
             empresaOriginal.setTelefono(empresaEditada.getTelefono());
             empresaOriginal.setCiudad(empresaEditada.getCiudad());
             empresaOriginal.setSector(empresaEditada.getSector());
+            empresaOriginal.setWeb(empresaEditada.getWeb());
+            empresaOriginal.setDescripcion(empresaEditada.getDescripcion());
 
             empresaRepository.save(empresaOriginal);
         }
@@ -227,9 +229,23 @@ public class EmpresaController {
         String email = principal.getName();
         Oferta oferta = ofertaRepository.findById(id).orElse(null);
 
-        if (oferta != null && oferta.getEmpresa().getUsuario().getCorreo().equals(email)) {
-            ofertaRepository.delete(oferta);
+        if (oferta == null) {
+            return "redirect:/empresa/ofertas?error=oferta-no-encontrada";
         }
+
+        // Seguridad: comprobamos que la oferta pertenece a la empresa logueada
+        if (!oferta.getEmpresa().getUsuario().getCorreo().equals(email)) {
+            return "redirect:/empresa/ofertas?error=no-autorizado";
+        }
+
+        // Evitamos borrar ofertas que ya tienen solicitudes asociadas
+        List<Solicitud> solicitudes = solicitudRepository.findByOfertaId(id);
+
+        if(!solicitudes.isEmpty()) {
+            return "redirect:/empresa/ofertas?error=oferta-con-solicitudes";
+        }
+
+        ofertaRepository.delete(oferta);
 
         return "redirect:/empresa/ofertas?eliminada=true";
     }

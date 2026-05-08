@@ -120,6 +120,21 @@
             <span>Oferta actualizada correctamente.</span>
         </div>
 
+        <div th:if="${param.error != null and param.error[0] == 'oferta-con-solicitudes'}" class="ofertas-alerta ofertas-alerta--error">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            No puedes eliminar esta oferta porque ya tiene solicitudes asociadas. Se conserva para no perder el historial.
+        </div>
+
+        <div th:if="${param.error != null and param.error[0] == 'no-autorizado'}" class="ofertas-alerta ofertas-alerta--error">
+            <i class="bi bi-shield-lock-fill"></i>
+            No tienes permisos para eliminar esta oferta.
+        </div>
+
+        <div th:if="${param.error != null and param.error[0] == 'oferta-no-encontrada'}" class="ofertas-alerta ofertas-alerta--error">
+            <i class="bi bi-question-circle-fill"></i>
+            La oferta que intentas eliminar no existe o ya fue eliminada.
+        </div>
+
         <section class="ofertas-resumen">
             <article class="oferta-stat oferta-stat--total">
                 <i class="bi bi-megaphone"></i>
