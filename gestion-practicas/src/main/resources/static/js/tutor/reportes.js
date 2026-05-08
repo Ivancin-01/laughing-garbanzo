@@ -1,6 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ dashboard.js tutor cargado");
+    console.log("✅ reportes.js tutor cargado");
 
+    inicializarNavbar();
+    inicializarContadorComentario();
+});
+
+function inicializarNavbar() {
     const btnSidebar = document.getElementById("btn-toggle-sidebar");
     const sidebar = document.querySelector(".sidebar");
 
@@ -37,4 +42,20 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-});
+}
+
+function inicializarContadorComentario() {
+    const textarea = document.getElementById("comentario");
+    const contador = document.getElementById("contador-comentario");
+
+    if (!textarea || !contador) {
+        return;
+    }
+
+    const actualizarContador = function () {
+        contador.textContent = textarea.value.length;
+    };
+
+    textarea.addEventListener("input", actualizarContador);
+    actualizarContador();
+}

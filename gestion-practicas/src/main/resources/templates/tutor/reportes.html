@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Reportes Tutor</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor/reportes.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button" aria-label="Abrir menú lateral">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de tutor">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav" th:text="${tutor.nombre} + ' ' + ${tutor.apellidos}">
+                        Nombre Tutor
+                    </p>
+                    <p class="rol-nav">Tutor</p>
+                </div>
+
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(tutor.nombre, 0, 1)}">T</span>
+                </div>
+
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/tutor/dashboard}">
+                    <i class="bi bi-grid-fill"></i>
+                    <b>Dashboard</b>
+                </a>
+
+                <a th:href="@{/tutor/perfil}">
+                    <i class="bi bi-person-circle"></i>
+                    <b>Mi perfil</b>
+                </a>
+
+                <a th:href="@{/tutor/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/tutor/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i>
+                    Inicio
+                </a>
+
+                <a th:href="@{/tutor/alumnos}" class="sidebar-link">
+                    <i class="bi bi-people"></i>
+                    Mis alumnos
+                </a>
+
+                <a th:href="@{/tutor/solicitudes}" class="sidebar-link">
+                    <i class="bi bi-send"></i>
+                    Solicitudes
+                </a>
+
+                <a th:href="@{/tutor/reportes}" class="sidebar-link active">
+                    <i class="bi bi-file-earmark-text"></i>
+                    Reportes
+                </a>
+
+                <a th:href="@{/tutor/perfil}" class="sidebar-link">
+                    <i class="bi bi-person-vcard"></i>
+                    Mi perfil
+                </a>
+            </nav>
+        </aside>
+
+        <main class="contenedor">
+
+            <header class="reportes-hero">
+                <div class="reportes-hero__texto">
+                    <span class="hero-etiqueta">Seguimiento del tutor</span>
+
+                    <h1>Reportes de alumnos</h1>
+
+                    <p>
+                        Registra observaciones, incidencias y revisiones sobre el progreso de tus alumnos asignados.
+                    </p>
+                </div>
+
+                <div class="hero-icono">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
+            </header>
+
+            <div th:if="${success}" class="alerta alerta-success">
+                <i class="bi bi-check-circle"></i>
+                <span th:text="${success}">Reporte creado correctamente.</span>
+            </div>
+
+            <div th:if="${error}" class="alerta alerta-error">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span th:text="${error}">No se pudo crear el reporte.</span>
+            </div>
+
+            <section class="resumen-grid">
+                <article class="resumen-card">
+                    <div class="resumen-icono resumen-icono--total">
+                        <i class="bi bi-collection"></i>
+                    </div>
+
+                    <div>
+                        <span>Total reportes</span>
+                        <strong th:text="${totalReportes}">0</strong>
+                    </div>
+                </article>
+
+                <article class="resumen-card">
+                    <div class="resumen-icono resumen-icono--seguimiento">
+                        <i class="bi bi-eye"></i>
+                    </div>
+
+                    <div>
+                        <span>Seguimiento</span>
+                        <strong th:text="${reportesSeguimiento}">0</strong>
+                    </div>
+                </article>
+
+                <article class="resumen-card">
+                    <div class="resumen-icono resumen-icono--revision">
+                        <i class="bi bi-clipboard-check"></i>
+                    </div>
+
+                    <div>
+                        <span>Revisión</span>
+                        <strong th:text="${reportesRevision}">0</strong>
+                    </div>
+                </article>
+
+                <article class="resumen-card">
+                    <div class="resumen-icono resumen-icono--incidencia">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+
+                    <div>
+                        <span>Incidencias</span>
+                        <strong th:text="${reportesIncidencia}">0</strong>
+                    </div>
+                </article>
+            </section>
+
+            <section class="reportes-layout">
+
+                <article class="bloque bloque-formulario">
+                    <div class="bloque-header">
+                        <div>
+                            <h2>Crear reporte</h2>
+                            <p>Añade una observación sobre uno de tus alumnos asignados.</p>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/tutor/reportes/crear}" method="post" class="form-reporte">
+
+                        <div class="campo-form">
+                            <label for="alumnoId">Alumno</label>
+                            <select id="alumnoId" name="alumnoId" required>
+                                <option value="">Selecciona un alumno...</option>
+                                <option th:each="alumno : ${alumnos}"
+                                        th:value="${alumno.id}"
+                                        th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                                    Alumno
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="campo-form">
+                            <label for="tipo">Tipo de reporte</label>
+                            <select id="tipo" name="tipo" required>
+                                <option value="SEGUIMIENTO">Seguimiento</option>
+                                <option value="REVISION">Revisión</option>
+                                <option value="INCIDENCIA">Incidencia</option>
+                                <option value="CONTACTO">Contacto</option>
+                            </select>
+                        </div>
+
+                        <div class="campo-form">
+                            <label for="comentario">Comentario</label>
+                            <textarea id="comentario"
+                                      name="comentario"
+                                      rows="7"
+                                      maxlength="600"
+                                      placeholder="Ejemplo: El alumno ha actualizado su CV y tiene dos solicitudes pendientes..."
+                                      required></textarea>
+
+                            <p class="contador-textarea">
+                                <span id="contador-comentario">0</span>/600 caracteres
+                            </p>
+                        </div>
+
+                        <button type="submit" class="btn-principal">
+                            <i class="bi bi-plus-circle"></i>
+                            Guardar reporte
+                        </button>
+                    </form>
+                </article>
+
+                <article class="bloque bloque-historial">
+                    <div class="bloque-header">
+                        <div>
+                            <h2>Historial de reportes</h2>
+                            <p>Últimas observaciones registradas.</p>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(reportes)}" class="estado-vacio">
+                        <div class="estado-vacio__icono">
+                            <i class="bi bi-journal-x"></i>
+                        </div>
+
+                        <h3>No hay reportes todavía</h3>
+                        <p>Crea el primer reporte para comenzar el seguimiento de tus alumnos.</p>
+                    </div>
+
+                    <div class="reportes-lista" th:if="${not #lists.isEmpty(reportes)}">
+
+                        <article class="reporte-card" th:each="reporte : ${reportes}">
+                            <div class="reporte-top">
+                                <div>
+                                    <span class="reporte-tipo"
+                                          th:classappend="${reporte.tipo == 'INCIDENCIA' ? ' reporte-tipo--incidencia' :
+                                                          (reporte.tipo == 'REVISION' ? ' reporte-tipo--revision' :
+                                                          (reporte.tipo == 'CONTACTO' ? ' reporte-tipo--contacto' : ' reporte-tipo--seguimiento'))}"
+                                          th:text="${reporte.tipo}">
+                                        SEGUIMIENTO
+                                    </span>
+
+                                    <h3 th:text="${reporte.alumno.usuario.nombre} + ' ' + ${reporte.alumno.usuario.apellidos}">
+                                        Nombre Alumno
+                                    </h3>
+                                </div>
+
+                                <time th:text="${reporte.fechaCreacion != null ? #temporals.format(reporte.fechaCreacion, 'dd/MM/yyyy HH:mm') : 'Sin fecha'}">
+                                    08/05/2026
+                                </time>
+                            </div>
+
+                            <p class="reporte-comentario" th:text="${reporte.comentario}">
+                                Comentario del reporte.
+                            </p>
+
+                            <a th:href="@{/tutor/alumnos/{id}(id=${reporte.alumno.id})}" class="btn-mini">
+                                Ver alumno
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </article>
+
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+    <script th:src="@{/js/tutor/reportes.js}"></script>
+</body>
+</html>

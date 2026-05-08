@@ -1722,3 +1722,234 @@ a {
         padding-right: 22px;
     }
 }
+
+/* =====================================================
+   CONFIGURACIÓN TUTOR
+   ===================================================== */
+
+.config-hero {
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 28px;
+
+    margin-bottom: 28px;
+    padding: 34px;
+
+    background-color: var(--blanco);
+    border: 1px solid rgba(106, 143, 106, 0.12);
+    border-radius: 22px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+
+    animation: entradaSuave 0.55s ease both;
+}
+
+.config-hero::before {
+    content: "";
+    position: absolute;
+    right: -90px;
+    top: -90px;
+
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+
+    background: rgba(106, 143, 106, 0.08);
+}
+
+.config-hero__texto {
+    position: relative;
+    z-index: 1;
+}
+
+.config-hero h1 {
+    margin: 0 0 10px;
+    font-family: var(--fuente-titulo);
+    font-size: 2.1rem;
+    color: var(--texto);
+}
+
+.config-hero p {
+    max-width: 700px;
+    margin: 0;
+    color: var(--texto-suave);
+    line-height: 1.6;
+}
+
+.config-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+    align-items: flex-start;
+}
+
+.config-card {
+    padding: 28px;
+}
+
+.config-card--danger {
+    grid-column: 1 / -1;
+    border-color: rgba(217, 83, 79, 0.20);
+}
+
+.config-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.config-card-header h2 {
+    margin: 0 0 6px;
+    font-family: var(--fuente-titulo);
+    color: var(--texto);
+}
+
+.config-card-header p {
+    margin: 0;
+    color: var(--texto-suave);
+    line-height: 1.5;
+}
+
+.config-icono {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+
+    border-radius: 17px;
+    background-color: rgba(106, 143, 106, 0.12);
+    color: var(--verde);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.4rem;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.config-icono--mail {
+    background-color: var(--melocoton-bg);
+    color: var(--melocoton-texto);
+}
+
+.config-icono--danger {
+    background-color: var(--rojo-bg);
+    color: var(--rojo-texto);
+}
+
+.config-card:hover .config-icono {
+    transform: rotate(-3deg) scale(1.05);
+    box-shadow: 0 10px 22px rgba(106, 143, 106, 0.16);
+}
+
+.form-config {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.switch-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+
+    padding: 18px;
+    border-radius: 18px;
+
+    background-color: var(--crema);
+    border: 1px solid rgba(106, 143, 106, 0.12);
+
+    cursor: pointer;
+}
+
+.switch-row strong {
+    display: block;
+    margin-bottom: 4px;
+
+    font-family: var(--fuente-titulo);
+    color: var(--texto);
+}
+
+.switch-row span {
+    display: block;
+    color: var(--texto-suave);
+    line-height: 1.4;
+}
+
+.switch-row input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    accent-color: var(--verde);
+    cursor: pointer;
+}
+
+.btn-danger {
+    position: relative;
+    overflow: hidden;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    width: fit-content;
+
+    padding: 12px 20px;
+    border-radius: 999px;
+    border: none;
+
+    background-color: var(--rojo);
+    color: var(--blanco);
+
+    font-family: var(--fuente-titulo);
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.btn-danger:hover {
+    background-color: #c84541;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(217, 83, 79, 0.25);
+}
+
+@media (max-width: 1120px) {
+    .config-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .config-card--danger {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 950px) {
+    .config-hero {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 760px) {
+    .config-hero h1 {
+        font-size: 1.55rem;
+    }
+
+    .switch-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

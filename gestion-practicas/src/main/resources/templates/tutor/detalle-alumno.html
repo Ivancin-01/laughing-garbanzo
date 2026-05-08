@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Detalle Alumno</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor/detalle-alumno.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button" aria-label="Abrir menú lateral">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav" th:text="${tutor.nombre} + ' ' + ${tutor.apellidos}">
+                        Nombre Tutor
+                    </p>
+                    <p class="rol-nav">Tutor</p>
+                </div>
+
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(tutor.nombre, 0, 1)}">T</span>
+                </div>
+
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/tutor/dashboard}">
+                    <i class="bi bi-grid-fill"></i>
+                    <b>Dashboard</b>
+                </a>
+
+                <a th:href="@{/tutor/perfil}">
+                    <i class="bi bi-person-circle"></i>
+                    <b>Mi perfil</b>
+                </a>
+
+                <a th:href="@{/tutor/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/tutor/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i>
+                    Inicio
+                </a>
+
+                <a th:href="@{/tutor/alumnos}" class="sidebar-link active">
+                    <i class="bi bi-people"></i>
+                    Mis alumnos
+                </a>
+
+                <a th:href="@{/tutor/solicitudes}" class="sidebar-link">
+                    <i class="bi bi-send"></i>
+                    Solicitudes
+                </a>
+
+                <a th:href="@{/tutor/reportes}" class="sidebar-link">
+                    <i class="bi bi-file-earmark-text"></i>
+                    Reportes
+                </a>
+
+                <a th:href="@{/tutor/perfil}" class="sidebar-link">
+                    <i class="bi bi-person-vcard"></i>
+                    Mi perfil
+                </a>
+            </nav>
+        </aside>
+
+        <main class="contenedor">
+
+            <a th:href="@{/tutor/alumnos}" class="btn-volver">
+                <i class="bi bi-arrow-left"></i>
+                Volver a mis alumnos
+            </a>
+
+            <section class="detalle-layout">
+
+                <article class="perfil-alumno-card">
+
+                    <header class="perfil-header">
+                        <div class="avatar-alumno">
+                            <span th:text="${#strings.substring(alumno.usuario.nombre, 0, 1)}">A</span>
+                        </div>
+
+                        <div class="perfil-info">
+                            <span class="perfil-etiqueta">Alumno asignado</span>
+
+                            <h1 th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                                Nombre Alumno
+                            </h1>
+
+                            <p th:text="${alumno.usuario.correo}">
+                                correo@ejemplo.com
+                            </p>
+                        </div>
+                    </header>
+
+                    <div class="datos-grid">
+
+                        <article class="dato-card">
+                            <i class="bi bi-journal-code"></i>
+                            <div>
+                                <span>Especialidad</span>
+                                <strong th:text="${alumno.matricula != null ? alumno.matricula : 'No indicada'}">
+                                    DAW
+                                </strong>
+                            </div>
+                        </article>
+
+                        <article class="dato-card">
+                            <i class="bi bi-geo-alt"></i>
+                            <div>
+                                <span>Ciudad</span>
+                                <strong th:text="${alumno.ciudad != null ? alumno.ciudad : 'No indicada'}">
+                                    Madrid
+                                </strong>
+                            </div>
+                        </article>
+
+                        <article class="dato-card">
+                            <i class="bi bi-building"></i>
+                            <div>
+                                <span>Empresa FCT</span>
+                                <strong th:text="${alumno.empresaFct != null ? alumno.empresaFct : 'Sin empresa'}">
+                                    Sin empresa
+                                </strong>
+                            </div>
+                        </article>
+
+                        <article class="dato-card">
+                            <i class="bi bi-clock-history"></i>
+                            <div>
+                                <span>Horas FCT</span>
+                                <strong th:text="${alumno.horasFct != null ? alumno.horasFct + 'h' : 'No indicadas'}">
+                                    0h
+                                </strong>
+                            </div>
+                        </article>
+
+                    </div>
+
+                    <section class="estado-bloque">
+                        <h2>
+                            <i class="bi bi-flag"></i>
+                            Estado actual
+                        </h2>
+
+                        <span class="badge"
+                              th:classappend="${alumno.estadoFct == 'EN_PRACTICAS' ? ' badge-aceptada' :
+                                              (alumno.estadoFct == 'PENDIENTE' or alumno.estadoFct == 'Pendiente' ? ' badge-pendiente' : ' badge-busqueda')}"
+                              th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'EN_BUSQUEDA'}">
+                            EN_BUSQUEDA
+                        </span>
+                    </section>
+
+                </article>
+
+                <aside class="panel-lateral">
+
+                    <div class="panel-icono">
+                        <i class="bi bi-file-earmark-person"></i>
+                    </div>
+
+                    <h2>Seguimiento</h2>
+
+                    <p>
+                        Desde aquí puedes revisar sus solicitudes, consultar su CV y crear reportes de seguimiento.
+                    </p>
+
+                    <a th:if="${alumno.cvUrl != null}"
+                       th:href="${alumno.cvUrl}"
+                       target="_blank"
+                       class="btn-principal">
+                        <i class="bi bi-eye"></i>
+                        Ver CV
+                    </a>
+
+                    <button th:if="${alumno.cvUrl == null}"
+                            type="button"
+                            class="btn-principal btn-disabled"
+                            disabled>
+                        <i class="bi bi-file-earmark-x"></i>
+                        Sin CV subido
+                    </button>
+
+                    <a th:href="@{/tutor/reportes}" class="btn-secundario">
+                        <i class="bi bi-journal-plus"></i>
+                        Crear reporte
+                    </a>
+
+                </aside>
+
+            </section>
+
+            <section class="resumen-grid">
+                <article class="resumen-card">
+                    <div class="resumen-icono resumen-icono--total">
+                        <i class="bi bi-collection"></i>
+                    </div>
+
+                    <div>
+                        <span>Total solicitudes</span>
+                        <strong th:text="${totalSolicitudes}">0</strong>
+                    </div>
+                </article>
+
+                <article class="resumen-card">
+                    <div class="resumen-icono resumen-icono--pendiente">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+
+                    <div>
+                        <span>Pendientes</span>
+                        <strong th:text="${pendientes}">0</strong>
+                    </div>
+                </article>
+
+                <article class="resumen-card">
+                    <div class="resumen-icono resumen-icono--aceptada">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+
+                    <div>
+                        <span>Aceptadas</span>
+                        <strong th:text="${aceptadas}">0</strong>
+                    </div>
+                </article>
+
+                <article class="resumen-card">
+                    <div class="resumen-icono resumen-icono--rechazada">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+
+                    <div>
+                        <span>Rechazadas</span>
+                        <strong th:text="${rechazadas}">0</strong>
+                    </div>
+                </article>
+            </section>
+
+            <section class="bloque">
+                <div class="bloque-header">
+                    <div>
+                        <h2>Solicitudes del alumno</h2>
+                        <p>Historial de candidaturas enviadas por este alumno.</p>
+                    </div>
+
+                    <a th:href="@{/tutor/solicitudes}" class="btn-principal">
+                        <i class="bi bi-send"></i>
+                        Ver todas
+                    </a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(solicitudes)}" class="estado-vacio">
+                    <div class="estado-vacio__icono">
+                        <i class="bi bi-inbox"></i>
+                    </div>
+
+                    <h3>Este alumno todavía no tiene solicitudes</h3>
+                    <p>Cuando solicite una oferta, aparecerá aquí su seguimiento.</p>
+                </div>
+
+                <div class="solicitudes-lista" th:if="${not #lists.isEmpty(solicitudes)}">
+
+                    <article class="solicitud-card" th:each="s : ${solicitudes}">
+
+                        <div class="solicitud-info">
+                            <span th:text="${s.oferta != null && s.oferta.empresa != null ? s.oferta.empresa.nombre : 'Empresa no asignada'}">
+                                Empresa
+                            </span>
+
+                            <h3 th:text="${s.oferta != null ? s.oferta.titulo : 'Oferta no disponible'}">
+                                Título oferta
+                            </h3>
+
+                            <p th:text="${s.fechaSolicitud != null ? #temporals.format(s.fechaSolicitud, 'dd/MM/yyyy') : 'Sin fecha'}">
+                                01/01/2026
+                            </p>
+                        </div>
+
+                        <span class="badge"
+                              th:classappend="${s.estado.name() == 'PENDIENTE' ? ' badge-pendiente' :
+                                              (s.estado.name() == 'ACEPTADA' ? ' badge-aceptada' : ' badge-rechazada')}"
+                              th:text="${s.estado}">
+                            PENDIENTE
+                        </span>
+
+                        <a th:if="${s.oferta != null}"
+                           th:href="@{/ofertas/detalle/{id}(id=${s.oferta.id})}"
+                           class="btn-mini">
+                            Ver oferta
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </article>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script th:src="@{/js/tutor/detalle-alumno.js}"></script>
+</body>
+</html>

@@ -18,11 +18,19 @@ public class Tutor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String departamento;
-
     private String centroEducativo;
 
+    @Column(name = "especialidad")
+    private String especialidad;
+
+    @Column(name = "telefono")
     private String telefono;
+
+    @Column(name = "departamento")
+    private String departamento;
+
+    @Column(name = "notificaciones_email")
+    private Boolean notificacionesEmail = true;
 
     @OneToOne
     private Usuario usuario;

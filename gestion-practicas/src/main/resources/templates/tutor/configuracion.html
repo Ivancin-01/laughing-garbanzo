@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Configuración Tutor</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor/configuracion.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button" aria-label="Abrir menú lateral">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de tutor">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav" th:text="${tutor.nombre} + ' ' + ${tutor.apellidos}">
+                        Nombre Tutor
+                    </p>
+                    <p class="rol-nav">Tutor</p>
+                </div>
+
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(tutor.nombre, 0, 1)}">T</span>
+                </div>
+
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/tutor/dashboard}">
+                    <i class="bi bi-grid-fill"></i>
+                    <b>Dashboard</b>
+                </a>
+
+                <a th:href="@{/tutor/perfil}">
+                    <i class="bi bi-person-circle"></i>
+                    <b>Mi perfil</b>
+                </a>
+
+                <a th:href="@{/tutor/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/tutor/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i>
+                    Inicio
+                </a>
+
+                <a th:href="@{/tutor/alumnos}" class="sidebar-link">
+                    <i class="bi bi-people"></i>
+                    Mis alumnos
+                </a>
+
+                <a th:href="@{/tutor/solicitudes}" class="sidebar-link">
+                    <i class="bi bi-send"></i>
+                    Solicitudes
+                </a>
+
+                <a th:href="@{/tutor/reportes}" class="sidebar-link">
+                    <i class="bi bi-file-earmark-text"></i>
+                    Reportes
+                </a>
+
+                <a th:href="@{/tutor/perfil}" class="sidebar-link">
+                    <i class="bi bi-person-vcard"></i>
+                    Mi perfil
+                </a>
+            </nav>
+        </aside>
+
+        <main class="contenedor">
+
+            <header class="config-hero">
+                <div class="config-hero__texto">
+                    <span class="hero-etiqueta">Ajustes de cuenta</span>
+
+                    <h1>Configuración</h1>
+
+                    <p>
+                        Gestiona la seguridad, las preferencias y el estado de tu cuenta como tutor.
+                    </p>
+                </div>
+
+                <div class="hero-icono">
+                    <i class="bi bi-gear"></i>
+                </div>
+            </header>
+
+            <div th:if="${success}" class="alerta alerta-success">
+                <i class="bi bi-check-circle"></i>
+                <span th:text="${success}">Operación realizada correctamente.</span>
+            </div>
+
+            <div th:if="${error}" class="alerta alerta-error">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span th:text="${error}">Ha ocurrido un error.</span>
+            </div>
+
+            <section class="config-grid">
+
+                <article class="bloque config-card">
+                    <div class="config-card-header">
+                        <div class="config-icono">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+
+                        <div>
+                            <h2>Cambiar contraseña</h2>
+                            <p>Actualiza tu contraseña de acceso a FP Connect.</p>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/tutor/configuracion/password}" method="post" class="form-config">
+                        <div class="campo-form">
+                            <label for="passwordActual">Contraseña actual</label>
+                            <input type="password" id="passwordActual" name="passwordActual" required>
+                        </div>
+
+                        <div class="campo-form">
+                            <label for="passwordNueva">Nueva contraseña</label>
+                            <input type="password" id="passwordNueva" name="passwordNueva" minlength="6" required>
+                        </div>
+
+                        <div class="campo-form">
+                            <label for="passwordConfirmacion">Confirmar nueva contraseña</label>
+                            <input type="password" id="passwordConfirmacion" name="passwordConfirmacion" minlength="6" required>
+                        </div>
+
+                        <button type="submit" class="btn-principal">
+                            <i class="bi bi-save"></i>
+                            Actualizar contraseña
+                        </button>
+                    </form>
+                </article>
+
+                <article class="bloque config-card">
+                    <div class="config-card-header">
+                        <div class="config-icono config-icono--mail">
+                            <i class="bi bi-bell"></i>
+                        </div>
+
+                        <div>
+                            <h2>Preferencias</h2>
+                            <p>Configura cómo quieres recibir avisos dentro del sistema.</p>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/tutor/configuracion/preferencias}" method="post" class="form-config">
+
+                        <label class="switch-row">
+                            <div>
+                                <strong>Notificaciones por email</strong>
+                                <span>Recibir avisos sobre solicitudes y seguimiento de alumnos.</span>
+                            </div>
+
+                            <input type="checkbox"
+                                   name="notificacionesEmail"
+                                   value="true"
+                                   th:checked="${datosTutor.notificacionesEmail}">
+                        </label>
+
+                        <button type="submit" class="btn-secundario">
+                            <i class="bi bi-sliders"></i>
+                            Guardar preferencias
+                        </button>
+                    </form>
+                </article>
+
+                <article class="bloque config-card config-card--danger">
+                    <div class="config-card-header">
+                        <div class="config-icono config-icono--danger">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+
+                        <div>
+                            <h2>Desactivar cuenta</h2>
+                            <p>Esta acción cerrará el acceso del tutor al sistema.</p>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/tutor/configuracion/desactivar}" method="post" class="form-config">
+                        <div class="campo-form">
+                            <label for="confirmacion">Escribe DESACTIVAR para confirmar</label>
+                            <input type="text"
+                                   id="confirmacion"
+                                   name="confirmacion"
+                                   placeholder="DESACTIVAR"
+                                   required>
+                        </div>
+
+                        <button type="submit" class="btn-danger">
+                            <i class="bi bi-person-x"></i>
+                            Desactivar cuenta
+                        </button>
+                    </form>
+                </article>
+            </section>
+        </main>
+    </div>
+    <script th:src="@{/js/tutor/configuracion.js}"></script>
+</body>
+</html>

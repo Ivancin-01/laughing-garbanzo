@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ alumnos.js tutor cargado");
+    console.log("✅ solicitudes.js tutor cargado");
 
     inicializarNavbar();
-    inicializarFiltrosAlumnos();
+    inicializarFiltrosSolicitudes();
 });
 
 function inicializarNavbar() {
@@ -44,38 +44,42 @@ function inicializarNavbar() {
     }
 }
 
-function inicializarFiltrosAlumnos() {
-    const inputBusqueda = document.getElementById("buscarAlumno");
+function inicializarFiltrosSolicitudes() {
+    const inputBusqueda = document.getElementById("buscarSolicitud");
     const filtroEstado = document.getElementById("filtroEstado");
-    const filtroEspecialidad = document.getElementById("filtroEspecialidad");
     const btnLimpiar = document.getElementById("btn-limpiar-filtros");
 
-    const filas = Array.from(document.querySelectorAll(".fila-alumno"));
-    const contador = document.getElementById("contador-alumnos");
+    const filas = Array.from(document.querySelectorAll(".fila-solicitud"));
+    const contador = document.getElementById("contador-solicitudes");
     const sinResultados = document.getElementById("sin-resultados");
 
-    if (!inputBusqueda || !filtroEstado || !filtroEspecialidad || filas.length === 0) {
+    if (!inputBusqueda || !filtroEstado || filas.length === 0) {
         return;
     }
 
     const aplicarFiltros = function () {
         const texto = normalizarTexto(inputBusqueda.value);
         const estado = normalizarTexto(filtroEstado.value);
-        const especialidad = normalizarTexto(filtroEspecialidad.value);
 
         let visibles = 0;
 
         filas.forEach(function (fila) {
-            const nombre = normalizarTexto(fila.dataset.nombre || "");
+            const alumno = normalizarTexto(fila.dataset.alumno || "");
             const correo = normalizarTexto(fila.dataset.correo || "");
-            const estadoAlumno = normalizarTexto(fila.dataset.estado || "");
-            const especialidadAlumno = normalizarTexto(fila.dataset.especialidad || "");
+            const oferta = normalizarTexto(fila.dataset.oferta || "");
+            const empresa = normalizarTexto(fila.dataset.empresa || "");
+            const estadoSolicitud = normalizarTexto(fila.dataset.estado || "");
 
-            const coincideTexto = !texto || nombre.includes(texto) || correo.includes(texto);
-            const coincideEstado = !estado || estadoAlumno.includes(estado);
-            const coincideEspecialidad = !especialidad || especialidadAlumno.includes(especialidad);
+            const coincideTexto =
+                !texto ||
+                alumno.includes(texto) ||
+                correo.includes(texto) ||
+                oferta.includes(texto) ||
+                empresa.includes(texto);
 
-            const visible = coincideTexto && coincideEstado && coincideEspecialidad;
+            const coincideEstado = !estado || estadoSolicitud.includes(estado);
+
+            const visible = coincideTexto && coincideEstado;
 
             fila.classList.toggle("oculto", !visible);
 
@@ -95,13 +99,11 @@ function inicializarFiltrosAlumnos() {
 
     inputBusqueda.addEventListener("input", aplicarFiltros);
     filtroEstado.addEventListener("change", aplicarFiltros);
-    filtroEspecialidad.addEventListener("change", aplicarFiltros);
 
     if (btnLimpiar) {
         btnLimpiar.addEventListener("click", function () {
             inputBusqueda.value = "";
             filtroEstado.value = "";
-            filtroEspecialidad.value = "";
             aplicarFiltros();
         });
     }

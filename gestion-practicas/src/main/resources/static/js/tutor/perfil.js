@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ dashboard.js tutor cargado");
+    console.log("✅ perfil.js tutor cargado");
 
     const btnSidebar = document.getElementById("btn-toggle-sidebar");
     const sidebar = document.querySelector(".sidebar");
