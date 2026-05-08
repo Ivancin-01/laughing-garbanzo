@@ -32,15 +32,17 @@ public class OfertaController {
     @GetMapping("/ofertas")
     public String listarOfertas(@RequestParam(name = "buscar", required = false) String buscar,
             Model model, Principal principal) {
-        if (principal != null) {
-            alumnoRepository.findByUsuarioCorreo(principal.getName())
-                    .ifPresent(al -> model.addAttribute("alumno", al));
+        if (principal == null) {
+            return "redirect:/login";
         }
 
-        List<Oferta> ofertas = (buscar != null && !buscar.isEmpty())
-                ? ofertaRepository.findByTituloContainingIgnoreCaseOrEmpresaNombreContainingIgnoreCase(buscar, buscar)
-                : ofertaRepository.findAll();
+        Alumno alumno = alumnoRepository.findByUsuarioCorreo(principal.getName()).orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
+        
+        List<Oferta> ofertas = (buscar != null && !buscar.isBlank())
+            ? ofertaRepository.findByTituloContainingIgnoreCaseOrEmpresaNombreContainingIgnoreCase(buscar, buscar)
+            : ofertaRepository.findAll();
 
+        model.addAttribute("alumno", alumno);
         model.addAttribute("ofertas", ofertas);
         model.addAttribute("query", buscar);
 

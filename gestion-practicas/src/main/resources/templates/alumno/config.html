@@ -1,93 +1,247 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FP Connect | Configuración</title>
+    <title>FP Connect | Configuración - Alumno</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <link rel="stylesheet" th:href="@{/css/alumno/perfil.css}">
     <link rel="stylesheet" th:href="@{/css/alumno/config.css}">
 </head>
+
 <body>
+
     <nav class="navbar-superior">
         <div class="nav-izq">
             <a th:href="@{/alumno/dashboard}" class="btn-volver-nav">
-                <i class="bi bi-house-door-fill"></i> <span>Dashboard</span>
+                <i class="bi bi-arrow-left"></i>
+                <span>Volver al panel</span>
             </a>
-        </div> 
+        </div>
 
         <div class="logo-central">
             <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
         </div>
 
-        <div class="usuario-nav-container" onclick="toggleDropdown()">
-            <div class="info-usuario-nav">
-                <p class="nombre-nav" th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">Nombre Alumno</p>
-                <p class="rol-nav">Alumno</p>
-            </div>
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de alumno">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav"
+                       th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                        Nombre Alumno
+                    </p>
+                    <p class="rol-nav">Alumno</p>
+                </div>
 
-            <div class="avatar-wrapper">
-                <img th:src="@{/img/default-user.png}" alt="Avatar" class="avatar-nav">
-            </div>
-            
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(alumno.usuario.nombre, 0, 1)}">A</span>
+                </div>
+
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
             <div id="dropdown-perfil" class="dropdown-content">
-                <a th:href="@{/alumno/dashboard}"><i class="bi bi-grid-fill"></i> Dashboard</a>
-                <a th:href="@{/alumno/perfil}"><i class="bi bi-person-circle"></i> Mi Perfil</a>
+                <a th:href="@{/alumno/dashboard}">
+                    <i class="bi bi-grid-fill"></i>
+                    <b>Dashboard</b>
+                </a>
+
+                <a th:href="@{/alumno/perfil}">
+                    <i class="bi bi-person-circle"></i>
+                    <b>Mi perfil</b>
+                </a>
+
                 <hr>
-                <a th:href="@{/logout}" class="text-danger"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
             </div>
         </div>
     </nav>
 
     <main class="contenedor-perfil">
-        <header class="perfil-header" style="flex-direction: column; align-items: flex-start; gap: 10px;">
-            <h1 style="margin: 0;">Ajustes de Cuenta</h1>
-            <p style="margin: 0; color: #666;">Gestiona tu seguridad y preferencias de privacidad.</p>
+
+        <div th:if="${success}" class="alerta alerta-exito">
+            <i class="bi bi-check-circle-fill"></i>
+            <span th:text="${success}">Operación realizada correctamente.</span>
+        </div>
+
+        <div th:if="${error}" class="alerta alerta-error">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span th:text="${error}">Ha ocurrido un error.</span>
+        </div>
+
+        <header class="config-header bloque">
+            <div class="config-header-texto">
+                <span class="config-etiqueta">Ajustes del alumno</span>
+                <h1>Configuración de cuenta</h1>
+                <p>Gestiona tu seguridad, privacidad y preferencias dentro de FP Connect.</p>
+            </div>
+
+            <div class="config-avatar">
+                <span th:text="${#strings.substring(alumno.usuario.nombre, 0, 1)}">A</span>
+            </div>
         </header>
+
         <section class="bloque config-section">
-            <h3><i class="bi bi-shield-lock-fill"></i> Seguridad</h3>
-            <form action="#" class="config-form">
+            <div class="config-section-header">
+                <div>
+                    <h3><i class="bi bi-shield-lock-fill"></i> Seguridad</h3>
+                    <p>Cambia tu contraseña de acceso a la plataforma.</p>
+                </div>
+            </div>
+
+            <form th:action="@{/alumno/configuracion/password}" method="post" class="config-form">
+                <div class="config-grid-password">
+                    <div class="form-group">
+                        <label>Contraseña actual</label>
+                        <input type="password" name="passwordActual" class="form-control-custom" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nueva contraseña</label>
+                        <input type="password" name="passwordNueva" class="form-control-custom" required minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirmar nueva contraseña</label>
+                        <input type="password" name="passwordConfirmacion" class="form-control-custom" required minlength="6">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-guardar btn-config">
+                    <i class="bi bi-key"></i>
+                    Actualizar contraseña
+                </button>
+            </form>
+        </section>
+
+        <section class="bloque config-section">
+            <div class="config-section-header">
+                <div>
+                    <h3><i class="bi bi-eye-fill"></i> Privacidad y preferencias</h3>
+                    <p>Controla cómo se muestra tu información y cómo quieres recibir avisos.</p>
+                </div>
+            </div>
+
+            <form th:action="@{/alumno/configuracion/preferencias}" method="post" class="config-form">
+
                 <div class="config-item">
                     <div class="config-info">
-                        <h4>Cambiar contraseña</h4>
-                        <p>Se recomienda usar una combinación de letras, números y símbolos.</p>
+                        <h4>Visibilidad del perfil</h4>
+                        <p>Permitir que las empresas vean tu perfil, estado FCT y CV.</p>
                     </div>
+
+                    <label class="switch">
+                        <input type="checkbox"
+                               name="perfilVisible"
+                               th:checked="${alumno.perfilVisible == null || alumno.perfilVisible}">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="config-item">
+                    <div class="config-info">
+                        <h4>Notificaciones por email</h4>
+                        <p>Recibir avisos cuando una empresa revise o responda una solicitud.</p>
+                    </div>
+
+                    <label class="switch">
+                        <input type="checkbox"
+                               name="notificacionesEmail"
+                               th:checked="${alumno.notificacionesEmail == null || alumno.notificacionesEmail}">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-guardar btn-config">
+                    <i class="bi bi-save"></i>
+                    Guardar preferencias
+                </button>
+            </form>
+        </section>
+
+        <section class="bloque config-section">
+            <div class="config-section-header">
+                <div>
+                    <h3><i class="bi bi-info-circle-fill"></i> Información de la cuenta</h3>
+                    <p>Resumen básico de tu usuario dentro de la plataforma.</p>
+                </div>
+            </div>
+
+            <div class="config-info-grid">
+                <article class="config-info-card">
+                    <div class="config-info-icon">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+                    <div>
+                        <span>Email</span>
+                        <strong th:text="${alumno.usuario.correo}">correo@ejemplo.com</strong>
+                    </div>
+                </article>
+
+                <article class="config-info-card">
+                    <div class="config-info-icon">
+                        <i class="bi bi-person-badge-fill"></i>
+                    </div>
+                    <div>
+                        <span>Rol</span>
+                        <strong th:text="${alumno.usuario.rol}">ALUMNO</strong>
+                    </div>
+                </article>
+
+                <article class="config-info-card">
+                    <div class="config-info-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div>
+                        <span>Estado de cuenta</span>
+                        <strong th:text="${alumno.usuario.activo ? 'Activa' : 'Inactiva'}">Activa</strong>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="bloque zona-critica">
+            <div class="config-section-header">
+                <div>
+                    <h3><i class="bi bi-exclamation-triangle-fill"></i> Zona crítica</h3>
+                    <p>Esta acción impide el acceso normal a tu cuenta.</p>
+                </div>
+            </div>
+
+            <form th:action="@{/alumno/configuracion/desactivar}" method="post" class="config-form">
+                <div class="config-item">
+                    <div class="config-info">
+                        <h4>Desactivar mi cuenta</h4>
+                        <p>Para confirmar, escribe <strong>DESACTIVAR</strong>. No se borrarán tus datos inmediatamente.</p>
+                    </div>
+
                     <div class="config-actions">
-                        <input type="password" placeholder="Nueva contraseña" class="form-control-custom">
-                        <button type="button" class="btn-guardar-mini">Actualizar</button>
+                        <input type="text"
+                               name="confirmacion"
+                               class="form-control-custom"
+                               placeholder="Escribe DESACTIVAR">
+
+                        <button type="submit" class="btn-danger">
+                            Desactivar cuenta
+                        </button>
                     </div>
                 </div>
             </form>
         </section>
 
-        <section class="bloque config-section">
-            <h3><i class="bi bi-eyefill"></i> Privacidad</h3>
-            <div class="config-item">
-                <div class="config-info">
-                    <h4>Visibilidad del Perfil</h4>
-                    <p>Permitir que las empresas vean mi CV y estado de FCT.</p>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </section>
-
-        <section class="bloque zona-critica">
-            <h3 class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Zona Crítica</h3>
-            <div class="config-item">
-                <div class="config-info">
-                    <h4>Eliminar mi cuenta</h4>
-                    <p>Esta acción es irreversible. Se borrarán todos tus progresos y solicitudes.</p>
-                </div>
-                <button class="btn-danger">Borrar cuenta</button>
-            </div>
-        </section>
     </main>
+
     <script th:src="@{/js/alumno/config.js}"></script>
-    <!--<script th:src="@{/js/alumno/alumno.js}"></script> Lo utilizaremos más adelante para añadir interactividad a la página con JS.--> 
 </body>
+
 </html>

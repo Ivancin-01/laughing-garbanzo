@@ -35,6 +35,12 @@ public class Alumno {
     private Integer horasFct;
     private String empresaFct;
 
+    @Column(name="perfil_visible")
+    private Boolean perfilVisible = true;
+
+    @Column(name="notificaciones_email")
+    private Boolean notificacionesEmail = true;
+
     // Configuración 1:1 Sincronizada
     @Valid
     @OneToOne(cascade = CascadeType.ALL)

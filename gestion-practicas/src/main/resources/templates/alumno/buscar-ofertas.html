@@ -3,154 +3,241 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Buscar Ofertas | FP Connect</title>
-    <!-- Mantenemos tus estilos base -->
-    <link rel="stylesheet" th:href="@{/css/alumno/styles.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Buscar Ofertas</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/alumno/buscar-ofertas.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <style>
-        /* 1. ANULAR EL FANTASMA SUPERIOR */
-        /* Esa franja verde con texto blanco se llama .sidebar-nav dentro del nav. La borramos: */
-        header nav .sidebar-nav,
-        header nav .sidebar-link,
-        header nav i:not(.bi-list) {
-            display: none !important;
-        }
-
-        /* 2. REPARAR EL SIDEBAR (Cuerpo lateral) */
-        /* Tu imagen image_3c9ee0.png muestra el lateral vacío. Vamos a forzarlo: */
-        aside,
-        .sidebar {
-            background-color: #6d8e6d !important;
-            /* Verde oscuro */
-            min-width: 250px !important;
-            display: block !important;
-            min-height: 100vh;
-        }
-
-        /* Forzamos que los elementos internos del aside se vean */
-        aside * {
-            display: flex !important;
-            color: white !important;
-            background-color: transparent !important;
-            visibility: visible !important;
-        }
-
-        /* 3. LIMPIEZA DE FONDO (El error del blanco) */
-        body {
-            margin: 0;
-            background-color: #f9f9f2 !important;
-        }
-
-        /* Anulamos el fondo blanco que tu styles.css le da a todos los divs */
-        .page-content div:not(.oferta-card) {
-            background-color: transparent !important;
-            box-shadow: none !important;
-            padding: 0;
-            margin: 0;
-        }
-
-        /* 4. TARJETAS DE OFERTAS */
-        .oferta-card {
-            background-color: white !important;
-            padding: 25px !important;
-            border-radius: 12px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
-            display: block !important;
-            border: 1px solid #eee !important;
-        }
-
-        .main-layout {
-            display: flex;
-        }
-
-        /* Estado colapsado (oculto) */
-        aside.collapsed {
-            margin-left: -260px !important;
-            /* Lo mueve fuera de la pantalla */
-            transition: all 0.3s ease;
-        }
-
-        /* Estado normal (visible) */
-        aside {
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        /* Ajuste del contenido principal cuando se oculta el sidebar */
-        aside.collapsed+main {
-            margin-left: 0;
-        }
-    </style>
 </head>
 
 <body>
+
     <!-- Navbar Superior -->
-    <header>
-        <div th:replace="~{alumno/dashboard :: nav}"></div>
-    </header>
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button" aria-label="Abrir menú lateral">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
 
-    <div class="main-layout">
-        <!-- Sidebar Izquierdo -->
-        <aside th:replace="~{alumno/dashboard :: aside}"></aside>
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
 
-        <!-- Contenido Central -->
-        <main class="page-content" style="flex: 1; padding: 40px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
-                <h2 style="color: #4a6d4a; margin: 0; font-family: sans-serif;">Ofertas Disponibles</h2>
-
-                <!-- Buscador -->
-                <div
-                    style="background: white; border-radius: 25px; padding: 5px 15px; border: 1px solid #ddd; display: flex; margin-top: 60px;">
-                    <form th:action="@{/ofertas}" method="get" style="display: flex;">
-                        <input type="text" name="buscar" th:value="${query}" placeholder="Buscar puesto..."
-                            style="border: none; outline: none; padding: 8px;">
-                        <button type="submit" style="background: none; border: none; color: #7ea381;">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </form>
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de alumno">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav"
+                       th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                        Nombre Alumno
+                    </p>
+                    <p class="rol-nav">Alumno</p>
                 </div>
+
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(alumno.usuario.nombre, 0, 1)}">A</span>
+                </div>
+
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/alumno/dashboard}">
+                    <i class="bi bi-grid-fill"></i>
+                    <b>Dashboard</b>
+                </a>
+
+                <a th:href="@{/alumno/perfil}">
+                    <i class="bi bi-person-circle"></i>
+                    <b>Mi perfil</b>
+                </a>
+
+                <a th:href="@{/alumno/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
             </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/alumno/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i> Inicio
+                </a>
+
+                <a th:href="@{/ofertas}" class="sidebar-link active">
+                    <i class="bi bi-search"></i> Buscar Ofertas
+                </a>
+
+                <a th:href="@{/alumno/solicitudes}" class="sidebar-link">
+                    <i class="bi bi-send"></i> Mis Solicitudes
+                </a>
+
+                <a th:href="@{/alumno/perfil}" class="sidebar-link">
+                    <i class="bi bi-person-vcard"></i> Mi Perfil
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="contenedor">
+
+            <header class="ofertas-hero">
+                <div class="ofertas-hero__texto">
+                    <span class="hero-etiqueta">Prácticas FCT</span>
+                    <h1>Encuentra tu próxima oportunidad</h1>
+                    <p>
+                        Explora ofertas de empresas colaboradoras, revisa los detalles y solicita aquellas que encajen
+                        mejor con tu perfil.
+                    </p>
+                </div>
+
+                <div class="hero-icono">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+            </header>
+
+            <!-- Buscador -->
+            <section class="buscador-bloque">
+                <form th:action="@{/ofertas}" method="get" class="form-buscador">
+                    <div class="input-buscador">
+                        <i class="bi bi-search"></i>
+                        <input type="text"
+                               name="buscar"
+                               th:value="${query}"
+                               placeholder="Buscar por puesto, empresa o tecnología...">
+                    </div>
+
+                    <button type="submit" class="btn-buscar">
+                        Buscar
+                    </button>
+
+                    <a th:if="${query != null and !query.isBlank()}"
+                       th:href="@{/ofertas}"
+                       class="btn-limpiar">
+                        Limpiar
+                    </a>
+                </form>
+
+                <div class="resultado-busqueda">
+                    <p th:if="${query == null or query.isBlank()}">
+                        Mostrando todas las ofertas disponibles.
+                    </p>
+
+                    <p th:if="${query != null and !query.isBlank()}">
+                        Resultados para:
+                        <strong th:text="${query}">búsqueda</strong>
+                    </p>
+
+                    <span>
+                        <i class="bi bi-list-check"></i>
+                        <strong th:text="${#lists.size(ofertas)}">0</strong>
+                        ofertas encontradas
+                    </span>
+                </div>
+            </section>
 
             <!-- Listado de Ofertas -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px;">
-                <div th:each="oferta : ${ofertas}" class="oferta-card">
-                    <h3 th:text="${oferta.titulo}" style="margin: 0; color: #333;">Desarrollador Web</h3>
-                    <div style="margin: 15px 0;">
-                        <p style="color: #7ea381; font-weight: bold; margin: 5px 0;">
-                            <i class="bi bi-building"></i> <span th:text="${oferta.empresa?.nombre}">Empresa</span>
+            <section class="ofertas-grid" th:if="${not #lists.isEmpty(ofertas)}">
+
+                <article th:each="oferta : ${ofertas}" class="oferta-card">
+
+                    <div class="oferta-card__top">
+                        <div class="empresa-mini">
+                            <div class="empresa-icono">
+                                <i class="bi bi-building"></i>
+                            </div>
+
+                            <div>
+                                <span>Empresa</span>
+                                <strong th:text="${oferta.empresa != null ? oferta.empresa.nombre : 'Empresa no asignada'}">
+                                    Empresa
+                                </strong>
+                            </div>
+                        </div>
+
+                        <span class="badge-modalidad" th:text="${oferta.modalidad}">
+                            Presencial
+                        </span>
+                    </div>
+
+                    <div class="oferta-card__body">
+                        <h2 th:text="${oferta.titulo}">
+                            Desarrollador Web Junior
+                        </h2>
+
+                        <p th:if="${oferta.descripcion != null}"
+                           th:text="${#strings.length(oferta.descripcion) > 130 ? #strings.substring(oferta.descripcion, 0, 130) + '...' : oferta.descripcion}">
+                            Descripción breve de la oferta.
                         </p>
-                        <p style="color: #666; margin: 5px 0;">
-                            <i class="bi bi-geo-alt"></i> <span th:text="${oferta.modalidad}">Presencial</span>
+
+                        <p th:if="${oferta.descripcion == null}">
+                            Esta oferta todavía no tiene descripción detallada.
                         </p>
                     </div>
-                    <a th:href="@{/ofertas/detalle/{id}(id=${oferta.id})}"
-                        style="color: #4a90e2; text-decoration: none; font-weight: bold; font-size: 0.9rem;">
-                        Ver detalles de la oferta →
-                    </a>
+
+                    <div class="oferta-meta">
+                        <span>
+                            <i class="bi bi-geo-alt"></i>
+                            <span th:text="${oferta.ciudad != null ? oferta.ciudad : 'Sin ciudad'}">Madrid</span>
+                        </span>
+
+                        <span>
+                            <i class="bi bi-people"></i>
+                            <span th:text="${oferta.plazas != null ? oferta.plazas + ' plazas' : 'Plazas no indicadas'}">
+                                1 plaza
+                            </span>
+                        </span>
+                    </div>
+
+                    <div class="oferta-card__footer">
+                        <a th:href="@{/ofertas/detalle/{id}(id=${oferta.id})}" class="btn-detalle">
+                            Ver detalles
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+
+                </article>
+
+            </section>
+
+            <!-- Estado vacío -->
+            <section class="estado-vacio" th:if="${#lists.isEmpty(ofertas)}">
+                <div class="estado-vacio__icono">
+                    <i class="bi bi-search"></i>
                 </div>
-            </div>
+
+                <h2>No se encontraron ofertas</h2>
+
+                <p>
+                    Prueba con otro término de búsqueda o vuelve al listado completo de ofertas disponibles.
+                </p>
+
+                <a th:href="@{/ofertas}" class="btn-buscar">
+                    Ver todas las ofertas
+                </a>
+            </section>
+
         </main>
     </div>
-    <!-- Script para controlar el Sidebar -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const sidebar = document.querySelector('aside'); // Selecciona el sidebar
-            const toggleBtn = document.querySelector('.btn-toggle'); // El botón del nav
-            const mainContent = document.querySelector('main');
 
-            if (toggleBtn && sidebar) {
-                toggleBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    // Alterna la clase 'active' o 'collapsed' según use tu CSS
-                    sidebar.classList.toggle('collapsed');
-
-                    // Si tu CSS usa 'active' para mostrarlo, usa:
-                    // sidebar.classList.toggle('active');
-                });
-            }
-        });
-    </script>
+    <script th:src="@{/js/alumno/buscar-ofertas.js}"></script>
 </body>
 
 </html>

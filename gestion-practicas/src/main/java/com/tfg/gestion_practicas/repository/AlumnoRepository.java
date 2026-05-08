@@ -36,4 +36,6 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
 
     Optional<Alumno> findByUsuarioCorreo(String correo);
 
+    Optional<Alumno> findByUsuarioUsername(String username);
+
 }

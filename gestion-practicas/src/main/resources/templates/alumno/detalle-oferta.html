@@ -3,129 +3,244 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Detalle de Oferta | FP Connect</title>
-    <link rel="stylesheet" th:href="@{/css/alumno/styles.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Detalle de Oferta</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/alumno/detalle-oferta.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <style>
-        /* 1. ELIMINAR EL FANTASMA POR SU CLASE DIRECTA (Visto en Inspector) */
-        /* Esto oculta cualquier nav que tenga la clase sidebar-nav y esté suelto arriba */
-        body>nav.sidebar-nav,
-        .navbar-superior+nav.sidebar-nav {
-            display: none !important;
-            height: 0 !important;
-            visibility: hidden !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        /* 2. ARREGLAR VISIBILIDAD DEL USUARIO (Lucas García) */
-        .navbar-superior {
-            color: #333 !important;
-        }
-
-        .navbar-superior .user-info,
-        .navbar-superior .user-details,
-        .navbar-superior span,
-        .navbar-superior strong {
-            color: #333 !important;
-            display: block !important;
-            /* Para que nombre y rol no se pisen */
-        }
-
-        /* 3. SIDEBAR REAL (Izquierda) */
-        .sidebar {
-            transition: all 0.3s ease !important;
-        }
-
-        .sidebar.collapsed {
-            margin-left: -260px !important;
-        }
-
-        .sidebar * {
-            color: white !important;
-        }
-
-        /* 4. TARJETA DE DETALLE */
-        .detalle-container {
-            background: white !important;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-    </style>
 </head>
 
-<body style="margin: 0; background-color: #f9f9f2;">
+<body>
 
-    <!-- NAV SUPERIOR -->
-    <nav class="navbar-superior flex-between" th:replace="~{alumno/dashboard :: nav}"
-        style="background-color: white !important; height: 70px !important; border-bottom: 1px solid #ddd !important; display: flex !important; align-items: center !important; padding: 0 20px !important; position: relative; z-index: 1001;">
+    <!-- Navbar Superior -->
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button" aria-label="Abrir menú lateral">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de alumno">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav"
+                       th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                        Nombre Alumno
+                    </p>
+                    <p class="rol-nav">Alumno</p>
+                </div>
+
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(alumno.usuario.nombre, 0, 1)}">A</span>
+                </div>
+
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/alumno/dashboard}">
+                    <i class="bi bi-grid-fill"></i>
+                    <b>Dashboard</b>
+                </a>
+
+                <a th:href="@{/alumno/perfil}">
+                    <i class="bi bi-person-circle"></i>
+                    <b>Mi perfil</b>
+                </a>
+
+                <a th:href="@{/alumno/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
+            </div>
+        </div>
     </nav>
 
-    <!-- El "fantasma" suele inyectarse aquí según tu imagen, el CSS de arriba lo matará -->
+    <div class="dashboard-container">
 
-    <div class="dashboard-container"
-        style="display: flex !important; min-height: 100vh; position: relative; z-index: 1000;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/alumno/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i> Inicio
+                </a>
 
-        <!-- SIDEBAR IZQUIERDO -->
-        <aside class="sidebar" th:replace="~{alumno/dashboard :: aside}"
-            style="background-color: #6d8e6d !important; width: 260px !important; min-width: 260px !important; display: block !important; padding-top: 20px;">
+                <a th:href="@{/ofertas}" class="sidebar-link active">
+                    <i class="bi bi-search"></i> Buscar Ofertas
+                </a>
+
+                <a th:href="@{/alumno/solicitudes}" class="sidebar-link">
+                    <i class="bi bi-send"></i> Mis Solicitudes
+                </a>
+
+                <a th:href="@{/alumno/perfil}" class="sidebar-link">
+                    <i class="bi bi-person-vcard"></i> Mi Perfil
+                </a>
+            </nav>
         </aside>
 
-        <!-- CONTENIDO -->
-        <main style="flex: 1; padding: 40px;">
-            <a th:href="@{/ofertas}"
-                style="text-decoration: none; color: #6d8e6d; font-weight: bold; margin-bottom: 20px; display: inline-block;">
-                <i class="bi bi-arrow-left"></i> Volver al listado
+        <!-- Contenido Principal -->
+        <main class="contenedor">
+
+            <a th:href="@{/ofertas}" class="btn-volver">
+                <i class="bi bi-arrow-left"></i>
+                Volver al listado
             </a>
 
-            <div class="detalle-container">
-                <div style="border-bottom: 2px solid #f0f0f0; padding-bottom: 20px; margin-bottom: 20px;">
-                    <span style="color: #6d8e6d; font-weight: bold; text-transform: uppercase;"
-                        th:text="${oferta.empresa?.nombre}">Empresa</span>
-                    <h1 th:text="${oferta.titulo}" style="margin: 10px 0; color: #333;">Título de la oferta</h1>
-                </div>
+            <section class="detalle-layout">
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
-                    <div><i class="bi bi-geo-alt-fill" style="color: #6d8e6d;"></i> <strong
-                            th:text="${oferta.modalidad}">Modalidad</strong></div>
-                    <div><i class="bi bi-people-fill" style="color: #6d8e6d;"></i> <span
-                            th:text="${oferta.plazas}">0</span> plazas</div>
-                </div>
+                <!-- Columna principal -->
+                <article class="detalle-card">
 
-                <div style="background: #f9f9f9; padding: 20px; border-radius: 10px;">
-                    <h3 style="margin-top: 0;"><i class="bi bi-info-circle"></i> Descripción</h3>
-                    <p th:text="${oferta.descripcion}" style="white-space: pre-line; color: #444;">Descripción...</p>
-                </div>
+                    <header class="detalle-header">
+                        <div>
+                            <span class="empresa-etiqueta">
+                                <i class="bi bi-building"></i>
+                                <span th:text="${oferta.empresa != null ? oferta.empresa.nombre : 'Empresa no asignada'}">
+                                    Empresa
+                                </span>
+                            </span>
 
-                <form th:action="@{/alumno/solicitar}" method="post" style="margin-top: 30px;">
-                    <input type="hidden" name="ofertaId" th:value="${oferta.id}">
-                    <button type="submit" th:disabled="${yaSolicitada}"
-                        style="width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: bold; color: white; cursor: pointer; transition: 0.3s;"
-                        th:styleappend="${yaSolicitada ? 'background: #6c757d;' : 'background: #28a745;'}">
-                        <span th:text="${yaSolicitada ? 'Ya estás inscrito' : 'Inscribirme ahora'}"></span>
-                    </button>
-                </form>
-            </div>
+                            <h1 th:text="${oferta.titulo}">
+                                Título de la oferta
+                            </h1>
+
+                            <p>
+                                Revisa los detalles de esta oferta antes de enviar tu solicitud.
+                            </p>
+                        </div>
+
+                        <div class="detalle-icono">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                    </header>
+
+                    <div class="detalle-meta-grid">
+
+                        <div class="meta-card">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            <div>
+                                <span>Ciudad</span>
+                                <strong th:text="${oferta.ciudad != null ? oferta.ciudad : 'No indicada'}">
+                                    Madrid
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="meta-card">
+                            <i class="bi bi-laptop"></i>
+                            <div>
+                                <span>Modalidad</span>
+                                <strong th:text="${oferta.modalidad != null ? oferta.modalidad : 'No indicada'}">
+                                    Presencial
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="meta-card">
+                            <i class="bi bi-people-fill"></i>
+                            <div>
+                                <span>Plazas</span>
+                                <strong th:text="${oferta.plazas != null ? oferta.plazas : 0}">
+                                    0
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="meta-card">
+                            <i class="bi bi-calendar-check"></i>
+                            <div>
+                                <span>Publicación</span>
+                                <strong th:text="${oferta.fechaPublicacion != null ? #temporals.format(oferta.fechaPublicacion, 'dd/MM/yyyy') : 'No indicada'}">
+                                    01/01/2026
+                                </strong>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <section class="detalle-descripcion">
+                        <h2>
+                            <i class="bi bi-info-circle"></i>
+                            Descripción de la oferta
+                        </h2>
+
+                        <p th:if="${oferta.descripcion != null and !oferta.descripcion.isBlank()}"
+                           th:text="${oferta.descripcion}">
+                            Descripción de la oferta...
+                        </p>
+
+                        <p th:if="${oferta.descripcion == null or oferta.descripcion.isBlank()}">
+                            Esta oferta todavía no tiene una descripción detallada.
+                        </p>
+                    </section>
+
+                </article>
+
+                <!-- Columna lateral -->
+                <aside class="panel-solicitud">
+
+                    <div class="panel-solicitud__icono" th:classappend="${yaSolicitada} ? ' panel-solicitud__icono--ok' : ''">
+                        <i th:class="${yaSolicitada} ? 'bi bi-check-circle-fill' : 'bi bi-send-fill'"></i>
+                    </div>
+
+                    <h2 th:text="${yaSolicitada ? 'Solicitud enviada' : '¿Te interesa esta oferta?'}">
+                        ¿Te interesa esta oferta?
+                    </h2>
+
+                    <p th:if="${!yaSolicitada}">
+                        Envía tu candidatura para que la empresa pueda revisar tu perfil y tu CV.
+                    </p>
+
+                    <p th:if="${yaSolicitada}">
+                        Ya has solicitado esta oferta. Puedes revisar el estado desde el apartado de solicitudes.
+                    </p>
+
+                    <form th:action="@{/alumno/solicitar}" method="post" class="form-solicitud">
+                        <input type="hidden" name="ofertaId" th:value="${oferta.id}">
+
+                        <button type="submit"
+                                class="btn-solicitar"
+                                th:disabled="${yaSolicitada}"
+                                th:classappend="${yaSolicitada} ? ' btn-solicitar--disabled' : ''">
+                            <i th:class="${yaSolicitada} ? 'bi bi-check-lg' : 'bi bi-send'"></i>
+                            <span th:text="${yaSolicitada ? 'Ya estás inscrito' : 'Solicitar oferta'}">
+                                Solicitar oferta
+                            </span>
+                        </button>
+                    </form>
+
+                    <a th:href="@{/alumno/solicitudes}" class="btn-secundario">
+                        <i class="bi bi-list-check"></i>
+                        Ver mis solicitudes
+                    </a>
+
+                    <div class="panel-ayuda">
+                        <h3>Consejo</h3>
+                        <p>
+                            Antes de solicitar, revisa que tu perfil y tu CV estén actualizados.
+                        </p>
+                    </div>
+                </aside>
+            </section>
         </main>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const sidebar = document.querySelector('.sidebar');
-            // Buscamos el botón de las 3 rayas (hamburguesa)
-            const btn = document.querySelector('.bi-list')?.closest('button') || document.querySelector('.bi-list')?.parentElement;
-
-            if (btn && sidebar) {
-                btn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    sidebar.classList.toggle('collapsed');
-                });
-            }
-        });
-    </script>
+    <script th:src="@{/js/alumno/detalle-oferta.js}"></script>
 </body>
-
 </html>

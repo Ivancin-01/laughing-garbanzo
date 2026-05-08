@@ -166,3 +166,315 @@ input:checked + .slider:before {
         flex: 1;
     }
 }
+
+/* =====================================================
+   MEJORAS VISUALES CONFIGURACIÓN ALUMNO
+   ===================================================== */
+
+.config-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 28px;
+
+    margin-bottom: 34px;
+    padding: 34px;
+
+    overflow: hidden;
+    position: relative;
+}
+
+.config-header::before {
+    content: "";
+    position: absolute;
+    right: -80px;
+    top: -80px;
+
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+
+    background: rgba(106, 143, 106, 0.08);
+}
+
+.config-header-texto {
+    position: relative;
+    z-index: 1;
+}
+
+.config-etiqueta {
+    display: inline-flex;
+    align-items: center;
+
+    margin-bottom: 12px;
+    padding: 7px 13px;
+
+    border-radius: 999px;
+    background-color: rgba(106, 143, 106, 0.10);
+    color: var(--verde);
+
+    font-family: var(--fuente-titulo);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.config-header h1 {
+    margin: 0 0 10px;
+
+    font-family: var(--fuente-titulo);
+    font-size: 2rem;
+    color: var(--texto);
+}
+
+.config-header p {
+    margin: 0;
+    max-width: 620px;
+
+    color: var(--texto-suave);
+    line-height: 1.6;
+}
+
+.config-avatar {
+    position: relative;
+    z-index: 1;
+
+    width: 96px;
+    height: 96px;
+    min-width: 96px;
+
+    border-radius: 24px;
+    border: 3px solid var(--verde-claro);
+
+    background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.35), transparent 35%),
+        linear-gradient(135deg, var(--verde), var(--verde-claro));
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 14px 28px rgba(106, 143, 106, 0.25);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.config-avatar:hover {
+    transform: translateY(-4px) rotate(-2deg) scale(1.03);
+    box-shadow: 0 18px 34px rgba(106, 143, 106, 0.32);
+}
+
+.config-avatar span {
+    color: var(--blanco);
+    font-family: var(--fuente-titulo);
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+/* Separación entre bloques */
+
+.config-section {
+    margin-bottom: 32px;
+}
+
+.config-section-header {
+    margin-bottom: 24px;
+}
+
+.config-section-header h3 {
+    margin: 0;
+    padding-bottom: 12px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    border-bottom: 2px solid var(--crema);
+    color: var(--verde);
+
+    font-family: var(--fuente-titulo);
+}
+
+.config-section-header p {
+    margin: 10px 0 0;
+    color: var(--texto-suave);
+    line-height: 1.5;
+}
+
+/* Información de cuenta en tarjetas */
+
+.config-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.config-info-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 20px;
+    border-radius: 18px;
+
+    background-color: var(--crema);
+    border: 1px solid rgba(106, 143, 106, 0.14);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.config-info-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    border-color: rgba(106, 143, 106, 0.30);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.07);
+}
+
+.config-info-icon {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(106, 143, 106, 0.12);
+    color: var(--verde);
+
+    font-size: 1.25rem;
+}
+
+.config-info-card span {
+    display: block;
+    margin-bottom: 5px;
+
+    color: var(--texto-suave);
+    font-family: var(--fuente-titulo);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.config-info-card strong {
+    display: block;
+
+    color: var(--texto);
+    font-family: var(--fuente-texto);
+    font-size: 0.98rem;
+    font-weight: 700;
+
+    word-break: break-word;
+}
+
+/* Mejoras generales en items */
+
+.config-item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--crema);
+}
+
+.config-item:last-child {
+    border-bottom: none;
+}
+
+.config-info h4 {
+    font-family: var(--fuente-titulo);
+    font-size: 1rem;
+}
+
+.config-info p {
+    line-height: 1.5;
+}
+
+/* Formulario contraseña más limpio */
+
+.config-grid-password {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.btn-config {
+    width: auto;
+    min-width: 210px;
+}
+
+/* Zona crítica más elegante */
+
+.zona-critica {
+    margin-top: 4px;
+
+    border: 1px solid rgba(217, 83, 79, 0.22);
+    background:
+        linear-gradient(135deg, rgba(255, 241, 241, 0.72), var(--blanco));
+}
+
+.zona-critica h3 {
+    color: var(--rojo);
+}
+
+.zona-critica .config-section-header h3 {
+    border-bottom-color: rgba(217, 83, 79, 0.16);
+}
+
+.btn-danger {
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* Responsive */
+
+@media (max-width: 950px) {
+    .config-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .config-info-grid,
+    .config-grid-password {
+        grid-template-columns: 1fr;
+    }
+
+    .config-avatar {
+        width: 82px;
+        height: 82px;
+        min-width: 82px;
+        border-radius: 20px;
+    }
+
+    .config-avatar span {
+        font-size: 2.1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .config-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .config-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .config-actions input,
+    .config-actions button {
+        width: 100%;
+    }
+
+    .config-header h1 {
+        font-size: 1.55rem;
+    }
+}

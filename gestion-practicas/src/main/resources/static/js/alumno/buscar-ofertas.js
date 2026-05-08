@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ buscar-ofertas.js cargado");
+
     const btnSidebar = document.getElementById("btn-toggle-sidebar");
     const sidebar = document.querySelector(".sidebar");
 
@@ -14,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (perfilBoton && dropdown && perfilTrigger) {
         perfilBoton.addEventListener("click", function (event) {
+            event.preventDefault();
             event.stopPropagation();
 
             dropdown.classList.toggle("show");

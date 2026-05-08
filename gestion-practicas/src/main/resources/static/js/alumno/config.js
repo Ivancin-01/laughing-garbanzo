@@ -1,69 +1,41 @@
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("Configuración: Sistema inicializado de forma independiente.");
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ config.js alumno cargado");
 
-    /* ==========================================================================
-       1. LÓGICA DE LA BARRA DE NAVEGACIÓN (DROPDOWN)
-       ========================================================================== */
-    
-    const usuarioContainer = document.querySelector('.usuario-nav-container');
+    const perfilTrigger = document.querySelector(".perfil-trigger");
+    const perfilBoton = document.getElementById("perfil-boton");
     const dropdown = document.getElementById("dropdown-perfil");
 
-    // Función para abrir/cerrar el menú
-    // Definimos window.toggleDropdown para que el 'onclick' del HTML siga funcionando
-    window.toggleDropdown = function() {
-        if (dropdown) {
+    if (perfilBoton && dropdown && perfilTrigger) {
+        perfilBoton.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
             dropdown.classList.toggle("show");
-        }
-    };
+            perfilTrigger.classList.toggle("dropdown-abierto");
+        });
 
-    // Cerrar el dropdown al hacer clic en cualquier parte fuera del menú
-    window.addEventListener('click', function(event) {
-        if (!event.target.closest('.usuario-nav-container')) {
-            if (dropdown && dropdown.classList.contains('show')) {
-                dropdown.classList.remove('show');
+        window.addEventListener("click", function (event) {
+            if (!perfilTrigger.contains(event.target)) {
+                dropdown.classList.remove("show");
+                perfilTrigger.classList.remove("dropdown-abierto");
             }
-        }
-    });
+        });
 
-
-    /* ==========================================================================
-       2. LÓGICA DE LOS AJUSTES (SEGURIDAD Y PRIVACIDAD)
-       ========================================================================== */
-
-    // Actualizar Contraseña
-    const btnActualizar = document.querySelector('.btn-guardar-mini');
-    if (btnActualizar) {
-        btnActualizar.addEventListener('click', function() {
-            const passInput = document.querySelector('input[type="password"]');
-            if (passInput && passInput.value.trim() !== "") {
-                alert("Solicitud de cambio de contraseña enviada.");
-                passInput.value = ""; 
-            } else {
-                alert("Por favor, introduce una nueva contraseña.");
+        window.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                dropdown.classList.remove("show");
+                perfilTrigger.classList.remove("dropdown-abierto");
             }
         });
     }
 
-    // Switch de Privacidad
-    const privacyCheck = document.querySelector('.switch input');
-    if (privacyCheck) {
-        privacyCheck.addEventListener('change', function() {
-            const mensaje = this.checked ? "Perfil ahora es PÚBLICO" : "Perfil ahora es PRIVADO";
-            console.log(mensaje);
-        });
-    }
+    const formCritico = document.querySelector(".zona-critica form");
 
-    // Zona Crítica - Borrar Cuenta
-    const btnBorrar = document.querySelector('.btn-danger');
-    if (btnBorrar) {
-        btnBorrar.addEventListener('click', function() {
-            const confirmar = confirm("¿Estás seguro de que deseas eliminar tu cuenta? Esta acción es irreversible.");
-            if (confirmar) {
-                const palabra = prompt("Escribe 'ELIMINAR' para confirmar:");
-                if (palabra === "ELIMINAR") {
-                    alert("Cuenta eliminada correctamente.");
-                    // window.location.href = "/logout";
-                }
+    if (formCritico) {
+        formCritico.addEventListener("submit", function (event) {
+            const confirmar = confirm("¿Seguro que quieres desactivar tu cuenta?");
+            if (!confirmar) {
+                event.preventDefault();
             }
         });
     }

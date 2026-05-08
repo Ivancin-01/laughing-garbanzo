@@ -14,50 +14,91 @@
 
     <!-- CDN Bootstrap: Necesario para poder utilizar iconos. -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Link para utilizar jQuery UI. -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
 </head>
 <body>
-    <nav class="navbar-superior flex-between">
+    <nav class="navbar-superior">
         <div class="nav-izq">
             <a th:href="@{/alumno/dashboard}" class="btn-volver-nav">
-                <i class="bi bi-arrow-left"></i> <span>Volver</span>
+                <i class="bi bi-arrow-left"></i>
+                <span>Volver al panel</span>
             </a>
         </div>
+
         <div class="logo-central">
             <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
         </div>
-        <div class="usuario-nav-container perfil-trigger" onclick="toggleDropdown()">
-            <div class="info-usuario-nav">
-                <p class="nombre-nav" th:text="${alumno.usuario.nombre} + ' ' +  ${alumno.usuario.apellidos}">Nombre Alumno</p>
-                <p class="rol-nav">Alumno</p>
-            </div>
-            <div class="avatar-wrapper">
-                <img th:src="@{/img/default-user.png}" alt="Avatar" class="avatar-nav">
-            </div>
+
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de alumno">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav"
+                    th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                        Nombre Alumno
+                    </p>
+                    <p class="rol-nav">Alumno</p>
+                </div>
+
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(alumno.usuario.nombre, 0, 1)}">A</span>
+                </div>
+
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
             <div id="dropdown-perfil" class="dropdown-content">
-                <a th:href="@{/alumno/dashboard}"><i class="bi bi-grid-fill"></i> <b>Dashboard</b></a>
-                <a th:href="@{/alumno/config}"><i class="bi bi-gear-fill"></i> <b>Configuración</b></a>
+                <a th:href="@{/alumno/dashboard}">
+                    <i class="bi bi-grid-fill"></i>
+                    <b>Dashboard</b>
+                </a>
+
+                <a th:href="@{/alumno/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
                 <hr>
-                <a th:href="@{/logout}" class="text-danger" style="color: #d9534f;"><i class="bi bi-box-arrow-right"></i> <b>Cerrar Sesión</b></a>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
             </div>
         </div>
     </nav>
     <main class="contenedor-perfil">
+
+        <div th:if="${success}" class="alerta alerta-exito">
+            <i class="bi bi-check-circle-fill"></i>
+            <span th:text="${success}">Operación realizada correctamente.</span>
+        </div>
+
+        <div th:if="${error}" class="alerta alerta-error">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span th:text="${error}">Ha ocurrido un error.</span>
+        </div>
+
         <section class="perfil-header bloque">
             <div class="perfil-info-main">
                 <div class="avatar-grande-container">
-                    <img th:src="${alumno.usuario.fotoUrl != null ? alumno.usuario.fotoUrl : '/img/default-user.png'}" class="avatar-perfil" id="foto-previsualizacion">
-                    <div class="avatar-edit-overlay" onclick="document.getElementById('input-foto').click()">
-                        <i class="bi bi-camera-fill"></i>
-                        <span>Cambiar</span>
-                    </div>
+                    <span class="avatar-inicial-grande" th:text="${#strings.substring(alumno.usuario.nombre, 0, 1)}">A</span>
                 </div>
-                <input type="file" id="input-foto" style="display: none;" accept="image/*" onchange="previewImage(this)">
+
                 <div class="texto-header">
                     <h2 th:text="|${alumno.usuario.nombre} ${alumno.usuario.apellidos}|">Nombre Alumno</h2>
                     <p class="ciclo-tag">Desarrollo de Aplicaciones Web</p>
+                    <p class="perfil-subtexto">
+                        Mantén tus datos actualizados para que las empresas puedan valorar mejor tu candidatura.
+                    </p>
                 </div>
             </div>
-            <button class="btn-pdf"><i class="bi bi-file-pdf"></i> Descargar CV</button>
+
+            <a th:href="@{/ofertas}" class="btn-pdf">
+                <i class="bi bi-search"></i>
+                Buscar ofertas
+            </a>
         </section>
         <section class="perfil-stats">
             <div class="stat-card">
@@ -81,6 +122,63 @@
                     <p th:text="${alumno.empresaFct != null ? alumno.empresaFct : 'No asignada'}">Pendiente</p>
                 </div>
             </div>
+        </section>
+        <section class="bloque bloque-cv">
+            <div class="bloque-header">
+                <div>
+                    <h3><i class="bi bi-file-earmark-arrow-up"></i> Currículum del alumno</h3>
+                    <p>Sube tu CV en PDF o Word para que las empresas puedan revisarlo.</p>
+                </div>
+
+                <span class="estado-cv" th:if="${alumno.cvUrl != null}">
+                    <i class="bi bi-check-circle"></i>
+                    CV subido
+                </span>
+
+                <span class="estado-cv estado-cv--pendiente" th:if="${alumno.cvUrl == null}">
+                    <i class="bi bi-exclamation-circle"></i>
+                    Pendiente
+                </span>
+            </div>
+
+            <form id="form-cv"
+                class="form-cv"
+                th:action="@{/alumno/perfil/cv}"
+                method="post"
+                enctype="multipart/form-data">
+
+                <div id="zona-cv" class="zona-cv">
+                    <input type="file"
+                        id="input-cv"
+                        name="cv"
+                        accept=".pdf,.doc,.docx"
+                        hidden>
+
+                    <i class="bi bi-cloud-arrow-up"></i>
+
+                    <h4>Arrastra tu CV aquí</h4>
+                    <p>También puedes hacer clic para seleccionarlo desde tu ordenador.</p>
+
+                    <span id="nombre-cv" class="nombre-cv">
+                        Ningún archivo seleccionado
+                    </span>
+                </div>
+
+                <div class="acciones-cv">
+                    <a th:if="${alumno.cvUrl != null}"
+                    th:href="${alumno.cvUrl}"
+                    target="_blank"
+                    class="btn-secundario">
+                        <i class="bi bi-eye"></i>
+                        Ver CV actual
+                    </a>
+
+                    <button type="submit" class="btn-guardar btn-guardar-cv">
+                        <i class="bi bi-upload"></i>
+                        Subir CV
+                    </button>
+                </div>
+            </form>
         </section>
         <section class="bloque">
             <h3><i class="bi bi-person-lines-fill"></i> Datos Personales</h3>
@@ -152,6 +250,8 @@
             </form>
         </section>
     </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
     <script th:src="@{/js/alumno/perfil.js}"></script>
 </body>
 </html>
