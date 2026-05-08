@@ -65,7 +65,7 @@ public class SecurityConfig {
                             response.sendRedirect("/tutor/dashboard");
                             break;
                         case "ROLE_TUTOR_CENTRO":
-                            response.sendRedirect("/tutor-centro/dashboard");
+                            response.sendRedirect("/tutor_centro/dashboard");
                             break;
                         case "ROLE_EMPRESA":
                             response.sendRedirect("/empresa/dashboard");
