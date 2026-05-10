@@ -193,6 +193,7 @@
                                 <option value="">Selecciona un alumno...</option>
                                 <option th:each="alumno : ${alumnos}"
                                         th:value="${alumno.id}"
+                                        th:selected="${alumnoSeleccionadoId != null && alumnoSeleccionadoId == alumno.id}"
                                         th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
                                     Alumno
                                 </option>

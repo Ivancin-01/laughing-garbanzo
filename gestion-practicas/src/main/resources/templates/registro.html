@@ -163,7 +163,21 @@
               <span class="error-msg" id="err-dni"></span>
             </div>
           </div>
+          <div class="form-group">
+            <label for="centroIdAlumno">Centro educativo</label>
 
+            <select id="centroIdAlumno" name="centroIdAlumno">
+              <option value="">-- Selecciona tu centro educativo --</option>
+
+              <option th:each="centro : ${centros}"
+                      th:value="${centro.id}"
+                      th:text="${centro.nombre}">
+                Centro educativo
+              </option>
+            </select>
+
+            <span class="error-msg" id="err-centroIdAlumno"></span>
+          </div>
         </fieldset>
 
 
@@ -178,8 +192,19 @@
               <input type="text" id="departamento" name="departamento" placeholder="Ej: Informática">
             </div>
             <div class="form-group">
-              <label for="centroEducativo">Centro Educativo</label>
-              <input type="text" id="centroEducativo" name="centroEducativo" placeholder="Ej: IES García Lorca">
+              <label for="centroIdTutor">Centro educativo</label>
+
+              <select id="centroIdTutor" name="centroIdTutor">
+                <option value="">-- Selecciona el centro educativo --</option>
+
+                <option th:each="centro : ${centros}"
+                        th:value="${centro.id}"
+                        th:text="${centro.nombre}">
+                  Centro educativo
+                </option>
+              </select>
+
+              <span class="error-msg" id="err-centroIdTutor"></span>
             </div>
           </div>
 
@@ -196,8 +221,19 @@
 
           <div class="form-fila">
             <div class="form-group">
-              <label for="nombreCentro">Nombre del Centro</label>
-              <input type="text" id="nombreCentro" name="nombreCentro" placeholder="Ej: IES García Lorca">
+              <label for="centroIdTutorCentro">Centro educativo</label>
+
+              <select id="centroIdTutorCentro" name="centroIdTutorCentro">
+                <option value="">-- Selecciona el centro educativo --</option>
+
+                <option th:each="centro : ${centros}"
+                        th:value="${centro.id}"
+                        th:text="${centro.nombre}">
+                  Centro educativo
+                </option>
+              </select>
+
+              <span class="error-msg" id="err-centroIdTutorCentro"></span>
             </div>
             <div class="form-group">
               <label for="telefonoTC">Teléfono</label>

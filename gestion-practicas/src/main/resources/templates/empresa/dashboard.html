@@ -25,7 +25,8 @@
             <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
         </div>
         <div class="usuario-nav-container perfil-trigger">
-            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de empresa"> <!-- Aria label proporciona una etiqueta de texto invisible que describe el propósito de un elemento (boton, enlace o icono) a los lectores de pantalla y tecnología asistida. Accesibilidad web. -->
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de empresa">
+                <!-- Aria label proporciona una etiqueta de texto invisible que describe el propósito de un elemento (boton, enlace o icono) a los lectores de pantalla y tecnología asistida. Accesibilidad web. -->
                 <div class="info-usuario-nav">
                     <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
                     <p class="rol-nav">Empresa colaboradora</p>
@@ -83,6 +84,49 @@
             <div th:if="${param.creada}" class="alerta-exito">
                 <i class="bi bi-check-circle-fill"></i>
                 <span>¡La oferta ha sido publicada con éxito!</span>
+            </div>
+            <div th:if="${param.exito != null}" class="alerta-exito">
+                <i class="bi bi-check-circle-fill"></i>
+
+                <span th:if="${param.exito[0] == 'estado_actualizado'}">
+                    Solicitud gestionada correctamente.
+                </span>
+
+                <span th:if="${param.exito[0] != 'estado_actualizado'}">
+                    Operación realizada correctamente.
+                </span>
+            </div>
+
+            <div th:if="${param.error != null}" class="alerta-error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                <span th:if="${param.error[0] == 'plazas_completas'}">
+                    No se puede aceptar esta solicitud porque la oferta ya tiene todas las plazas cubiertas.
+                </span>
+
+                <span th:if="${param.error[0] == 'alumno_ya_en_practicas'}">
+                    Este alumno ya está realizando prácticas en otra empresa.
+                </span>
+
+                <span th:if="${param.error[0] == 'solicitud_no_encontrada'}">
+                    No se ha encontrado la solicitud.
+                </span>
+
+                <span th:if="${param.error[0] == 'oferta_no_valida'}">
+                    La oferta asociada a esta solicitud no es válida.
+                </span>
+
+                <span th:if="${param.error[0] == 'alumno_no_encontrado'}">
+                    No se ha encontrado el alumno asociado a esta solicitud.
+                </span>
+
+                <span th:if="${param.error[0] == 'no_autorizado'}">
+                    No tienes permiso para gestionar esta solicitud.
+                </span>
+
+                <span th:if="${param.error[0] == 'estado_no_valido'}">
+                    El estado enviado no es válido.
+                </span>
             </div>
 
             <header class="dashboard-header flex-between">
@@ -158,8 +202,7 @@
                                 <td>
                                     <strong th:text="${oferta.titulo}">Título Oferta</strong><br>
 
-                                    <small th:if="${oferta.descripcion != null}"
-                                        class="texto-tabla-suave"
+                                    <small th:if="${oferta.descripcion != null}" class="texto-tabla-suave"
                                         th:text="${#strings.length(oferta.descripcion) > 60 ? #strings.substring(oferta.descripcion,0,60) + '...' : oferta.descripcion}">
                                     </small>
                                 </td>
@@ -170,15 +213,13 @@
 
                                 <td>
                                     <div class="acciones-tabla">
-                                        <a th:href="@{/empresa/ofertas/editar/{id}(id=${oferta.id})}"
-                                        class="btn-mini"
-                                        title="Editar">
+                                        <a th:href="@{/empresa/ofertas/editar/{id}(id=${oferta.id})}" class="btn-mini"
+                                            title="Editar">
                                             <i class="bi bi-pencil"></i>
                                         </a>
 
-                                        <a th:href="@{/empresa/ofertas/detalles/{id}(id=${oferta.id})}"
-                                        class="btn-mini"
-                                        title="Ver detalles">
+                                        <a th:href="@{/empresa/ofertas/detalles/{id}(id=${oferta.id})}" class="btn-mini"
+                                            title="Ver detalles">
                                             Ver
                                         </a>
                                     </div>
@@ -225,18 +266,37 @@
                             <td th:text="${#temporals.format(solicitud.fechaSolicitud, 'dd/MM/yyyy')}">01/01/2024</td>
                             <td>
                                 <div class="acciones-tabla">
-                                    <form th:action="@{/empresa/solicitudes/aceptar}" method="POST">
+
+                                    <form th:action="@{/empresa/solicitudes/gestionar}" method="post">
+
+                                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
+                                            th:value="${_csrf.token}">
+
                                         <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
+                                        <input type="hidden" name="nuevoEstado" value="ACEPTADA">
+                                        <input type="hidden" name="origen" value="dashboard">
+
                                         <button type="submit" class="btn-mini btn-mini--aceptar">
-                                            <i class="bi bi-check-lg"></i> Aceptar
+                                            <i class="bi bi-check-lg"></i>
+                                            Aceptar
                                         </button>
                                     </form>
-                                    <form th:action="@{/empresa/solicitudes/rechazar}" method="POST">
+
+                                    <form th:action="@{/empresa/solicitudes/gestionar}" method="post">
+
+                                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
+                                            th:value="${_csrf.token}">
+
                                         <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
+                                        <input type="hidden" name="nuevoEstado" value="RECHAZADA">
+                                        <input type="hidden" name="origen" value="dashboard">
+
                                         <button type="submit" class="btn-mini btn-mini--rechazar">
-                                            <i class="bi bi-x-lg"></i> Rechazar
+                                            <i class="bi bi-x-lg"></i>
+                                            Rechazar
                                         </button>
                                     </form>
+
                                 </div>
                             </td>
                         </tr>

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tfg.gestion_practicas.model.Alumno;
+import com.tfg.gestion_practicas.model.Centro;
 import com.tfg.gestion_practicas.model.Empresa;
 import com.tfg.gestion_practicas.model.Rol;
 import com.tfg.gestion_practicas.model.Tutor;
@@ -42,81 +43,130 @@ public class UsuarioService {
 
     @Transactional
     public Usuario registrar(Usuario u, String matricula, String dni, String departamento,
-            String centroEducativo, String telefono, String nombreCentro,
+            String telefono, Centro centroSeleccionado,
             String cif, String nombreEmpresa, String sector,
             String ciudad, String telefonoEmpresa, String web,
             String emailContacto, String descripcion) {
 
-        if (u == null)
+        if (u == null) {
             throw new RuntimeException("Los datos del usuario no son válidos");
-        if (u.getRol() == null)
-            throw new RuntimeException("Debes seleccionar un rol");
+        }
 
-        if (usuarioRepository.existsByCorreo(u.getCorreo()))
+        if (u.getRol() == null) {
+            throw new RuntimeException("Debes seleccionar un rol");
+        }
+
+        if (usuarioRepository.existsByCorreo(u.getCorreo())) {
             throw new RuntimeException("El correo ya está en uso");
-        if (usuarioRepository.existsByUsername(u.getUsername()))
+        }
+
+        if (usuarioRepository.existsByUsername(u.getUsername())) {
             throw new RuntimeException("El nombre de usuario ya está en uso");
+        }
+
+        Rol rol = u.getRol();
+
+        /*
+         * Validamos centro solo para roles que pertenecen a un centro educativo.
+         * Empresa y Admin no necesitan centro.
+         */
+        if ((rol == Rol.ALUMNO || rol == Rol.TUTOR || rol == Rol.TUTOR_CENTRO)
+                && centroSeleccionado == null) {
+            throw new RuntimeException("Debes seleccionar un centro educativo");
+        }
 
         // Encriptamos contraseña y completamos campos automáticos
         u.setPwd(encoder.encode(u.getPwd()));
         u.setFCreacion(LocalDateTime.now());
         u.setActivo(true);
 
-        // ✅ Guardamos primero el usuario y obtenemos el objeto con ID generado
+        // Guardamos primero el usuario y obtenemos el ID generado
         Usuario usuarioGuardado = usuarioRepository.saveAndFlush(u);
 
         System.out.println("=== REGISTRO: Usuario guardado con ID=" + usuarioGuardado.getId()
                 + " ROL=" + usuarioGuardado.getRol());
 
-        // ✅ Creamos la entidad específica según el rol
-        Rol rol = usuarioGuardado.getRol();
-
+        // Creamos la entidad específica según el rol
         if (rol == Rol.ALUMNO) {
             Alumno nuevoAlumno = new Alumno();
+
             nuevoAlumno.setUsuario(usuarioGuardado);
             nuevoAlumno.setDni(dni != null ? dni : "");
             nuevoAlumno.setMatricula(matricula != null ? matricula : "");
             nuevoAlumno.setEstadoFct("En búsqueda");
+
+            /*
+             * IMPORTANTE:
+             * Esto requiere que Alumno.java tenga:
+             *
+             * @ManyToOne
+             * 
+             * @JoinColumn(name = "centro_educativo")
+             * private Centro centro;
+             */
+            nuevoAlumno.setCentro(centroSeleccionado);
+
             alumnoRepository.save(nuevoAlumno);
-            System.out.println("=== REGISTRO: Alumno creado OK");
+
+            System.out.println("=== REGISTRO: Alumno creado OK - centro="
+                    + centroSeleccionado.getNombre());
 
         } else if (rol == Rol.TUTOR) {
             Tutor nuevoTutor = new Tutor();
+
             nuevoTutor.setUsuario(usuarioGuardado);
             nuevoTutor.setDepartamento(departamento);
-            nuevoTutor.setCentroEducativo(centroEducativo);
             nuevoTutor.setTelefono(telefono);
+
+            /*
+             * De momento mantenemos Tutor.centroEducativo como String,
+             * porque vuestra página de tutor centro filtra con:
+             * findByCentroEducativoIgnoreCase(tutorCentro.getNombreCentro())
+             */
+            nuevoTutor.setCentroEducativo(centroSeleccionado.getNombre());
+
             tutorRepository.save(nuevoTutor);
-            System.out.println("=== REGISTRO: Tutor creado OK");
+
+            System.out.println("=== REGISTRO: Tutor creado OK - centro="
+                    + centroSeleccionado.getNombre());
 
         } else if (rol == Rol.TUTOR_CENTRO) {
-            // ✅ nombreCentro viene del campo "nombreCentro" del formulario
-            // Si viene vacío, usamos centroEducativo como fallback
-            String centro = (nombreCentro != null && !nombreCentro.trim().isEmpty())
-                    ? nombreCentro
-                    : centroEducativo;
-
             TutorCentro nuevoTutorCentro = new TutorCentro();
+
             nuevoTutorCentro.setUsuario(usuarioGuardado);
-            nuevoTutorCentro.setNombreCentro(centro);
             nuevoTutorCentro.setTelefono(telefono);
+
+            /*
+             * De momento mantenemos TutorCentro.nombreCentro como String,
+             * para no romper dashboard, tutores y asignaciones.
+             */
+            nuevoTutorCentro.setNombreCentro(centroSeleccionado.getNombre());
+
             tutorCentroRepository.save(nuevoTutorCentro);
-            System.out.println("=== REGISTRO: TutorCentro creado OK - centro=" + centro);
+
+            System.out.println("=== REGISTRO: TutorCentro creado OK - centro="
+                    + centroSeleccionado.getNombre());
 
         } else if (rol == Rol.EMPRESA) {
             Empresa nuevaEmpresa = new Empresa();
+
             nuevaEmpresa.setUsuario(usuarioGuardado);
             nuevaEmpresa.setCif(cif != null ? cif : "");
             nuevaEmpresa.setNombre(nombreEmpresa != null ? nombreEmpresa : "");
             nuevaEmpresa.setSector(sector != null ? sector : "");
             nuevaEmpresa.setCiudad(ciudad != null ? ciudad : "");
-            // Use provided emailContacto, fallback to user's correo
-            nuevaEmpresa.setEmailContacto((emailContacto != null && !emailContacto.trim().isEmpty()) ? emailContacto
-                    : usuarioGuardado.getCorreo());
+
+            nuevaEmpresa.setEmailContacto(
+                    emailContacto != null && !emailContacto.trim().isEmpty()
+                            ? emailContacto
+                            : usuarioGuardado.getCorreo());
+
             nuevaEmpresa.setTelefono(telefonoEmpresa);
             nuevaEmpresa.setWeb(web);
             nuevaEmpresa.setDescripcion(descripcion);
+
             empresaRepository.save(nuevaEmpresa);
+
             System.out.println("=== REGISTRO: Empresa creada OK - nombre=" + nombreEmpresa);
 
         } else {

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Tutores del Centro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor_centro/tutores.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+<nav class="navbar-superior">
+    <div class="nav-izq">
+        <button id="btn-toggle-sidebar" class="btn-toggle" type="button" aria-label="Abrir menú lateral">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+
+    <div class="logo-central">
+        <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+    </div>
+
+    <div class="usuario-nav-container perfil-trigger">
+        <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de tutor centro">
+            <div class="info-usuario-nav">
+                <p class="nombre-nav" th:text="${tutorCentro.nombre} + ' ' + ${tutorCentro.apellidos}">
+                    Nombre Tutor Centro
+                </p>
+                <p class="rol-nav">Tutor de Centro</p>
+            </div>
+
+            <div class="avatar-wrapper">
+                <span class="avatar-inicial"
+                      th:text="${tutorCentro.nombre != null && !tutorCentro.nombre.isBlank() ? #strings.substring(tutorCentro.nombre, 0, 1) : 'C'}">
+                    C
+                </span>
+            </div>
+
+            <i class="bi bi-chevron-down perfil-flecha"></i>
+        </button>
+
+        <div id="dropdown-perfil" class="dropdown-content">
+            <a th:href="@{/tutor_centro/dashboard}">
+                <i class="bi bi-grid-fill"></i>
+                <b>Dashboard</b>
+            </a>
+
+            <a th:href="@{/tutor_centro/perfil}">
+                <i class="bi bi-person-circle"></i>
+                <b>Mi perfil</b>
+            </a>
+
+            <a th:href="@{/tutor_centro/configuracion}">
+                <i class="bi bi-gear"></i>
+                <b>Configuración</b>
+            </a>
+
+            <hr>
+
+            <a th:href="@{/logout}" class="dropdown-danger">
+                <i class="bi bi-box-arrow-right"></i>
+                <b>Cerrar sesión</b>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <a th:href="@{/tutor_centro/dashboard}" class="sidebar-link">
+                <i class="bi bi-house-door"></i>
+                Inicio
+            </a>
+
+            <a th:href="@{/tutor_centro/tutores}" class="sidebar-link active">
+                <i class="bi bi-person-badge"></i>
+                Tutores
+            </a>
+
+            <a th:href="@{/tutor_centro/alumnos}" class="sidebar-link">
+                <i class="bi bi-people"></i>
+                Alumnos
+            </a>
+
+            <a th:href="@{/tutor_centro/asignaciones}" class="sidebar-link">
+                <i class="bi bi-diagram-3"></i>
+                Asignaciones
+            </a>
+
+            <a th:href="@{/tutor_centro/estadisticas}" class="sidebar-link">
+                <i class="bi bi-bar-chart"></i>
+                Estadísticas
+            </a>
+
+            <a th:href="@{/tutor_centro/configuracion}" class="sidebar-link">
+                <i class="bi bi-gear"></i>
+                Configuración
+            </a>
+        </nav>
+    </aside>
+
+    <main class="contenedor">
+
+        <header class="tutores-hero">
+            <div class="tutores-hero__texto">
+                <span class="hero-etiqueta">Gestión del centro</span>
+
+                <h1>Tutores docentes</h1>
+
+                <p>
+                    Consulta los tutores asociados a
+                    <strong th:text="${nombreCentro != null ? nombreCentro : 'tu centro educativo'}">
+                        tu centro educativo
+                    </strong>
+                    y revisa su carga de alumnos asignados.
+                </p>
+            </div>
+
+            <div class="hero-icono">
+                <i class="bi bi-person-badge"></i>
+            </div>
+        </header>
+
+        <section class="resumen-grid">
+            <article class="resumen-card">
+                <div class="resumen-icono resumen-icono--total">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+
+                <div>
+                    <span>Total tutores</span>
+                    <strong th:text="${totalTutores != null ? totalTutores : 0}">0</strong>
+                </div>
+            </article>
+
+            <article class="resumen-card">
+                <div class="resumen-icono resumen-icono--disponibles">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+
+                <div>
+                    <span>Disponibles</span>
+                    <strong th:text="${tutoresDisponibles != null ? tutoresDisponibles : 0}">0</strong>
+                </div>
+            </article>
+
+            <article class="resumen-card">
+                <div class="resumen-icono resumen-icono--con-alumnos">
+                    <i class="bi bi-people"></i>
+                </div>
+
+                <div>
+                    <span>Con alumnos</span>
+                    <strong th:text="${tutoresConAlumnos != null ? tutoresConAlumnos : 0}">0</strong>
+                </div>
+            </article>
+
+            <article class="resumen-card">
+                <div class="resumen-icono resumen-icono--asignados">
+                    <i class="bi bi-diagram-3"></i>
+                </div>
+
+                <div>
+                    <span>Alumnos asignados</span>
+                    <strong th:text="${totalAlumnosAsignados != null ? totalAlumnosAsignados : 0}">0</strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="bloque filtros-bloque">
+            <div class="bloque-header">
+                <div>
+                    <h2>Filtrar tutores</h2>
+                    <p>Busca por nombre, correo, especialidad o departamento.</p>
+                </div>
+
+                <button type="button" id="btn-limpiar-filtros" class="btn-secundario">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    Limpiar filtros
+                </button>
+            </div>
+
+            <div class="filtros-grid">
+                <div class="campo-filtro campo-filtro--grande">
+                    <label for="buscarTutor">Buscar</label>
+
+                    <div class="input-icono">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="buscarTutor" placeholder="Nombre, correo, especialidad...">
+                    </div>
+                </div>
+
+                <div class="campo-filtro">
+                    <label for="filtroDisponibilidad">Disponibilidad</label>
+
+                    <select id="filtroDisponibilidad">
+                        <option value="">Todos</option>
+                        <option value="disponible">Disponibles</option>
+                        <option value="carga-alta">Carga alta</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="bloque tutores-bloque">
+            <div class="bloque-header">
+                <div>
+                    <h2>Listado de tutores</h2>
+                    <p>
+                        <span id="contador-tutores" th:text="${#lists.size(tutores)}">0</span>
+                        tutores visibles
+                    </p>
+                </div>
+
+                <a th:href="@{/tutor_centro/asignaciones}" class="btn-principal">
+                    <i class="bi bi-diagram-3"></i>
+                    Asignar alumnos
+                </a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(tutores)}" class="estado-vacio">
+                <div class="estado-vacio__icono">
+                    <i class="bi bi-person-x"></i>
+                </div>
+
+                <h3>No hay tutores registrados para este centro</h3>
+                <p>
+                    Revisa que los tutores tengan informado el campo centro educativo con el mismo nombre del centro.
+                </p>
+            </div>
+
+            <div class="tutores-lista" th:if="${not #lists.isEmpty(tutores)}">
+
+                <article class="tutor-card fila-tutor"
+                         th:each="item : ${tutores}"
+                         th:attr="data-nombre=${item.tutor.usuario.nombre + ' ' + item.tutor.usuario.apellidos},
+                                  data-correo=${item.tutor.usuario.correo},
+                                  data-especialidad=${item.tutor.especialidad != null ? item.tutor.especialidad : ''},
+                                  data-departamento=${item.tutor.departamento != null ? item.tutor.departamento : ''},
+                                  data-disponibilidad=${item.disponible ? 'disponible' : 'carga-alta'}">
+
+                    <div class="tutor-principal">
+                        <div class="tutor-avatar">
+                            <span th:text="${item.tutor.usuario.nombre != null && !item.tutor.usuario.nombre.isBlank() ? #strings.substring(item.tutor.usuario.nombre, 0, 1) : 'T'}">
+                                T
+                            </span>
+                        </div>
+
+                        <div>
+                            <span>Tutor docente</span>
+
+                            <h3 th:text="${item.tutor.usuario.nombre} + ' ' + ${item.tutor.usuario.apellidos}">
+                                Nombre Tutor
+                            </h3>
+
+                            <p th:text="${item.tutor.usuario.correo}">
+                                tutor@ejemplo.com
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tutor-datos">
+                        <div class="dato-linea">
+                            <i class="bi bi-journal-code"></i>
+                            <div>
+                                <span>Especialidad</span>
+                                <strong th:text="${item.tutor.especialidad != null && !item.tutor.especialidad.isBlank() ? item.tutor.especialidad : 'No indicada'}">
+                                    Desarrollo Web
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="dato-linea">
+                            <i class="bi bi-building"></i>
+                            <div>
+                                <span>Departamento</span>
+                                <strong th:text="${item.tutor.departamento != null && !item.tutor.departamento.isBlank() ? item.tutor.departamento : 'No indicado'}">
+                                    Informática
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="dato-linea">
+                            <i class="bi bi-telephone"></i>
+                            <div>
+                                <span>Teléfono</span>
+                                <strong th:text="${item.tutor.telefono != null && !item.tutor.telefono.isBlank() ? item.tutor.telefono : 'No indicado'}">
+                                    600 000 000
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tutor-carga">
+                        <span>Alumnos asignados</span>
+
+                        <strong th:text="${item.alumnosAsignados}">
+                            0
+                        </strong>
+
+                        <small th:text="${item.disponible ? 'Disponible' : 'Carga alta'}"
+                               th:class="${item.disponible ? 'estado-carga estado-carga--ok' : 'estado-carga estado-carga--alta'}">
+                            Disponible
+                        </small>
+                    </div>
+
+                    <div class="tutor-acciones">
+                        <a th:href="@{/tutor_centro/tutores/{id}/alumnos(id=${item.tutor.id})}"
+                           class="btn-mini btn-mini--secundario">
+                            <i class="bi bi-people"></i>
+                            Ver alumnos
+                        </a>
+
+                        <a th:href="@{/tutor_centro/asignaciones(tutorId=${item.tutor.id})}"
+                           class="btn-mini">
+                            Asignar
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+
+                </article>
+
+            </div>
+
+            <div id="sin-resultados" class="estado-vacio estado-vacio--filtros oculto">
+                <div class="estado-vacio__icono">
+                    <i class="bi bi-search"></i>
+                </div>
+
+                <h3>No hay tutores con esos filtros</h3>
+                <p>Prueba con otro nombre, correo, especialidad, departamento o disponibilidad.</p>
+            </div>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/tutor_centro/tutores.js}"></script>
+</body>
+</html>

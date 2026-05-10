@@ -129,31 +129,59 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (rolSelect.value === 'ALUMNO') {
         var matricula = document.getElementById('matricula');
+        var dni = document.getElementById('dni');
+        var centroIdAlumno = document.getElementById('centroIdAlumno');
+
         if (!matricula.value) {
           mostrarError('err-matricula', 'Debes seleccionar una especialidad');
           hayErrores = true;
         }
-        var dni = document.getElementById('dni');
+
         if (!dni.value.trim()) {
           mostrarError('err-dni', 'El DNI es obligatorio para alumnos');
+          hayErrores = true;
+        }
+
+        if (!centroIdAlumno.value) {
+          mostrarError('err-centroIdAlumno', 'Debes seleccionar tu centro educativo');
           hayErrores = true;
         }
       }
 
       if (rolSelect.value === 'TUTOR') {
         var departamento = document.getElementById('departamento');
-        var centroEducativo = document.getElementById('centroEducativo');
+        var centroIdTutor = document.getElementById('centroIdTutor');
         var telefono = document.getElementById('telefono');
-        if (!departamento.value.trim()) { mostrarError('err-rol', 'El departamento es obligatorio'); hayErrores = true; }
-        if (!centroEducativo.value.trim()) { mostrarError('err-rol', 'El centro educativo es obligatorio'); hayErrores = true; }
-        if (!telefono.value.trim()) { mostrarError('err-rol', 'El teléfono es obligatorio'); hayErrores = true; }
+
+        if (!departamento.value.trim()) {
+          mostrarError('err-rol', 'El departamento es obligatorio');
+          hayErrores = true;
+        }
+
+        if (!centroIdTutor.value) {
+          mostrarError('err-centroIdTutor', 'Debes seleccionar el centro educativo');
+          hayErrores = true;
+        }
+
+        if (!telefono.value.trim()) {
+          mostrarError('err-rol', 'El teléfono es obligatorio');
+          hayErrores = true;
+        }
       }
 
       if (rolSelect.value === 'TUTOR_CENTRO') {
-        var nombreCentro = document.getElementById('nombreCentro');
+        var centroIdTutorCentro = document.getElementById('centroIdTutorCentro');
         var telefonoTC = document.getElementById('telefonoTC');
-        if (!nombreCentro.value.trim()) { mostrarError('err-rol', 'El nombre del centro es obligatorio'); hayErrores = true; }
-        if (!telefonoTC.value.trim()) { mostrarError('err-rol', 'El teléfono es obligatorio'); hayErrores = true; }
+
+        if (!centroIdTutorCentro.value) {
+          mostrarError('err-centroIdTutorCentro', 'Debes seleccionar el centro educativo');
+          hayErrores = true;
+        }
+
+        if (!telefonoTC.value.trim()) {
+          mostrarError('err-rol', 'El teléfono es obligatorio');
+          hayErrores = true;
+        }
       }
 
       if (rolSelect.value === 'EMPRESA') {

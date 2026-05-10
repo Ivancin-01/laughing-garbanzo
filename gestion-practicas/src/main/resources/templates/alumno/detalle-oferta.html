@@ -97,6 +97,15 @@
 
         <!-- Contenido Principal -->
         <main class="contenedor">
+            <div th:if="${error}" class="alerta alerta-error">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span th:text="${error}">Error</span>
+            </div>
+
+            <div th:if="${success}" class="alerta alerta-exito">
+                <i class="bi bi-check-circle"></i>
+                <span th:text="${success}">Correcto</span>
+            </div>
 
             <a th:href="@{/ofertas}" class="btn-volver">
                 <i class="bi bi-arrow-left"></i>

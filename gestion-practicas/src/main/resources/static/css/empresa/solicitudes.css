@@ -377,3 +377,52 @@ tr:hover .alumno-avatar {
         width: 100%;
     }
 }
+
+/* =====================================================
+   ALERTAS DE FEEDBACK
+   ===================================================== */
+
+.alerta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 24px;
+    padding: 15px 18px;
+
+    border-radius: 16px;
+    font-weight: 700;
+
+    border: 1px solid transparent;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+
+    animation: aparecerAlerta 0.35s ease both;
+}
+
+.alerta i {
+    font-size: 1.25rem;
+}
+
+.alerta-error {
+    background-color: #fff1f1;
+    color: #b6403d;
+    border-color: rgba(217, 83, 79, 0.24);
+}
+
+.alerta-exito {
+    background-color: #eef8ef;
+    color: #256b2b;
+    border-color: rgba(56, 142, 60, 0.24);
+}
+
+@keyframes aparecerAlerta {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

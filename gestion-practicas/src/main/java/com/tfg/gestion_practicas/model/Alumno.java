@@ -25,19 +25,26 @@ public class Alumno {
     @NotBlank
     private String matricula;
 
-    private String centroEducativo;
+    @ManyToOne
+    @JoinColumn(name = "centro_educativo")
+    private Centro centro;
+
+
     private String ciudad;
     private String cvUrl;
 
+    @Builder.Default
     @Column(name = "estado_fct") // Es buena práctica mapear nombres con snake_case de la DB
     private String estadoFct = "PENDIENTE";
 
     private Integer horasFct;
     private String empresaFct;
 
+    @Builder.Default
     @Column(name="perfil_visible")
     private Boolean perfilVisible = true;
 
+    @Builder.Default
     @Column(name="notificaciones_email")
     private Boolean notificacionesEmail = true;
 

@@ -29,6 +29,7 @@ public class Tutor {
     @Column(name = "departamento")
     private String departamento;
 
+    @Builder.Default
     @Column(name = "notificaciones_email")
     private Boolean notificacionesEmail = true;
 

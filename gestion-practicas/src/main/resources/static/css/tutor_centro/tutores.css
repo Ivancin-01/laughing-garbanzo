@@ -17,6 +17,8 @@
     --verde-texto: #256b2b;
     --melocoton-bg: #fff1e8;
     --melocoton-texto: #e6752f;
+    --rojo-bg: #fff1f1;
+    --rojo-texto: #b6403d;
 
     --fuente-titulo: 'Poppins', sans-serif;
     --fuente-texto: 'Lato', sans-serif;
@@ -102,6 +104,10 @@ a {
     font-size: 1.45rem;
     font-weight: 700;
     letter-spacing: 0.2px;
+    color: var(--verde);
+}
+
+.logo-fp {
     color: var(--verde);
 }
 
@@ -345,7 +351,7 @@ a {
    HERO
    ===================================================== */
 
-.alumnos-hero {
+.tutores-hero {
     position: relative;
     overflow: hidden;
 
@@ -365,7 +371,7 @@ a {
     animation: entradaSuave 0.55s ease both;
 }
 
-.alumnos-hero::before {
+.tutores-hero::before {
     content: "";
     position: absolute;
     right: -90px;
@@ -378,7 +384,7 @@ a {
     background: rgba(106, 143, 106, 0.08);
 }
 
-.alumnos-hero__texto {
+.tutores-hero__texto {
     position: relative;
     z-index: 1;
 }
@@ -400,18 +406,22 @@ a {
     letter-spacing: 0.4px;
 }
 
-.alumnos-hero h1 {
+.tutores-hero h1 {
     margin: 0 0 10px;
     font-family: var(--fuente-titulo);
     font-size: 2.1rem;
     color: var(--texto);
 }
 
-.alumnos-hero p {
-    max-width: 700px;
+.tutores-hero p {
+    max-width: 760px;
     margin: 0;
     color: var(--texto-suave);
     line-height: 1.6;
+}
+
+.tutores-hero strong {
+    color: var(--verde);
 }
 
 .hero-icono {
@@ -500,17 +510,17 @@ a {
     color: var(--azul-texto);
 }
 
-.resumen-icono--practicas {
+.resumen-icono--disponibles {
     background-color: var(--verde-bg);
     color: var(--verde-texto);
 }
 
-.resumen-icono--busqueda {
+.resumen-icono--con-alumnos {
     background-color: var(--melocoton-bg);
     color: var(--melocoton-texto);
 }
 
-.resumen-icono--pendiente {
+.resumen-icono--asignados {
     background-color: var(--amarillo-bg);
     color: var(--amarillo-texto);
 }
@@ -574,7 +584,7 @@ a {
 
 .filtros-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 220px 220px;
+    grid-template-columns: minmax(0, 1fr) 240px;
     gap: 16px;
     align-items: end;
 }
@@ -656,18 +666,18 @@ a {
 }
 
 /* =====================================================
-   ALUMNOS
+   TUTORES
    ===================================================== */
 
-.alumnos-lista {
+.tutores-lista {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.alumno-card {
+.tutor-card {
     display: grid;
-    grid-template-columns: minmax(230px, 1fr) minmax(240px, 1fr) 190px 145px auto;
+    grid-template-columns: minmax(230px, 1.1fr) minmax(300px, 1.4fr) 145px auto;
     gap: 18px;
     align-items: center;
 
@@ -686,29 +696,33 @@ a {
         opacity 0.25s ease;
 }
 
-.alumno-card:hover {
+.tutor-card:hover {
     transform: translateY(-4px) scale(1.005);
     border-color: rgba(106, 143, 106, 0.30);
     box-shadow: 0 12px 26px rgba(0, 0, 0, 0.07);
 }
 
-.alumno-card.oculto {
+.tutor-card.oculto {
     display: none;
 }
 
-.alumno-principal {
+.tutor-principal {
     display: flex;
     align-items: center;
     gap: 14px;
     min-width: 0;
 }
 
-.alumno-avatar {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
+.tutor-principal > div:last-child {
+    min-width: 0;
+}
 
-    border-radius: 17px;
+.tutor-avatar {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+
+    border-radius: 18px;
     background: linear-gradient(135deg, var(--verde), var(--verde-claro));
 
     display: flex;
@@ -718,23 +732,33 @@ a {
     color: var(--blanco);
     font-family: var(--fuente-titulo);
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
 
     transition:
         transform 0.25s ease,
         box-shadow 0.25s ease;
 }
 
-.alumno-card:hover .alumno-avatar {
+.tutor-card:hover .tutor-avatar {
     transform: rotate(-3deg) scale(1.05);
     box-shadow: 0 10px 22px rgba(106, 143, 106, 0.18);
 }
 
-.alumno-info {
-    min-width: 0;
+.tutor-principal span,
+.dato-linea span,
+.tutor-carga span {
+    display: block;
+    margin-bottom: 4px;
+
+    color: var(--texto-suave);
+    font-family: var(--fuente-titulo);
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
 }
 
-.alumno-info h3 {
+.tutor-principal h3 {
     margin: 0 0 4px;
 
     color: var(--texto);
@@ -746,88 +770,94 @@ a {
     text-overflow: ellipsis;
 }
 
-.alumno-info p {
+.tutor-principal p {
     margin: 0;
     color: var(--texto-suave);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.alumno-datos {
+.tutor-datos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.dato-linea {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
+    align-items: flex-start;
+    gap: 9px;
 
-.alumno-datos > span {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-
-    padding: 7px 10px;
-    border-radius: 999px;
+    min-width: 0;
+    padding: 11px;
 
     background-color: var(--blanco);
-    color: var(--texto-suave);
-
-    font-size: 0.82rem;
-    font-weight: 700;
+    border-radius: 14px;
 }
 
-.alumno-datos i {
+.dato-linea i {
     color: var(--verde);
+    margin-top: 2px;
 }
 
-.alumno-empresa span {
-    display: block;
-    margin-bottom: 4px;
-
-    color: var(--texto-suave);
-    font-family: var(--fuente-titulo);
-    font-size: 0.76rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.35px;
-}
-
-.alumno-empresa strong {
+.dato-linea strong {
     display: block;
     color: var(--texto);
-    font-size: 0.95rem;
+    font-size: 0.88rem;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.tutor-carga {
+    text-align: center;
+}
 
-    padding: 7px 12px;
+.tutor-carga strong {
+    display: block;
+
+    color: var(--texto);
+    font-family: var(--fuente-titulo);
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.estado-carga {
+    display: inline-flex;
+    margin-top: 8px;
+    padding: 7px 11px;
+
     border-radius: 999px;
 
     font-family: var(--fuente-titulo);
-    font-size: 0.76rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    white-space: nowrap;
 }
 
-.badge-busqueda {
-    background-color: var(--melocoton-bg);
-    color: var(--melocoton-texto);
-}
-
-.badge-pendiente {
-    background-color: var(--amarillo-bg);
-    color: var(--amarillo-texto);
-}
-
-.badge-aceptada {
+.estado-carga--ok {
     background-color: var(--verde-bg);
     color: var(--verde-texto);
 }
 
-.alumno-acciones {
+.estado-carga--alta {
+    background-color: var(--amarillo-bg);
+    color: var(--amarillo-texto);
+}
+
+.tutor-acciones {
     display: flex;
     justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
 }
+
+/* =====================================================
+   BOTONES
+   ===================================================== */
 
 .btn-principal,
 .btn-secundario,
@@ -879,6 +909,10 @@ a {
     white-space: nowrap;
 }
 
+.btn-mini--secundario {
+    background-color: var(--melocoton);
+}
+
 .btn-principal:hover,
 .btn-mini:hover {
     background-color: var(--verde-claro);
@@ -886,31 +920,16 @@ a {
     box-shadow: 0 10px 22px rgba(106, 143, 106, 0.25);
 }
 
+.btn-mini--secundario:hover {
+    background-color: #e99768;
+    box-shadow: 0 10px 22px rgba(244, 168, 124, 0.25);
+}
+
 .btn-secundario:hover {
     background-color: var(--melocoton);
     color: var(--blanco);
     transform: translateY(-2px);
     box-shadow: 0 10px 22px rgba(244, 168, 124, 0.25);
-}
-
-.btn-principal::after,
-.btn-secundario::after,
-.btn-mini::after {
-    content: "";
-    position: absolute;
-    top: -55%;
-    left: -60%;
-    width: 22%;
-    height: 210%;
-    background: rgba(255, 255, 255, 0.24);
-    transform: rotate(28deg);
-    transition: left 0.55s ease;
-}
-
-.btn-principal:hover::after,
-.btn-secundario:hover::after,
-.btn-mini:hover::after {
-    left: 120%;
 }
 
 /* =====================================================
@@ -949,15 +968,6 @@ a {
     color: var(--verde);
 
     font-size: 2.1rem;
-
-    transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
-}
-
-.estado-vacio__icono:hover {
-    transform: rotate(-3deg) scale(1.05);
-    box-shadow: 0 12px 26px rgba(106, 143, 106, 0.18);
 }
 
 .estado-vacio h3 {
@@ -967,7 +977,7 @@ a {
 }
 
 .estado-vacio p {
-    max-width: 520px;
+    max-width: 560px;
     margin: 0 auto;
     color: var(--texto-suave);
     line-height: 1.5;
@@ -998,14 +1008,22 @@ a {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .alumno-card {
+    .tutor-card {
         grid-template-columns: 1fr;
         align-items: flex-start;
     }
 
-    .alumno-acciones,
+    .tutor-carga {
+        text-align: left;
+    }
+
+    .tutor-acciones,
     .btn-mini {
         width: 100%;
+    }
+
+    .tutor-acciones {
+        justify-content: stretch;
     }
 }
 
@@ -1014,7 +1032,7 @@ a {
         display: none;
     }
 
-    .alumnos-hero {
+    .tutores-hero {
         align-items: flex-start;
         flex-direction: column;
     }
@@ -1032,6 +1050,10 @@ a {
     }
 
     .filtros-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tutor-datos {
         grid-template-columns: 1fr;
     }
 }
@@ -1052,7 +1074,7 @@ a {
         padding: 28px 18px 40px;
     }
 
-    .alumnos-hero h1 {
+    .tutores-hero h1 {
         font-size: 1.55rem;
     }
 
@@ -1060,44 +1082,84 @@ a {
         grid-template-columns: 1fr;
     }
 
-    .alumno-principal {
+    .tutor-principal {
         align-items: flex-start;
     }
 }
 
-/* =====================================================
-   BOTONES DE ACCIÓN DE ALUMNOS
-   ===================================================== */
+.form-asignacion {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    gap: 18px;
+    align-items: end;
+}
 
-.alumno-acciones {
+.form-asignacion .btn-principal {
+    height: 46px;
+}
+
+.campo-filtro select {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+
+    border: 1px solid var(--crema-oscura);
+    border-radius: 999px;
+    outline: none;
+
+    background-color: var(--crema);
+    color: var(--texto);
+
+    font-family: var(--fuente-texto);
+    font-size: 0.95rem;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+}
+
+.campo-filtro select:focus {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 4px rgba(106, 143, 106, 0.10);
+    transform: translateY(-1px);
+}
+
+.alerta {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
+    gap: 12px;
+
+    margin-bottom: 24px;
+    padding: 15px 18px;
+
+    border-radius: 16px;
+    font-weight: 700;
+
+    border: 1px solid transparent;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
 }
 
-.btn-mini--detalle {
-    background-color: var(--verde);
+.alerta-exito {
+    background-color: #eef8ef;
+    color: #256b2b;
+    border-color: rgba(56, 142, 60, 0.24);
 }
 
-.btn-mini--reporte {
-    background-color: var(--melocoton);
+.alerta-error {
+    background-color: #fff1f1;
+    color: #b6403d;
+    border-color: rgba(217, 83, 79, 0.24);
 }
 
-.btn-mini--reporte:hover {
-    background-color: #e99768;
-    box-shadow: 0 10px 22px rgba(244, 168, 124, 0.25);
-}
-
-@media (max-width: 1180px) {
-    .alumno-acciones {
-        justify-content: stretch;
-        width: 100%;
+@media (max-width: 950px) {
+    .form-asignacion {
+        grid-template-columns: 1fr;
     }
 
-    .alumno-acciones .btn-mini {
-        flex: 1;
-        min-width: 150px;
+    .form-asignacion .btn-principal {
+        width: 100%;
     }
 }

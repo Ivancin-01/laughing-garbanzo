@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.tfg.gestion_practicas.model.Alumno;
+import com.tfg.gestion_practicas.model.EstadoPractica;
 import com.tfg.gestion_practicas.model.EstadoSolicitud;
 import com.tfg.gestion_practicas.model.Solicitud;
 
@@ -25,4 +26,12 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
     List<Solicitud> findByOfertaEmpresaIdAndEstado(Long empresaId, EstadoSolicitud estado);
 
     List<Solicitud> findByAlumno(Alumno alumno);
+
+    long countByOfertaIdAndEstado(long ofertaId, EstadoSolicitud estado);
+
+    List<Solicitud> findByOfertaIdAndEstado(Long ofertaId, EstadoSolicitud estado);
+
+    List<Solicitud> findByAlumnoIdAndEstado(Long alumnoId, EstadoSolicitud estado);
+
+    boolean existsByAlumnoIdAndEstadoAndEstadoPracticaIn(Long alumnoId, EstadoSolicitud estado, List<EstadoPractica> estadosPractica);
 }

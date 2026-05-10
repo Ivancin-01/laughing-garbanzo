@@ -18,10 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tfg.gestion_practicas.model.Alumno;
+import com.tfg.gestion_practicas.model.Centro;
 import com.tfg.gestion_practicas.model.EstadoSolicitud;
 import com.tfg.gestion_practicas.model.Oferta;
 import com.tfg.gestion_practicas.model.Solicitud;
 import com.tfg.gestion_practicas.repository.AlumnoRepository;
+import com.tfg.gestion_practicas.repository.CentroRepository;
 import com.tfg.gestion_practicas.repository.OfertaRepository;
 import com.tfg.gestion_practicas.repository.SolicitudRepository;
 import com.tfg.gestion_practicas.services.SolicitudService;
@@ -44,6 +46,9 @@ public class AlumnoController {
 
     @Autowired
     private OfertaRepository ofertaRepository;
+
+    @Autowired
+    private CentroRepository centroRepository;
 
     AlumnoController(AlumnoService alumnoService) {
         this.alumnoService = alumnoService;
@@ -98,8 +103,8 @@ public class AlumnoController {
         List<Solicitud> misSolicitudes = solicitudRepository.findByAlumno(alumno);
 
         long pendientes = misSolicitudes.stream()
-            .filter(s -> s.getEstado() != null && s.getEstado().name().equals("PENDIENTE"))
-            .count();
+                .filter(s -> s.getEstado() != null && s.getEstado().name().equals("PENDIENTE"))
+                .count();
 
         long aceptadas = misSolicitudes.stream()
                 .filter(s -> s.getEstado() != null && s.getEstado().name().equals("ACEPTADA"))
@@ -123,7 +128,7 @@ public class AlumnoController {
     public String verPerfil(Model model, Principal principal) {
         String emailLogueado = principal.getName();
         Alumno alumno = alumnoService.buscarPorEmail(emailLogueado);
-        System.out.println("Datos: " + alumno.getUsuario().getNombre() + " " + alumno.getUsuario().getApellidos());
+        model.addAttribute("centros", centroRepository.findAllByOrderByNombreAsc());
         model.addAttribute("alumno", alumno);
         return "alumno/perfil";
     }
@@ -131,7 +136,7 @@ public class AlumnoController {
     @PostMapping("/alumno/perfil/actualizar")
     @Transactional
     public String actualizarPerfil(@Valid @ModelAttribute("alumno") Alumno alumnoForm,
-            BindingResult result, Model model, Principal principal) {
+            BindingResult result, Model model, Principal principal, @RequestParam("centroId") Long centroId) {
 
         if (result.hasErrors()) {
             System.out.println("Errores detectados: " + result.getAllErrors());
@@ -139,6 +144,8 @@ public class AlumnoController {
         }
 
         Alumno alumnoDb = alumnoService.buscarPorEmail(principal.getName());
+        Centro centro = centroRepository.findById(centroId)
+                .orElseThrow(() -> new RuntimeException("Centro no encontrado"));
 
         if (alumnoForm.getUsuario() != null) {
             alumnoDb.getUsuario().setNombre(alumnoForm.getUsuario().getNombre());
@@ -150,10 +157,8 @@ public class AlumnoController {
 
         alumnoDb.setDni(alumnoForm.getDni());
         alumnoDb.setCiudad(alumnoForm.getCiudad());
-        alumnoDb.setCentroEducativo(alumnoForm.getCentroEducativo());
-        alumnoDb.setEstadoFct(alumnoForm.getEstadoFct());
+        alumnoDb.setCentro(centro);
         alumnoDb.setHorasFct(alumnoForm.getHorasFct());
-        alumnoDb.setEmpresaFct(alumnoForm.getEmpresaFct());
 
         alumnoService.guardar(alumnoDb);
         System.out.println("Ciudad recibida: " + alumnoForm.getCiudad());
@@ -174,7 +179,10 @@ public class AlumnoController {
     }
 
     @PostMapping("/alumno/configuracion/password")
-    public String cambiarPassword(@RequestParam("passwordActual") String passwordActual, @RequestParam("passwordNueva") String passwordNueva, @RequestParam("passwordConfirmacion") String passwordConfirmacion, Principal principal, RedirectAttributes redirectAttributes) {
+    public String cambiarPassword(@RequestParam("passwordActual") String passwordActual,
+            @RequestParam("passwordNueva") String passwordNueva,
+            @RequestParam("passwordConfirmacion") String passwordConfirmacion, Principal principal,
+            RedirectAttributes redirectAttributes) {
         try {
             alumnoService.cambiarPassword(principal.getName(), passwordActual, passwordNueva, passwordConfirmacion);
             redirectAttributes.addFlashAttribute("success", "Contraseña actualizada correctamente.");
@@ -186,10 +194,11 @@ public class AlumnoController {
     }
 
     @PostMapping("/alumno/configuracion/preferencias")
-    public String actualizarPreferencias(@RequestParam(value = "perfilVisible", defaultValue = "false") Boolean perfilVisible,
-                                        @RequestParam(value = "notificacionesEmail", defaultValue = "false") Boolean notificacionesEmail,
-                                        Principal principal,
-                                        RedirectAttributes redirectAttributes) {
+    public String actualizarPreferencias(
+            @RequestParam(value = "perfilVisible", defaultValue = "false") Boolean perfilVisible,
+            @RequestParam(value = "notificacionesEmail", defaultValue = "false") Boolean notificacionesEmail,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
         try {
             alumnoService.actualizarPreferencias(principal.getName(), perfilVisible, notificacionesEmail);
@@ -203,8 +212,8 @@ public class AlumnoController {
 
     @PostMapping("/alumno/configuracion/desactivar")
     public String desactivarCuenta(@RequestParam("confirmacion") String confirmacion,
-                                Principal principal,
-                                RedirectAttributes redirectAttributes) {
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
         try {
             alumnoService.desactivarCuenta(principal.getName(), confirmacion);
@@ -215,21 +224,20 @@ public class AlumnoController {
         }
     }
 
-
     @GetMapping("/ofertas/detalle/{id}")
     public String detalleOferta(@PathVariable Long id, Model model, Principal principal) {
         if (principal == null)
             return "redirect:/login";
 
         Alumno al = alumnoRepository.findByUsuarioCorreo(principal.getName())
-        .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
 
         Oferta oferta = ofertaRepository.findById(id).orElse(null);
 
         if (oferta == null) {
             return "redirect:/ofertas?error=no-encontrada";
         }
-        
+
         model.addAttribute("alumno", al);
         model.addAttribute("oferta", oferta);
 
@@ -244,13 +252,27 @@ public class AlumnoController {
         return "alumno/detalle-oferta";
     }
 
+    private boolean alumnoTienePracticasActivas(Alumno alumno) {
+        if (alumno.getEstadoFct() == null) {
+            return false;
+        }
+
+        String estado = alumno.getEstadoFct().trim();
+
+        return estado.equalsIgnoreCase("EN_PRACTICAS")
+                || estado.equalsIgnoreCase("En prácticas");
+    }
+
     @PostMapping("/alumno/solicitar")
     @Transactional
     public String procesarSolicitud(@RequestParam("ofertaId") Long ofertaId,
             @RequestParam(value = "mensaje", defaultValue = "Solicitud enviada por el alumno a través de la plataforma.") String mensaje,
-            Principal principal) {
-        if (principal == null)
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+
+        if (principal == null) {
             return "redirect:/login";
+        }
 
         Alumno alumno = alumnoRepository.findByUsuarioCorreo(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
@@ -258,35 +280,52 @@ public class AlumnoController {
         Oferta oferta = ofertaRepository.findById(ofertaId)
                 .orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
 
-        // Evitar duplicados
+        if (alumnoTienePracticasActivas(alumno)) {
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "No puedes inscribirte en más ofertas porque ya estás realizando prácticas en una empresa.");
+
+            return "redirect:/alumno/ofertas/" + ofertaId;
+        }
+
         boolean yaExiste = solicitudService.obtenerPorAlumno(alumno.getId())
                 .stream()
                 .anyMatch(s -> s.getOferta().getId().equals(ofertaId));
 
-        if (!yaExiste) {
-            Solicitud nuevaSolicitud = Solicitud.builder()
-                    .alumno(alumno)
-                    .oferta(oferta)
-                    .mensaje(mensaje) // Tu modelo requiere mensaje (min 10 caracteres)
-                    .fechaSolicitud(LocalDate.now()) // Fecha actual
-                    .estado(EstadoSolicitud.PENDIENTE) // Corregido según image_48070e.png
-                    .build();
+        if (yaExiste) {
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Ya has solicitado esta oferta anteriormente.");
 
-            solicitudService.guardar(nuevaSolicitud);
+            return "redirect:/alumno/ofertas/" + ofertaId;
         }
+
+        Solicitud nuevaSolicitud = Solicitud.builder()
+                .alumno(alumno)
+                .oferta(oferta)
+                .mensaje(mensaje)
+                .fechaSolicitud(LocalDate.now())
+                .estado(EstadoSolicitud.PENDIENTE)
+                .build();
+
+        solicitudService.guardar(nuevaSolicitud);
+
+        redirectAttributes.addFlashAttribute(
+                "success",
+                "Solicitud enviada correctamente.");
 
         return "redirect:/alumno/solicitudes?exito";
     }
 
 
     @PostMapping("/alumno/perfil/cv")
-    public String subirCv(@RequestParam("cv") MultipartFile cv, Principal principal, RedirectAttributes redirectAttributes) {
+    public String subirCv(@RequestParam("cv") MultipartFile cv, Principal principal,
+            RedirectAttributes redirectAttributes) {
         try {
-            if(cv.isEmpty()) {
+            if (cv.isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "Selecciona un archivo antes de subirlo.");
                 return "redirect:/alumno/perfil";
             }
-
 
             alumnoService.guardarCvAlumno(cv, principal.getName());
             redirectAttributes.addFlashAttribute("success", "CV subido correctamente.");

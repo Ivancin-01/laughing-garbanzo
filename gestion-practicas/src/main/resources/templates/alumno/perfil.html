@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Perfil - Alumno</title>
     <!-- Google Fonts: Poppins para títulos, Lato para texto normal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
     <!-- Normalize: resetea estilos raros entre navegadores -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" th:href="@{/css/alumno/perfil.css}">
@@ -18,6 +20,7 @@
     <!-- Link para utilizar jQuery UI. -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
 </head>
+
 <body>
     <nav class="navbar-superior">
         <div class="nav-izq">
@@ -34,8 +37,7 @@
         <div class="usuario-nav-container perfil-trigger">
             <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de alumno">
                 <div class="info-usuario-nav">
-                    <p class="nombre-nav"
-                    th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                    <p class="nombre-nav" th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
                         Nombre Alumno
                     </p>
                     <p class="rol-nav">Alumno</p>
@@ -83,7 +85,8 @@
         <section class="perfil-header bloque">
             <div class="perfil-info-main">
                 <div class="avatar-grande-container">
-                    <span class="avatar-inicial-grande" th:text="${#strings.substring(alumno.usuario.nombre, 0, 1)}">A</span>
+                    <span class="avatar-inicial-grande"
+                        th:text="${#strings.substring(alumno.usuario.nombre, 0, 1)}">A</span>
                 </div>
 
                 <div class="texto-header">
@@ -141,18 +144,11 @@
                 </span>
             </div>
 
-            <form id="form-cv"
-                class="form-cv"
-                th:action="@{/alumno/perfil/cv}"
-                method="post"
+            <form id="form-cv" class="form-cv" th:action="@{/alumno/perfil/cv}" method="post"
                 enctype="multipart/form-data">
 
                 <div id="zona-cv" class="zona-cv">
-                    <input type="file"
-                        id="input-cv"
-                        name="cv"
-                        accept=".pdf,.doc,.docx"
-                        hidden>
+                    <input type="file" id="input-cv" name="cv" accept=".pdf,.doc,.docx" hidden>
 
                     <i class="bi bi-cloud-arrow-up"></i>
 
@@ -165,10 +161,7 @@
                 </div>
 
                 <div class="acciones-cv">
-                    <a th:if="${alumno.cvUrl != null}"
-                    th:href="${alumno.cvUrl}"
-                    target="_blank"
-                    class="btn-secundario">
+                    <a th:if="${alumno.cvUrl != null}" th:href="${alumno.cvUrl}" target="_blank" class="btn-secundario">
                         <i class="bi bi-eye"></i>
                         Ver CV actual
                     </a>
@@ -203,8 +196,10 @@
                 </div>
                 <div class="form-group">
                     <label>Fecha de Nacimiento</label>
-                    <input type="date" th:field="*{usuario.fNac}" th:classappend="${#fields.hasErrors('usuario.fNac')} ? 'input-error' : ''">
-                    <span class="error-message" th:if="${#fields.hasErrors('usuario.fNac')}" th:errors="*{usuario.fNac}">Error en la fecha</span>
+                    <input type="date" th:field="*{usuario.fNac}"
+                        th:classappend="${#fields.hasErrors('usuario.fNac')} ? 'input-error' : ''">
+                    <span class="error-message" th:if="${#fields.hasErrors('usuario.fNac')}"
+                        th:errors="*{usuario.fNac}">Error en la fecha</span>
                 </div>
 
                 <div class="form-group">
@@ -213,23 +208,34 @@
                 </div>
                 <div class="form-group">
                     <label>Ciudad / Municipio</label>
-                    <select th:field="*{ciudad}" id="select-ciudad" class="form-control-custom" th:attr="data-actual=${alumno.ciudad}">
+                    <select th:field="*{ciudad}" id="select-ciudad" class="form-control-custom"
+                        th:attr="data-actual=${alumno.ciudad}">
                         <option value="">Selecciona una ciudad...</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Centro Educativo</label>
-                    <input type="text" th:field="*{centroEducativo}">
-                </div>
+                    <label for="centroId">Centro Educativo</label>
 
-                <div class="form-group">
-                    <label>Estado de las FCT</label>
-                    <select th:field="*{estadoFct}" class="form-control-custom">
-                        <option value="En búsqueda">En búsqueda</option>
-                        <option value="Desarrollando FCT">Desarrollando FCT</option>
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Inactivo">Inactivo</option>
+                    <select id="centroId" name="centroId" class="form-select-custom" required>
+                        <option value="">Selecciona tu centro educativo</option>
+
+                        <option th:each="centro : ${centros}" th:value="${centro.id}" th:text="${centro.nombre}"
+                            th:selected="${alumno.centro != null && alumno.centro.id == centro.id}">
+                            Centro educativo
+                        </option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label>Estado de prácticas</label>
+                    <div class="campo-solo-lectura">
+                        <i class="bi bi-flag"></i>
+                        <span th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'EN_BUSQUEDA'}">
+                            EN_BUSQUEDA
+                        </span>
+                    </div>
+                    <small class="texto-ayuda">
+                        Este estado se actualiza automáticamente según tus solicitudes y prácticas.
+                    </small>
                 </div>
                 <div class="form-group">
                     <label>Horas Totales</label>
@@ -242,8 +248,20 @@
                 </div>
 
                 <div class="form-group" style="grid-column: span 2;">
-                    <label>Empresa Actual / Preferencia</label>
-                    <input type="text" th:field="*{empresaFct}" placeholder="Ej: Google, Indra...">
+                    <label>Empresa Actual</label>
+                    <div class="campo-solo-lectura">
+                        <i class="bi bi-building"></i>
+
+                        <span th:text="${alumno.empresaFct != null && !#strings.isEmpty(alumno.empresaFct) 
+                        ? alumno.empresaFct 
+                        : 'Sin empresa asignada'}">
+                            Sin empresa asignada
+                        </span>
+                    </div>
+
+                    <small class="texto-ayuda">
+                        La empresa se asigna automáticamente cuando una solicitud es aceptada.
+                    </small>
                 </div>
 
                 <button type="submit" class="btn-guardar">Actualizar Datos</button>
@@ -254,4 +272,5 @@
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
     <script th:src="@{/js/alumno/perfil.js}"></script>
 </body>
+
 </html>

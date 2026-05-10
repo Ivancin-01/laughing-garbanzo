@@ -726,3 +726,20 @@ td strong {
         transform: translateY(0);
     }
 }
+
+.alerta-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 24px;
+    padding: 15px 18px;
+
+    background-color: #fff1f1;
+    color: #b6403d;
+    border: 1px solid rgba(217, 83, 79, 0.24);
+    border-radius: 14px;
+
+    font-weight: 700;
+    animation: entradaSuave 0.55s ease both;
+}

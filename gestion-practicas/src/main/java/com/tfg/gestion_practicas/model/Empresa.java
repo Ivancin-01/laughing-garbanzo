@@ -62,8 +62,10 @@ public class Empresa {
     @Size(max = 200)
     private String web;
 
+    @Builder.Default
     private boolean notificarSolicitudes = true;
 
+    @Builder.Default
     private boolean resumenSemanal = false;
 
     @OneToMany(mappedBy = "empresa") // Una empresa puede publicar una o muchas ofertas.

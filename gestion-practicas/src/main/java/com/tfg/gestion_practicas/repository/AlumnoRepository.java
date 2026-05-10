@@ -38,4 +38,7 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
 
     Optional<Alumno> findByUsuarioUsername(String username);
 
+    long countByTutorId(Long tutorId);
+
+    List<Alumno> findByTutorIsNull();
 }

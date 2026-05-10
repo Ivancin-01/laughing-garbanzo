@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Alumnos del Tutor | FP Connect</title>
+
+    <link rel="stylesheet" th:href="@{/css/tutor_centro/tutores.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+<main class="contenedor" style="padding-top: 40px;">
+
+    <header class="tutores-hero">
+        <div class="tutores-hero__texto">
+            <span class="hero-etiqueta">Alumnos asignados</span>
+
+            <h1 th:text="${tutor.usuario.nombre} + ' ' + ${tutor.usuario.apellidos}">
+                Nombre tutor
+            </h1>
+
+            <p>
+                Aquí puedes consultar los alumnos asignados a este tutor docente.
+            </p>
+        </div>
+
+        <div class="hero-icono">
+            <i class="bi bi-people"></i>
+        </div>
+    </header>
+
+    <section class="resumen-grid">
+        <article class="resumen-card">
+            <div class="resumen-icono resumen-icono--total">
+                <i class="bi bi-people"></i>
+            </div>
+
+            <div>
+                <span>Total alumnos</span>
+                <strong th:text="${totalAlumnos}">0</strong>
+            </div>
+        </article>
+    </section>
+
+    <section class="bloque">
+        <div class="bloque-header">
+            <div>
+                <h2>Listado de alumnos</h2>
+                <p>Alumnos asignados actualmente a este tutor.</p>
+            </div>
+
+            <a th:href="@{/tutor_centro/asignaciones(tutorId=${tutor.id})}" class="btn-principal">
+                <i class="bi bi-plus-circle"></i>
+                Asignar alumno
+            </a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(alumnos)}" class="estado-vacio">
+            <div class="estado-vacio__icono">
+                <i class="bi bi-person-x"></i>
+            </div>
+
+            <h3>Este tutor todavía no tiene alumnos asignados</h3>
+            <p>Puedes asignarle alumnos desde la pantalla de asignaciones.</p>
+        </div>
+
+        <div class="tutores-lista" th:if="${not #lists.isEmpty(alumnos)}">
+            <article class="tutor-card" th:each="alumno : ${alumnos}">
+                <div class="tutor-principal">
+                    <div class="tutor-avatar">
+                        <span th:text="${alumno.usuario.nombre != null ? #strings.substring(alumno.usuario.nombre, 0, 1) : 'A'}">
+                            A
+                        </span>
+                    </div>
+
+                    <div>
+                        <span>Alumno</span>
+
+                        <h3 th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                            Nombre alumno
+                        </h3>
+
+                        <p th:text="${alumno.usuario.correo}">
+                            alumno@ejemplo.com
+                        </p>
+                    </div>
+                </div>
+
+                <div class="tutor-datos">
+                    <div class="dato-linea">
+                        <i class="bi bi-geo-alt"></i>
+                        <div>
+                            <span>Ciudad</span>
+                            <strong th:text="${alumno.ciudad != null ? alumno.ciudad : 'No indicada'}">
+                                Ciudad
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="dato-linea">
+                        <i class="bi bi-briefcase"></i>
+                        <div>
+                            <span>Estado FCT</span>
+                            <strong th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'No indicado'}">
+                                Estado
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="dato-linea">
+                        <i class="bi bi-building"></i>
+                        <div>
+                            <span>Empresa</span>
+                            <strong th:text="${alumno.empresaFct != null ? alumno.empresaFct : 'Sin empresa'}">
+                                Empresa
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div style="margin-top: 24px;">
+            <a th:href="@{/tutor_centro/tutores}" class="btn-secundario">
+                <i class="bi bi-arrow-left"></i>
+                Volver a tutores
+            </a>
+        </div>
+    </section>
+</main>
+<script th:src="@{/js/tutor_centro/tutores.js}"></script>
+</body>
+</html>

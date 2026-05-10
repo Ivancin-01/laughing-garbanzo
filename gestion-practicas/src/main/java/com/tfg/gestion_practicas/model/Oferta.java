@@ -45,6 +45,7 @@ public class Oferta {
     @ManyToOne
     private Empresa empresa;
 
+    @Builder.Default
     @OneToMany(mappedBy = "oferta")
     private List<Solicitud> solicitudes = new ArrayList<>(); // Inicializada para evitar errores en el dashboard
 }

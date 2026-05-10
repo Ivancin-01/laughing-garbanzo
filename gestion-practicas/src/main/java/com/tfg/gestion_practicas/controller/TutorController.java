@@ -83,6 +83,7 @@ public class TutorController {
         List<Alumno> misAlumnos = alumnoRepository.findByTutorId(tutor.getId());
 
         model.addAttribute("tutor", tutor.getUsuario());
+        model.addAttribute("datosTutor", tutor);
         model.addAttribute("alumnos", misAlumnos);
 
         return "tutor/alumnos";
@@ -118,6 +119,7 @@ public class TutorController {
                 .count();
 
         model.addAttribute("tutor", tutor.getUsuario());
+        model.addAttribute("datosTutor", tutor);
         model.addAttribute("alumno", alumno);
         model.addAttribute("solicitudes", solicitudes);
         model.addAttribute("totalSolicitudes", solicitudes.size());
@@ -161,7 +163,7 @@ public class TutorController {
     }
 
     @GetMapping("/tutor/reportes")
-    public String verReportes(Model model, Principal principal) {
+    public String verReportes(@RequestParam(value = "alumnoId", required = false) Long alumnoId, Model model, Principal principal) {
         if (principal == null) {
             return "redirect:/login";
         }
@@ -187,6 +189,7 @@ public class TutorController {
 
         model.addAttribute("tutor", tutor.getUsuario());
         model.addAttribute("alumnos", misAlumnos);
+        model.addAttribute("alumnoSeleccionadoId", alumnoId);
         model.addAttribute("reportes", reportes);
         model.addAttribute("totalReportes", totalReportes);
         model.addAttribute("reportesSeguimiento", reportesSeguimiento);
