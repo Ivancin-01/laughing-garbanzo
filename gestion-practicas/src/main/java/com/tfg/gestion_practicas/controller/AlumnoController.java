@@ -22,6 +22,7 @@ import com.tfg.gestion_practicas.model.Centro;
 import com.tfg.gestion_practicas.model.EstadoSolicitud;
 import com.tfg.gestion_practicas.model.Oferta;
 import com.tfg.gestion_practicas.model.Solicitud;
+import com.tfg.gestion_practicas.model.EstadoPractica;
 import com.tfg.gestion_practicas.repository.AlumnoRepository;
 import com.tfg.gestion_practicas.repository.CentroRepository;
 import com.tfg.gestion_practicas.repository.OfertaRepository;
@@ -224,7 +225,7 @@ public class AlumnoController {
         }
     }
 
-    @GetMapping("/ofertas/detalle/{id}")
+    @GetMapping({"/alumno/ofertas/{id}", "/ofertas/detalle/{id}"})
     public String detalleOferta(@PathVariable Long id, Model model, Principal principal) {
         if (principal == null)
             return "redirect:/login";
@@ -235,32 +236,28 @@ public class AlumnoController {
         Oferta oferta = ofertaRepository.findById(id).orElse(null);
 
         if (oferta == null) {
-            return "redirect:/ofertas?error=no-encontrada";
+            return "redirect:/alumno/ofertas?error=no-encontrada";
         }
+
+        boolean yaSolicitada = solicitudService.obtenerPorAlumno(al.getId())
+            .stream()
+            .anyMatch(s -> s.getOferta().getId().equals(id));
+
+        boolean tienePracticasActivas = alumnoTienePracticasActivas(al);
 
         model.addAttribute("alumno", al);
         model.addAttribute("oferta", oferta);
-
-        // Comprobar si el alumno ya ha solicitado esta oferta para deshabilitar el
-        // botón
-        boolean yaSolicitada = solicitudService.obtenerPorAlumno(al.getId())
-                .stream()
-                .anyMatch(s -> s.getOferta().getId().equals(id));
-
         model.addAttribute("yaSolicitada", yaSolicitada);
+        model.addAttribute("tienePracticasActivas", tienePracticasActivas);
 
         return "alumno/detalle-oferta";
     }
 
     private boolean alumnoTienePracticasActivas(Alumno alumno) {
-        if (alumno.getEstadoFct() == null) {
-            return false;
-        }
-
-        String estado = alumno.getEstadoFct().trim();
-
-        return estado.equalsIgnoreCase("EN_PRACTICAS")
-                || estado.equalsIgnoreCase("En prácticas");
+        return solicitudRepository.existsByAlumnoIdAndEstadoAndEstadoPracticaIn(alumno.getId(), EstadoSolicitud.ACEPTADA, 
+                    List.of(EstadoPractica.PENDIENTE_INICIO,
+                        EstadoPractica.EN_PRACTICAS
+                    ));
     }
 
     @PostMapping("/alumno/solicitar")
@@ -283,7 +280,7 @@ public class AlumnoController {
         if (alumnoTienePracticasActivas(alumno)) {
             redirectAttributes.addFlashAttribute(
                     "error",
-                    "No puedes inscribirte en más ofertas porque ya estás realizando prácticas en una empresa.");
+                    "No puedes inscribirte en más ofertas porque ya tienes una práctica activa o pendiente de inicio.");
 
             return "redirect:/alumno/ofertas/" + ofertaId;
         }
@@ -306,6 +303,7 @@ public class AlumnoController {
                 .mensaje(mensaje)
                 .fechaSolicitud(LocalDate.now())
                 .estado(EstadoSolicitud.PENDIENTE)
+                .estadoPractica(null)
                 .build();
 
         solicitudService.guardar(nuevaSolicitud);

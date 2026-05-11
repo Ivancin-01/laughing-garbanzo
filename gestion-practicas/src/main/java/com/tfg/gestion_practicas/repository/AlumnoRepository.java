@@ -41,4 +41,8 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
     long countByTutorId(Long tutorId);
 
     List<Alumno> findByTutorIsNull();
+
+    List<Alumno> findByCentroNombreIgnoreCase(String nombreCentro);
+    
+    List<Alumno> findByCentroNombreIgnoreCaseAndTutorIsNull(String nombreCentro);
 }

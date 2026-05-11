@@ -3,133 +3,293 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Alumnos del Tutor | FP Connect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Alumnos del Tutor</title>
 
-    <link rel="stylesheet" th:href="@{/css/tutor_centro/tutores.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor_centro/alumnos-tutor.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
 
-<main class="contenedor" style="padding-top: 40px;">
-
-    <header class="tutores-hero">
-        <div class="tutores-hero__texto">
-            <span class="hero-etiqueta">Alumnos asignados</span>
-
-            <h1 th:text="${tutor.usuario.nombre} + ' ' + ${tutor.usuario.apellidos}">
-                Nombre tutor
-            </h1>
-
-            <p>
-                Aquí puedes consultar los alumnos asignados a este tutor docente.
-            </p>
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button" aria-label="Abrir menú lateral">
+                <i class="bi bi-list"></i>
+            </button>
         </div>
 
-        <div class="hero-icono">
-            <i class="bi bi-people"></i>
-        </div>
-    </header>
-
-    <section class="resumen-grid">
-        <article class="resumen-card">
-            <div class="resumen-icono resumen-icono--total">
-                <i class="bi bi-people"></i>
-            </div>
-
-            <div>
-                <span>Total alumnos</span>
-                <strong th:text="${totalAlumnos}">0</strong>
-            </div>
-        </article>
-    </section>
-
-    <section class="bloque">
-        <div class="bloque-header">
-            <div>
-                <h2>Listado de alumnos</h2>
-                <p>Alumnos asignados actualmente a este tutor.</p>
-            </div>
-
-            <a th:href="@{/tutor_centro/asignaciones(tutorId=${tutor.id})}" class="btn-principal">
-                <i class="bi bi-plus-circle"></i>
-                Asignar alumno
-            </a>
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
         </div>
 
-        <div th:if="${#lists.isEmpty(alumnos)}" class="estado-vacio">
-            <div class="estado-vacio__icono">
-                <i class="bi bi-person-x"></i>
-            </div>
-
-            <h3>Este tutor todavía no tiene alumnos asignados</h3>
-            <p>Puedes asignarle alumnos desde la pantalla de asignaciones.</p>
-        </div>
-
-        <div class="tutores-lista" th:if="${not #lists.isEmpty(alumnos)}">
-            <article class="tutor-card" th:each="alumno : ${alumnos}">
-                <div class="tutor-principal">
-                    <div class="tutor-avatar">
-                        <span th:text="${alumno.usuario.nombre != null ? #strings.substring(alumno.usuario.nombre, 0, 1) : 'A'}">
-                            A
-                        </span>
-                    </div>
-
-                    <div>
-                        <span>Alumno</span>
-
-                        <h3 th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
-                            Nombre alumno
-                        </h3>
-
-                        <p th:text="${alumno.usuario.correo}">
-                            alumno@ejemplo.com
-                        </p>
-                    </div>
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de tutor centro">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav" th:text="${tutorCentro.nombre + ' ' + tutorCentro.apellidos}">
+                        Tutor Centro
+                    </p>
+                    <p class="rol-nav">Tutor Centro</p>
                 </div>
 
-                <div class="tutor-datos">
-                    <div class="dato-linea">
-                        <i class="bi bi-geo-alt"></i>
-                        <div>
-                            <span>Ciudad</span>
-                            <strong th:text="${alumno.ciudad != null ? alumno.ciudad : 'No indicada'}">
-                                Ciudad
-                            </strong>
-                        </div>
-                    </div>
-
-                    <div class="dato-linea">
-                        <i class="bi bi-briefcase"></i>
-                        <div>
-                            <span>Estado FCT</span>
-                            <strong th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'No indicado'}">
-                                Estado
-                            </strong>
-                        </div>
-                    </div>
-
-                    <div class="dato-linea">
-                        <i class="bi bi-building"></i>
-                        <div>
-                            <span>Empresa</span>
-                            <strong th:text="${alumno.empresaFct != null ? alumno.empresaFct : 'Sin empresa'}">
-                                Empresa
-                            </strong>
-                        </div>
-                    </div>
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(tutorCentro.nombre, 0, 1)}">T</span>
                 </div>
-            </article>
-        </div>
 
-        <div style="margin-top: 24px;">
-            <a th:href="@{/tutor_centro/tutores}" class="btn-secundario">
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/tutor_centro/perfil}">
+                    <i class="bi bi-person-circle"></i>
+                    <b>Mi perfil</b>
+                </a>
+
+                <a th:href="@{/tutor_centro/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/tutor_centro/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i>
+                    Inicio
+                </a>
+
+                <a th:href="@{/tutor_centro/tutores}" class="sidebar-link active">
+                    <i class="bi bi-person-workspace"></i>
+                    Tutores
+                </a>
+
+                <a th:href="@{/tutor_centro/alumnos}" class="sidebar-link">
+                    <i class="bi bi-mortarboard"></i>
+                    Alumnos
+                </a>
+
+                <a th:href="@{/tutor_centro/asignaciones}" class="sidebar-link">
+                    <i class="bi bi-diagram-3"></i>
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/tutor_centro/estadisticas}" class="sidebar-link">
+                    <i class="bi bi-bar-chart"></i>
+                    Estadísticas
+                </a>
+
+                <a th:href="@{/tutor_centro/configuracion}" class="sidebar-link">
+                    <i class="bi bi-gear"></i>
+                    Configuración
+                </a>
+            </nav>
+        </aside>
+
+        <main class="contenedor">
+
+            <a th:href="@{/tutor_centro/tutores}" class="btn-volver">
                 <i class="bi bi-arrow-left"></i>
                 Volver a tutores
             </a>
-        </div>
-    </section>
-</main>
-<script th:src="@{/js/tutor_centro/tutores.js}"></script>
+
+            <header class="alumnos-tutor-hero">
+                <div class="hero-texto">
+                    <span class="hero-etiqueta">
+                        <i class="bi bi-people"></i>
+                        Alumnos asignados
+                    </span>
+
+                    <h1 th:text="${tutor.usuario.nombre + ' ' + tutor.usuario.apellidos}">
+                        Nombre tutor
+                    </h1>
+
+                    <p>
+                        Consulta los alumnos asignados actualmente a este tutor docente y revisa su estado de FCT.
+                    </p>
+                </div>
+
+                <div class="hero-icono">
+                    <i class="bi bi-person-workspace"></i>
+                </div>
+            </header>
+
+            <section class="stats-grid">
+                <article class="stat-card">
+                    <i class="bi bi-people-fill"></i>
+                    <div>
+                        <span>Total alumnos</span>
+                        <strong th:text="${totalAlumnos}">0</strong>
+                    </div>
+                </article>
+
+                <article class="stat-card stat-card--success">
+                    <i class="bi bi-briefcase-fill"></i>
+                    <div>
+                        <span>En prácticas</span>
+                        <strong
+                            th:text="${#lists.isEmpty(alumnos) ? 0 : alumnos.?[estadoFct != null and estadoFct == 'EN_PRACTICAS'].size()}">0</strong>
+                    </div>
+                </article>
+
+                <article class="stat-card stat-card--warning">
+                    <i class="bi bi-search"></i>
+                    <div>
+                        <span>En búsqueda</span>
+                        <strong
+                            th:text="${#lists.isEmpty(alumnos) ? 0 : alumnos.?[estadoFct == null or estadoFct == 'PENDIENTE' or estadoFct == 'EN_BUSQUEDA'].size()}">0</strong>
+                    </div>
+                </article>
+            </section>
+
+            <section class="bloque">
+                <div class="bloque-header">
+                    <div>
+                        <span class="bloque-kicker">Seguimiento</span>
+                        <h2>Listado de alumnos</h2>
+                        <p>Alumnos vinculados actualmente a este tutor.</p>
+                    </div>
+
+                    <a th:href="@{/tutor_centro/asignaciones(tutorId=${tutor.id})}" class="btn-principal">
+                        <i class="bi bi-plus-circle"></i>
+                        Asignar alumno
+                    </a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(alumnos)}" class="estado-vacio">
+                    <div class="estado-vacio__icono">
+                        <i class="bi bi-person-x"></i>
+                    </div>
+
+                    <h3>Este tutor todavía no tiene alumnos asignados</h3>
+                    <p>Puedes asignarle alumnos desde la pantalla de asignaciones.</p>
+
+                    <a th:href="@{/tutor_centro/asignaciones(tutorId=${tutor.id})}" class="btn-secundario">
+                        <i class="bi bi-diagram-3"></i>
+                        Ir a asignaciones
+                    </a>
+                </div>
+
+                <div th:if="${not #lists.isEmpty(alumnos)}" class="toolbar-alumnos">
+                    <div class="buscador">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="buscadorAlumnosTutor" placeholder="Buscar alumno o email...">
+                    </div>
+
+                    <select id="filtroEstado">
+                        <option value="TODOS">Todos los estados</option>
+                        <option value="EN_BUSQUEDA">En búsqueda</option>
+                        <option value="EN_PRACTICAS">En prácticas</option>
+                        <option value="FINALIZADO">Finalizados</option>
+                    </select>
+                </div>
+
+                <div class="alumnos-grid" th:if="${not #lists.isEmpty(alumnos)}">
+                    <article class="alumno-card fila-alumno" th:each="alumno : ${alumnos}" th:attr="data-nombre=${alumno.usuario.nombre + ' ' + alumno.usuario.apellidos},
+                                  data-email=${alumno.usuario.correo},
+                                  data-estado=${alumno.estadoFct != null ? alumno.estadoFct : 'EN_BUSQUEDA'}">
+
+                        <div class="alumno-card__cabecera">
+                            <div class="alumno-avatar">
+                                <span
+                                    th:text="${alumno.usuario.nombre != null ? #strings.substring(alumno.usuario.nombre, 0, 1) : 'A'}">
+                                    A
+                                </span>
+                            </div>
+
+                            <div>
+                                <span>Alumno</span>
+
+                                <h3 th:text="${alumno.usuario.nombre + ' ' + alumno.usuario.apellidos}">
+                                    Nombre alumno
+                                </h3>
+
+                                <p th:text="${alumno.usuario.correo}">
+                                    alumno@ejemplo.com
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="alumno-datos">
+                            <div class="dato-linea">
+                                <i class="bi bi-geo-alt"></i>
+                                <div>
+                                    <span>Ciudad</span>
+                                    <strong th:text="${alumno.ciudad != null ? alumno.ciudad : 'No indicada'}">
+                                        Ciudad
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <div class="dato-linea">
+                                <i class="bi bi-briefcase"></i>
+                                <div>
+                                    <span>Estado FCT</span>
+                                    <strong>
+                                        <span
+                                            th:class="${'estado-badge estado-' + (alumno.estadoFct != null ? alumno.estadoFct.toLowerCase() : 'en_busqueda')}"
+                                            th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'EN_BUSQUEDA'}">
+                                            Estado
+                                        </span>
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <div class="dato-linea">
+                                <i class="bi bi-building"></i>
+                                <div>
+                                    <span>Empresa</span>
+                                    <strong th:text="${alumno.empresaFct != null ? alumno.empresaFct : 'Sin empresa'}">
+                                        Empresa
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <div class="dato-linea">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                                <div>
+                                    <span>CV</span>
+
+                                    <a th:if="${alumno.cvUrl != null}" th:href="${alumno.cvUrl}" target="_blank"
+                                        class="cv-link">
+                                        Ver CV
+                                    </a>
+
+                                    <strong th:unless="${alumno.cvUrl != null}">
+                                        Sin CV
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div id="sinResultados" class="estado-vacio oculto">
+                    <div class="estado-vacio__icono">
+                        <i class="bi bi-search"></i>
+                    </div>
+
+                    <h3>No hay resultados</h3>
+                    <p>No hay alumnos que coincidan con el filtro seleccionado.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script th:src="@{/js/tutor_centro/alumnos-tutor.js}"></script>
 </body>
 </html>

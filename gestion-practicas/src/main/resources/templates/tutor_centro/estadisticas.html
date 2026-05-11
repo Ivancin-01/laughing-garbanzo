@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Estadísticas Tutor Centro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor_centro/estadisticas.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button" aria-label="Abrir menú lateral">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de tutor centro">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav" th:text="${tutorCentro.nombre + ' ' + tutorCentro.apellidos}">
+                        Tutor Centro
+                    </p>
+                    <p class="rol-nav">Tutor Centro</p>
+                </div>
+
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(tutorCentro.nombre, 0, 1)}">T</span>
+                </div>
+
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/tutor_centro/perfil}">
+                    <i class="bi bi-person-circle"></i>
+                    <b>Mi perfil</b>
+                </a>
+
+                <a th:href="@{/tutor_centro/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/tutor_centro/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i>
+                    Inicio
+                </a>
+
+                <a th:href="@{/tutor_centro/tutores}" class="sidebar-link">
+                    <i class="bi bi-person-workspace"></i>
+                    Tutores
+                </a>
+
+                <a th:href="@{/tutor_centro/alumnos}" class="sidebar-link">
+                    <i class="bi bi-mortarboard"></i>
+                    Alumnos
+                </a>
+
+                <a th:href="@{/tutor_centro/asignaciones}" class="sidebar-link">
+                    <i class="bi bi-diagram-3"></i>
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/tutor_centro/estadisticas}" class="sidebar-link active">
+                    <i class="bi bi-bar-chart"></i>
+                    Estadísticas
+                </a>
+
+                <a th:href="@{/tutor_centro/configuracion}" class="sidebar-link">
+                    <i class="bi bi-gear"></i>
+                    Configuración
+                </a>
+            </nav>
+        </aside>
+
+        <main class="contenedor">
+
+            <header class="estadisticas-hero">
+                <div class="hero-texto">
+                    <span class="hero-etiqueta">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        Estadísticas del centro
+                    </span>
+
+                    <h1>Panel de seguimiento</h1>
+
+                    <p>
+                        Consulta el estado general de alumnos, tutores y asignaciones del centro
+                        <strong th:text="${nombreCentro}">Centro educativo</strong>.
+                    </p>
+                </div>
+
+                <div class="hero-icono">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+            </header>
+
+            <section class="diagnostico-grid">
+
+                <article class="diagnostico-card">
+                    <div class="diagnostico-texto">
+                        <span class="bloque-kicker">
+                            <i class="bi bi-activity"></i>
+                            Diagnóstico automático
+                        </span>
+
+                        <h2>Índice global de avance FCT</h2>
+
+                        <p>
+                            Este indicador combina alumnos en prácticas, alumnos con tutor asignado
+                            y alumnos con empresa FCT.
+                        </p>
+
+                        <div class="diagnostico-estado">
+                            <span>Estado del centro</span>
+                            <strong th:text="${estadoCentro}">Buen avance</strong>
+                        </div>
+                    </div>
+
+                    <div class="donut-wrapper">
+                        <div class="donut-chart" th:style="'--valor:' + ${indiceGestion} + ';'">
+                            <div class="donut-centro">
+                                <strong class="contador" th:data-valor="${indiceGestion}">0</strong>
+                                <span>%</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="recomendacion-card">
+                    <div class="recomendacion-icono">
+                        <i class="bi bi-lightbulb"></i>
+                    </div>
+
+                    <h2>Recomendación principal</h2>
+
+                    <p th:text="${recomendacionPrincipal}">
+                        Recomendación automática del sistema.
+                    </p>
+
+                    <div class="acciones-diagnostico">
+                        <a th:href="@{/tutor_centro/asignaciones}" class="btn-diagnostico">
+                            <i class="bi bi-diagram-3"></i>
+                            Revisar asignaciones
+                        </a>
+
+                        <button type="button" class="btn-diagnostico btn-diagnostico--secundario"
+                            id="btnImprimirInforme">
+                            <i class="bi bi-printer"></i>
+                            Imprimir informe
+                        </button>
+                    </div>
+                </article>
+            </section>
+
+            <section class="stats-grid">
+                <article class="stat-card">
+                    <i class="bi bi-mortarboard-fill"></i>
+                    <div>
+                        <span>Total alumnos</span>
+                        <strong th:text="${totalAlumnos}">0</strong>
+                    </div>
+                </article>
+
+                <article class="stat-card">
+                    <i class="bi bi-person-workspace"></i>
+                    <div>
+                        <span>Total tutores</span>
+                        <strong th:text="${totalTutores}">0</strong>
+                    </div>
+                </article>
+
+                <article class="stat-card stat-card--success">
+                    <i class="bi bi-briefcase-fill"></i>
+                    <div>
+                        <span>En prácticas</span>
+                        <strong th:text="${alumnosEnPracticas}">0</strong>
+                    </div>
+                </article>
+
+                <article class="stat-card stat-card--warning">
+                    <i class="bi bi-person-dash-fill"></i>
+                    <div>
+                        <span>Sin tutor</span>
+                        <strong th:text="${alumnosSinTutor}">0</strong>
+                    </div>
+                </article>
+            </section>
+
+            <section class="dashboard-grid">
+
+                <article class="bloque bloque-progreso">
+                    <div class="bloque-header">
+                        <div>
+                            <span class="bloque-kicker">Estado FCT</span>
+                            <h2>Distribución de alumnos</h2>
+                            <p>Resumen del estado actual de los alumnos del centro.</p>
+                        </div>
+                    </div>
+
+                    <div class="progreso-lista">
+
+                        <div class="progreso-item">
+                            <div class="progreso-texto">
+                                <span>En búsqueda</span>
+                                <strong th:text="${alumnosEnBusqueda + ' alumnos'}">0 alumnos</strong>
+                            </div>
+
+                            <div class="barra">
+                                <div class="barra-fill barra-fill--warning"
+                                    th:style="'width:' + ${porcentajeEnBusqueda} + '%'"></div>
+                            </div>
+
+                            <small th:text="${porcentajeEnBusqueda + '%'}">0%</small>
+                        </div>
+
+                        <div class="progreso-item">
+                            <div class="progreso-texto">
+                                <span>En prácticas</span>
+                                <strong th:text="${alumnosEnPracticas + ' alumnos'}">0 alumnos</strong>
+                            </div>
+
+                            <div class="barra">
+                                <div class="barra-fill barra-fill--success"
+                                    th:style="'width:' + ${porcentajeEnPracticas} + '%'"></div>
+                            </div>
+
+                            <small th:text="${porcentajeEnPracticas + '%'}">0%</small>
+                        </div>
+
+                        <div class="progreso-item">
+                            <div class="progreso-texto">
+                                <span>Finalizados</span>
+                                <strong th:text="${alumnosFinalizados + ' alumnos'}">0 alumnos</strong>
+                            </div>
+
+                            <div class="barra">
+                                <div class="barra-fill barra-fill--info"
+                                    th:style="'width:' + ${porcentajeFinalizados} + '%'"></div>
+                            </div>
+
+                            <small th:text="${porcentajeFinalizados + '%'}">0%</small>
+                        </div>
+
+                    </div>
+                </article>
+
+                <article class="bloque bloque-resumen">
+                    <div class="bloque-header">
+                        <div>
+                            <span class="bloque-kicker">Asignaciones</span>
+                            <h2>Control de tutores</h2>
+                            <p>Estado del reparto de alumnos entre tutores docentes.</p>
+                        </div>
+                    </div>
+
+                    <div class="mini-stats">
+                        <div class="mini-stat">
+                            <span>Con tutor</span>
+                            <strong th:text="${alumnosConTutor}">0</strong>
+                            <small th:text="${porcentajeConTutor + '% del alumnado'}">0%</small>
+                        </div>
+
+                        <div class="mini-stat">
+                            <span>Sin tutor</span>
+                            <strong th:text="${alumnosSinTutor}">0</strong>
+                            <small>Pendientes de asignar</small>
+                        </div>
+
+                        <div class="mini-stat">
+                            <span>Tutores con alumnos</span>
+                            <strong th:text="${tutoresConAlumnos}">0</strong>
+                            <small th:text="${tutoresSinAlumnos + ' sin alumnos'}">0 sin alumnos</small>
+                        </div>
+
+                        <div class="mini-stat">
+                            <span>Media por tutor</span>
+                            <strong th:text="${#numbers.formatDecimal(mediaAlumnosPorTutor, 1, 1)}">0.0</strong>
+                            <small>Alumnos/tutor</small>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
+
+            <section class="dashboard-grid">
+
+                <article class="bloque bloque-progreso">
+                    <div class="bloque-header">
+                        <div>
+                            <span class="bloque-kicker">Empresas</span>
+                            <h2>Alumnos con empresa</h2>
+                            <p>Indicador de alumnos que ya tienen empresa FCT asociada.</p>
+                        </div>
+                    </div>
+
+                    <div class="empresa-resumen">
+                        <div class="empresa-circulo">
+                            <span th:text="${porcentajeConEmpresa + '%'}">0%</span>
+                        </div>
+
+                        <div class="empresa-datos">
+                            <p>
+                                <strong th:text="${alumnosConEmpresa}">0</strong>
+                                alumnos tienen empresa asignada.
+                            </p>
+
+                            <p>
+                                <strong th:text="${alumnosSinEmpresa}">0</strong>
+                                alumnos todavía no tienen empresa.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="bloque bloque-acciones">
+                    <div class="bloque-header">
+                        <div>
+                            <span class="bloque-kicker">Acciones rápidas</span>
+                            <h2>Gestión del centro</h2>
+                            <p>Accesos directos a las pantallas principales.</p>
+                        </div>
+                    </div>
+
+                    <div class="acciones-grid">
+                        <a th:href="@{/tutor_centro/alumnos}" class="accion-card">
+                            <i class="bi bi-mortarboard"></i>
+                            <span>Ver alumnos</span>
+                        </a>
+
+                        <a th:href="@{/tutor_centro/tutores}" class="accion-card">
+                            <i class="bi bi-person-workspace"></i>
+                            <span>Ver tutores</span>
+                        </a>
+
+                        <a th:href="@{/tutor_centro/asignaciones}" class="accion-card">
+                            <i class="bi bi-diagram-3"></i>
+                            <span>Asignaciones</span>
+                        </a>
+                    </div>
+                </article>
+
+            </section>
+
+            <section class="bloque bloque-tabla">
+                <div class="bloque-header bloque-header--horizontal">
+                    <div>
+                        <span class="bloque-kicker">Reparto</span>
+                        <h2>Alumnos por tutor</h2>
+                        <p>Consulta la carga actual de alumnos asignados a cada tutor docente.</p>
+                    </div>
+                </div>
+
+                <div th:if="${#lists.isEmpty(tutoresDTO)}" class="estado-vacio">
+                    <div class="estado-vacio__icono">
+                        <i class="bi bi-inbox"></i>
+                    </div>
+
+                    <h3>No hay tutores registrados</h3>
+                    <p>No se han encontrado tutores asociados a este centro.</p>
+                </div>
+
+                <div th:if="${not #lists.isEmpty(tutoresDTO)}" class="tabla-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tutor</th>
+                                <th>Especialidad</th>
+                                <th>Departamento</th>
+                                <th>Alumnos asignados</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="item : ${tutoresDTO}">
+                                <td>
+                                    <div class="tutor-info">
+                                        <div class="tutor-avatar">
+                                            <span
+                                                th:text="${#strings.substring(item.tutor.usuario.nombre, 0, 1)}">T</span>
+                                        </div>
+
+                                        <div>
+                                            <strong
+                                                th:text="${item.tutor.usuario.nombre + ' ' + item.tutor.usuario.apellidos}">
+                                                Nombre tutor
+                                            </strong>
+                                            <small th:text="${item.tutor.usuario.correo}">
+                                                correo@centro.com
+                                            </small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td
+                                    th:text="${item.tutor.especialidad != null ? item.tutor.especialidad : 'No indicada'}">
+                                    Especialidad
+                                </td>
+
+                                <td
+                                    th:text="${item.tutor.departamento != null ? item.tutor.departamento : 'No indicado'}">
+                                    Departamento
+                                </td>
+
+                                <td>
+                                    <span class="badge-alumnos" th:text="${item.alumnosAsignados}">
+                                        0
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a th:href="@{/tutor_centro/tutores/{id}/alumnos(id=${item.tutor.id})}"
+                                        class="btn-mini">
+                                        <i class="bi bi-eye"></i>
+                                        Ver alumnos
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+    <script th:src="@{/js/tutor_centro/estadisticas.js}"></script>
+</body>
+
+</html>

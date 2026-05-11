@@ -294,8 +294,12 @@
 
                                         <form th:action="@{/empresa/solicitudes/gestionar}" method="post"
                                             class="form-accion">
+                                            <input type="hidden" th:if="${_csrf != null}"
+                                                th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
                                             <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
                                             <input type="hidden" name="nuevoEstado" value="ACEPTADA">
+                                            <input type="hidden" name="origen" value="solicitudes">
 
                                             <button type="submit" class="btn-mini btn-mini--aceptar btn-confirmar"
                                                 data-mensaje="¿Seguro que quieres aceptar esta solicitud?">
@@ -306,8 +310,12 @@
 
                                         <form th:action="@{/empresa/solicitudes/gestionar}" method="post"
                                             class="form-accion">
+                                            <input type="hidden" th:if="${_csrf != null}"
+                                                th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
                                             <input type="hidden" name="solicitudId" th:value="${solicitud.id}">
                                             <input type="hidden" name="nuevoEstado" value="RECHAZADA">
+                                            <input type="hidden" name="origen" value="solicitudes">
 
                                             <button type="submit" class="btn-mini btn-mini--rechazar btn-confirmar"
                                                 data-mensaje="¿Seguro que quieres rechazar esta solicitud?">
@@ -340,4 +348,5 @@
     <script th:src="@{/js/empresa/dashboard.js}"></script>
     <script th:src="@{/js/empresa/solicitudes.js}"></script>
 </body>
+
 </html>

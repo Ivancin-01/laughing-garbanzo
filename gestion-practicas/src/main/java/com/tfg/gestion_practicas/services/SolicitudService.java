@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tfg.gestion_practicas.model.EstadoPractica;
 import com.tfg.gestion_practicas.model.EstadoSolicitud;
 import com.tfg.gestion_practicas.model.Oferta;
 import com.tfg.gestion_practicas.model.Solicitud;
@@ -62,6 +63,7 @@ public class SolicitudService {
         // Se añade la fecha automáticamente y el estado inicial siempre será PENDIENTE.
         solicitud.setFechaSolicitud(LocalDate.now());
         solicitud.setEstado(EstadoSolicitud.PENDIENTE);
+        solicitud.setEstadoPractica(null);
         solicitud.setOferta(oferta);
 
         return solicitudRepository.save(solicitud);

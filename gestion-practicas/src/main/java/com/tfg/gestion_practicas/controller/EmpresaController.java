@@ -326,99 +326,96 @@ public class EmpresaController {
 
     @PostMapping("/empresa/solicitudes/gestionar")
     @Transactional
-    public String gestionarSolicitud(@RequestParam("solicitudId") Long id,
-            @RequestParam("nuevoEstado") String estadoStr,
+    public String gestionarSolicitud(
+            @RequestParam("solicitudId") Long solicitudId,
+            @RequestParam("nuevoEstado") String nuevoEstado,
+            @RequestParam(value = "origen", defaultValue = "solicitudes") String origen,
             Principal principal) {
+
         if (principal == null) {
             return "redirect:/login";
         }
 
-        String email = principal.getName();
-        Empresa empresa = empresaRepository.findByUsuarioCorreo(email).orElse(null);
+        Empresa empresa = empresaRepository.findByUsuarioCorreo(principal.getName()).orElse(null);
 
         if (empresa == null) {
             return "redirect:/login";
         }
 
-        Solicitud solicitud = solicitudRepository.findById(id).orElse(null);
+        Solicitud solicitud = solicitudRepository.findById(solicitudId).orElse(null);
 
         if (solicitud == null) {
-            return "redirect:/empresa/solicitudes?error=solicitud_no_encontrada";
+            return redirigirGestionSolicitud(origen, "error", "solicitud_no_encontrada");
         }
 
         if (solicitud.getOferta() == null || solicitud.getOferta().getEmpresa() == null) {
-            return "redirect:/empresa/solicitudes?error=oferta_no_valida";
+            return redirigirGestionSolicitud(origen, "error", "oferta_no_valida");
         }
 
         if (!solicitud.getOferta().getEmpresa().getId().equals(empresa.getId())) {
-            return "redirect:/empresa/solicitudes?error=no_autorizado";
+            return redirigirGestionSolicitud(origen, "error", "no_autorizado");
+        }
+
+        if (solicitud.getEstado() != EstadoSolicitud.PENDIENTE) {
+            return redirigirGestionSolicitud(origen, "error", "solicitud_ya_procesada");
         }
 
         try {
-            EstadoSolicitud nuevoEstado = EstadoSolicitud.valueOf(estadoStr.toUpperCase());
+            EstadoSolicitud estadoConvertido = EstadoSolicitud.valueOf(nuevoEstado.toUpperCase());
 
-            if (nuevoEstado == EstadoSolicitud.ACEPTADA) {
-                return aceptarSolicitudEmpresa(solicitud);
+            if (estadoConvertido == EstadoSolicitud.ACEPTADA) {
+                solicitud.setEstado(EstadoSolicitud.ACEPTADA);
+                solicitud.setEstadoPractica(EstadoPractica.PENDIENTE_INICIO);
+            } else if (estadoConvertido == EstadoSolicitud.RECHAZADA) {
+                solicitud.setEstado(EstadoSolicitud.RECHAZADA);
+                solicitud.setEstadoPractica(null);
+            } else {
+                return redirigirGestionSolicitud(origen, "error", "estado_no_valido");
             }
 
-            if (nuevoEstado == EstadoSolicitud.RECHAZADA) {
-                return rechazarSolicitudEmpresa(solicitud);
+            solicitudRepository.save(solicitud);
+
+            if (solicitud.getAlumno() != null) {
+                sincronizarEstadoFctAlumno(solicitud.getAlumno());
             }
 
-            return "redirect:/empresa/solicitudes?error=estado_no_valido";
+            return redirigirGestionSolicitud(origen, "exito", "estado_actualizado");
 
         } catch (IllegalArgumentException e) {
-            return "redirect:/empresa/solicitudes?error=estado_no_valido";
+            return redirigirGestionSolicitud(origen, "error", "estado_no_valido");
         }
     }
 
-    private String aceptarSolicitudEmpresa(Solicitud solicitud) {
+    /*private String aceptarSolicitudEmpresa(Solicitud solicitud, String origen) {
         Oferta oferta = solicitud.getOferta();
         Alumno alumno = solicitud.getAlumno();
 
         if (oferta == null) {
-            return "redirect:/empresa/solicitudes?error=oferta_no_valida";
+            return redirigirGestionSolicitud(origen, "error", "oferta_no_valida");
         }
 
         if (alumno == null) {
-            return "redirect:/empresa/solicitudes?error=alumno_no_encontrado";
+            return redirigirGestionSolicitud(origen, "error", "alumno_no_encontrado");
         }
 
-        /*
-         * Si el alumno ya tiene una práctica activa por alguna solicitud aceptada,
-         * no puede ser aceptado en otra empresa.
-         */
         if (alumnoTienePracticaActivaPorSolicitudes(alumno)) {
-            return "redirect:/empresa/solicitudes?error=alumno_ya_en_practicas";
+            return redirigirGestionSolicitud(origen, "error", "alumno_ya_en_practicas");
         }
 
-        /*
-         * Si la oferta ya tiene todas las plazas cubiertas,
-         * no se puede aceptar otra solicitud.
-         */
         long aceptadasActuales = solicitudRepository.countByOfertaIdAndEstado(
                 oferta.getId(),
                 EstadoSolicitud.ACEPTADA);
 
         if (oferta.getPlazas() != null && aceptadasActuales >= oferta.getPlazas()) {
-            return "redirect:/empresa/solicitudes?error=plazas_completas";
+            return redirigirGestionSolicitud(origen, "error", "plazas_completas");
         }
 
-        /*
-         * La solicitud aceptada pasa a tener una práctica pendiente de inicio.
-         */
         solicitud.setEstado(EstadoSolicitud.ACEPTADA);
         solicitud.setEstadoPractica(EstadoPractica.PENDIENTE_INICIO);
         solicitudRepository.save(solicitud);
 
-        /*
-         * El estado_fct del alumno se calcula a partir de solicitudes.estado_practica.
-         */
         sincronizarEstadoFctAlumno(alumno);
 
-        /*
-         * Se rechazan automáticamente otras solicitudes pendientes del mismo alumno.
-         */
         List<Solicitud> pendientesDelAlumno = solicitudRepository.findByAlumnoIdAndEstado(
                 alumno.getId(),
                 EstadoSolicitud.PENDIENTE);
@@ -432,16 +429,6 @@ public class EmpresaController {
 
         solicitudRepository.saveAll(pendientesDelAlumno);
 
-        for (Solicitud s : pendientesDelAlumno) {
-            if (!s.getId().equals(solicitud.getId()) && s.getAlumno() != null) {
-                sincronizarEstadoFctAlumno(s.getAlumno());
-            }
-        }
-
-        /*
-         * Si la oferta queda completa, se rechazan automáticamente
-         * las solicitudes pendientes restantes de esa misma oferta.
-         */
         long aceptadasDespues = solicitudRepository.countByOfertaIdAndEstado(
                 oferta.getId(),
                 EstadoSolicitud.ACEPTADA);
@@ -460,17 +447,12 @@ public class EmpresaController {
 
             solicitudRepository.saveAll(pendientesMismaOferta);
 
-            for (Solicitud s : pendientesMismaOferta) {
-                if (!s.getId().equals(solicitud.getId()) && s.getAlumno() != null) {
-                    sincronizarEstadoFctAlumno(s.getAlumno());
-                }
-            }
         }
 
-        return "redirect:/empresa/solicitudes?exito=estado_actualizado";
+        return redirigirGestionSolicitud(origen, "exito", "estado_actualizado");
     }
 
-    private String rechazarSolicitudEmpresa(Solicitud solicitud) {
+    private String rechazarSolicitudEmpresa(Solicitud solicitud, String origen) {
         Alumno alumno = solicitud.getAlumno();
 
         solicitud.setEstado(EstadoSolicitud.RECHAZADA);
@@ -481,7 +463,15 @@ public class EmpresaController {
             sincronizarEstadoFctAlumno(alumno);
         }
 
-        return "redirect:/empresa/solicitudes?exito=estado_actualizado";
+        return redirigirGestionSolicitud(origen, "exito", "estado_actualizado");
+    }*/
+
+    private String redirigirGestionSolicitud(String origen, String tipo, String codigo) {
+        String destino = "dashboard".equalsIgnoreCase(origen)
+                ? "/empresa/dashboard"
+                : "/empresa/solicitudes";
+
+        return "redirect:" + destino + "?" + tipo + "=" + codigo;
     }
 
     // =====================================================

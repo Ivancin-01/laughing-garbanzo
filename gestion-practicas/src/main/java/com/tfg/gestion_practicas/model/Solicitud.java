@@ -29,9 +29,8 @@ public class Solicitud {
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
 
-    @Builder.Default
-    @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(name="estado_practica", nullable = false)
     private EstadoPractica estadoPractica = EstadoPractica.PENDIENTE_INICIO;
 
     @ManyToOne

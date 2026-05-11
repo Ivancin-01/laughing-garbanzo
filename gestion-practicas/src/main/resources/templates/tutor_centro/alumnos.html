@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Alumnos del Centro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor_centro/alumnos.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+<nav class="navbar-superior">
+    <div class="nav-izq">
+        <button id="btn-toggle-sidebar" class="btn-toggle" type="button">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+
+    <div class="logo-central">
+        <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+    </div>
+
+    <div class="usuario-nav-container perfil-trigger">
+        <button type="button" class="perfil-boton" id="perfil-boton">
+            <div class="info-usuario-nav">
+                <p class="nombre-nav" th:text="${tutorCentro.nombre + ' ' + tutorCentro.apellidos}">
+                    Tutor Centro
+                </p>
+                <p class="rol-nav">Tutor Centro</p>
+            </div>
+
+            <div class="avatar-wrapper">
+                <span class="avatar-inicial" th:text="${#strings.substring(tutorCentro.nombre, 0, 1)}">T</span>
+            </div>
+
+            <i class="bi bi-chevron-down perfil-flecha"></i>
+        </button>
+
+        <div id="dropdown-perfil" class="dropdown-content">
+            <a th:href="@{/tutor_centro/perfil}">
+                <i class="bi bi-person-circle"></i>
+                <b>Mi perfil</b>
+            </a>
+
+            <a th:href="@{/tutor_centro/configuracion}">
+                <i class="bi bi-gear"></i>
+                <b>Configuración</b>
+            </a>
+
+            <hr>
+
+            <a th:href="@{/logout}" class="dropdown-danger">
+                <i class="bi bi-box-arrow-right"></i>
+                <b>Cerrar sesión</b>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <a th:href="@{/tutor_centro/dashboard}" class="sidebar-link">
+                <i class="bi bi-house-door"></i>
+                Inicio
+            </a>
+
+            <a th:href="@{/tutor_centro/tutores}" class="sidebar-link">
+                <i class="bi bi-person-workspace"></i>
+                Tutores
+            </a>
+
+            <a th:href="@{/tutor_centro/alumnos}" class="sidebar-link active">
+                <i class="bi bi-mortarboard"></i>
+                Alumnos
+            </a>
+
+            <a th:href="@{/tutor_centro/asignaciones}" class="sidebar-link">
+                <i class="bi bi-diagram-3"></i>
+                Asignaciones
+            </a>
+
+            <a th:href="@{/tutor_centro/estadisticas}" class="sidebar-link">
+                <i class="bi bi-bar-chart"></i>
+                Estadísticas
+            </a>
+
+            <a th:href="@{/tutor_centro/configuracion}" class="sidebar-link">
+                <i class="bi bi-gear"></i>
+                Configuración
+            </a>
+        </nav>
+    </aside>
+
+    <main class="contenedor">
+
+        <header class="dashboard-header flex-between">
+            <div>
+                <span class="badge-centro" th:text="${nombreCentro}">Centro educativo</span>
+                <h1>Alumnos del centro</h1>
+                <p>Consulta, filtra y asigna tutores a los alumnos de tu instituto.</p>
+            </div>
+        </header>
+
+        <div th:if="${success}" class="alerta alerta-exito">
+            <i class="bi bi-check-circle"></i>
+            <span th:text="${success}">Operación correcta</span>
+        </div>
+
+        <div th:if="${error}" class="alerta alerta-error">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span th:text="${error}">Ha ocurrido un error</span>
+        </div>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <i class="bi bi-people-fill"></i>
+                <div>
+                    <span>Total alumnos</span>
+                    <strong th:text="${totalAlumnos}">0</strong>
+                </div>
+            </article>
+
+            <article class="stat-card stat-card--warning">
+                <i class="bi bi-search"></i>
+                <div>
+                    <span>En búsqueda</span>
+                    <strong th:text="${alumnosEnBusqueda}">0</strong>
+                </div>
+            </article>
+
+            <article class="stat-card stat-card--success">
+                <i class="bi bi-briefcase-fill"></i>
+                <div>
+                    <span>En prácticas</span>
+                    <strong th:text="${alumnosEnPracticas}">0</strong>
+                </div>
+            </article>
+
+            <article class="stat-card stat-card--danger">
+                <i class="bi bi-person-dash"></i>
+                <div>
+                    <span>Sin tutor</span>
+                    <strong th:text="${alumnosSinTutor}">0</strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="bloque">
+
+            <div class="toolbar-alumnos">
+                <div>
+                    <h2><i class="bi bi-list-check"></i> Listado de alumnos</h2>
+                    <p>Filtra por nombre, estado de FCT o tutor asignado.</p>
+                </div>
+
+                <div class="filtros-alumnos">
+                    <div class="buscador">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="buscadorAlumnos" placeholder="Buscar alumno o email...">
+                    </div>
+
+                    <select id="filtroEstado">
+                        <option value="TODOS">Todos los estados</option>
+                        <option value="EN_BUSQUEDA">En búsqueda</option>
+                        <option value="EN_PRACTICAS">En prácticas</option>
+                        <option value="FINALIZADO">Finalizados</option>
+                    </select>
+
+                    <select id="filtroTutor">
+                        <option value="TODOS">Todos</option>
+                        <option value="CON_TUTOR">Con tutor</option>
+                        <option value="SIN_TUTOR">Sin tutor</option>
+                    </select>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(alumnos)}" class="estado-vacio">
+                <i class="bi bi-inbox"></i>
+                <p>No hay alumnos registrados en este centro.</p>
+            </div>
+
+            <div th:if="${not #lists.isEmpty(alumnos)}" class="tabla-wrapper">
+                <table class="tabla-alumnos">
+                    <thead>
+                    <tr>
+                        <th>Alumno</th>
+                        <th>Estado FCT</th>
+                        <th>Empresa</th>
+                        <th>Tutor asignado</th>
+                        <th>CV</th>
+                        <th>Asignar tutor</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr class="fila-alumno"
+                        th:each="alumno : ${alumnos}"
+                        th:attr="data-nombre=${alumno.usuario.nombre + ' ' + alumno.usuario.apellidos},
+                                 data-email=${alumno.usuario.correo},
+                                 data-estado=${alumno.estadoFct != null ? alumno.estadoFct : 'EN_BUSQUEDA'},
+                                 data-tutor=${alumno.tutor != null ? 'CON_TUTOR' : 'SIN_TUTOR'}">
+
+                        <td>
+                            <div class="alumno-info">
+                                <div class="alumno-avatar">
+                                    <span th:text="${#strings.substring(alumno.usuario.nombre, 0, 1)}">A</span>
+                                </div>
+
+                                <div>
+                                    <strong th:text="${alumno.usuario.nombre + ' ' + alumno.usuario.apellidos}">
+                                        Nombre alumno
+                                    </strong>
+                                    <small th:text="${alumno.usuario.correo}">
+                                        alumno@email.com
+                                    </small>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span th:class="${'estado-badge estado-' + (alumno.estadoFct != null ? alumno.estadoFct.toLowerCase() : 'en_busqueda')}"
+                                  th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'EN_BUSQUEDA'}">
+                                EN_BUSQUEDA
+                            </span>
+                        </td>
+
+                        <td>
+                            <span th:if="${alumno.empresaFct != null and !alumno.empresaFct.isBlank()}"
+                                  th:text="${alumno.empresaFct}">
+                                Empresa
+                            </span>
+
+                            <span th:unless="${alumno.empresaFct != null and !alumno.empresaFct.isBlank()}"
+                                  class="texto-suave">
+                                Sin empresa
+                            </span>
+                        </td>
+
+                        <td>
+                            <span th:if="${alumno.tutor != null}">
+                                <strong th:text="${alumno.tutor.usuario.nombre + ' ' + alumno.tutor.usuario.apellidos}">
+                                    Tutor
+                                </strong>
+                                <small class="texto-tabla-suave"
+                                       th:text="${alumno.tutor.especialidad != null ? alumno.tutor.especialidad : 'Sin especialidad'}">
+                                    Especialidad
+                                </small>
+                            </span>
+
+                            <span th:unless="${alumno.tutor != null}" class="sin-tutor">
+                                Sin tutor asignado
+                            </span>
+                        </td>
+
+                        <td>
+                            <a th:if="${alumno.cvUrl != null}" th:href="${alumno.cvUrl}" target="_blank" class="btn-mini">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                                Ver CV
+                            </a>
+
+                            <span th:unless="${alumno.cvUrl != null}" class="texto-suave">
+                                Sin CV
+                            </span>
+                        </td>
+
+                        <td>
+                            <form th:action="@{/tutor_centro/alumnos/asignar-tutor}" method="post" class="form-asignar">
+
+                                <input th:if="${_csrf != null}" type="hidden"
+                                       th:name="${_csrf.parameterName}"
+                                       th:value="${_csrf.token}">
+
+                                <input type="hidden" name="alumnoId" th:value="${alumno.id}">
+
+                                <select name="tutorId" required>
+                                    <option value="">Selecciona tutor</option>
+
+                                    <option th:each="tutor : ${tutores}"
+                                            th:value="${tutor.id}"
+                                            th:selected="${alumno.tutor != null and alumno.tutor.id == tutor.id}"
+                                            th:text="${tutor.usuario.nombre + ' ' + tutor.usuario.apellidos}">
+                                        Tutor
+                                    </option>
+                                </select>
+
+                                <button type="submit" class="btn-mini btn-mini--asignar">
+                                    <i class="bi bi-check2"></i>
+                                    Asignar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div id="sinResultados" class="estado-vacio oculto">
+                    <i class="bi bi-search"></i>
+                    <p>No hay alumnos que coincidan con el filtro.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/tutor_centro/alumnos.js}"></script>
+</body>
+</html>

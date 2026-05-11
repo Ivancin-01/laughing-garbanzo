@@ -32,8 +32,7 @@
         <div class="usuario-nav-container perfil-trigger">
             <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de alumno">
                 <div class="info-usuario-nav">
-                    <p class="nombre-nav"
-                       th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                    <p class="nombre-nav" th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
                         Nombre Alumno
                     </p>
                     <p class="rol-nav">Alumno</p>
@@ -81,7 +80,7 @@
                     <i class="bi bi-house-door"></i> Inicio
                 </a>
 
-                <a th:href="@{/ofertas}" class="sidebar-link active">
+                <a th:href="@{/alumno/ofertas}" class="sidebar-link active">
                     <i class="bi bi-search"></i> Buscar Ofertas
                 </a>
 
@@ -107,7 +106,7 @@
                 <span th:text="${success}">Correcto</span>
             </div>
 
-            <a th:href="@{/ofertas}" class="btn-volver">
+            <a th:href="@{/alumno/ofertas}" class="btn-volver">
                 <i class="bi bi-arrow-left"></i>
                 Volver al listado
             </a>
@@ -121,7 +120,8 @@
                         <div>
                             <span class="empresa-etiqueta">
                                 <i class="bi bi-building"></i>
-                                <span th:text="${oferta.empresa != null ? oferta.empresa.nombre : 'Empresa no asignada'}">
+                                <span
+                                    th:text="${oferta.empresa != null ? oferta.empresa.nombre : 'Empresa no asignada'}">
                                     Empresa
                                 </span>
                             </span>
@@ -176,7 +176,8 @@
                             <i class="bi bi-calendar-check"></i>
                             <div>
                                 <span>Publicación</span>
-                                <strong th:text="${oferta.fechaPublicacion != null ? #temporals.format(oferta.fechaPublicacion, 'dd/MM/yyyy') : 'No indicada'}">
+                                <strong
+                                    th:text="${oferta.fechaPublicacion != null ? #temporals.format(oferta.fechaPublicacion, 'dd/MM/yyyy') : 'No indicada'}">
                                     01/01/2026
                                 </strong>
                             </div>
@@ -191,7 +192,7 @@
                         </h2>
 
                         <p th:if="${oferta.descripcion != null and !oferta.descripcion.isBlank()}"
-                           th:text="${oferta.descripcion}">
+                            th:text="${oferta.descripcion}">
                             Descripción de la oferta...
                         </p>
 
@@ -205,11 +206,13 @@
                 <!-- Columna lateral -->
                 <aside class="panel-solicitud">
 
-                    <div class="panel-solicitud__icono" th:classappend="${yaSolicitada} ? ' panel-solicitud__icono--ok' : ''">
+                    <div class="panel-solicitud__icono"
+                        th:classappend="${yaSolicitada} ? ' panel-solicitud__icono--ok' : ''">
                         <i th:class="${yaSolicitada} ? 'bi bi-check-circle-fill' : 'bi bi-send-fill'"></i>
                     </div>
 
-                    <h2 th:text="${yaSolicitada ? 'Solicitud enviada' : '¿Te interesa esta oferta?'}">
+                    <h2
+                        th:text="${tienePracticasActivas ? 'No puedes solicitar más ofertas' : (yaSolicitada ? 'Solicitud enviada' : '¿Te interesa esta oferta?')}">
                         ¿Te interesa esta oferta?
                     </h2>
 
@@ -221,15 +224,31 @@
                         Ya has solicitado esta oferta. Puedes revisar el estado desde el apartado de solicitudes.
                     </p>
 
+                    <p th:if="${tienePracticasActivas}">
+                        Actualmente ya tienes una práctica activa o pendiente de inicio, por lo que no puedes solicitar
+                        nuevas ofertas.
+                    </p>
+
+                    <p th:if="${!tienePracticasActivas and !yaSolicitada}">
+                        Envía tu candidatura para que la empresa pueda revisar tu perfil y tu CV.
+                    </p>
+
+                    <p th:if="${!tienePracticasActivas and yaSolicitada}">
+                        Ya has solicitado esta oferta. Puedes revisar el estado desde el apartado de solicitudes.
+                    </p>
+
                     <form th:action="@{/alumno/solicitar}" method="post" class="form-solicitud">
+                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
+                            th:value="${_csrf.token}">
+
                         <input type="hidden" name="ofertaId" th:value="${oferta.id}">
 
-                        <button type="submit"
-                                class="btn-solicitar"
-                                th:disabled="${yaSolicitada}"
-                                th:classappend="${yaSolicitada} ? ' btn-solicitar--disabled' : ''">
+                        <button type="submit" class="btn-solicitar"
+                            th:disabled="${yaSolicitada or tienePracticasActivas}"
+                            th:classappend="${yaSolicitada or tienePracticasActivas} ? ' btn-solicitar--disabled' : ''">
                             <i th:class="${yaSolicitada} ? 'bi bi-check-lg' : 'bi bi-send'"></i>
-                            <span th:text="${yaSolicitada ? 'Ya estás inscrito' : 'Solicitar oferta'}">
+                            <span
+                                th:text="${tienePracticasActivas ? 'Ya estás en prácticas' : (yaSolicitada ? 'Ya estás inscrito' : 'Solicitar oferta')}">
                                 Solicitar oferta
                             </span>
                         </button>
@@ -252,4 +271,5 @@
     </div>
     <script th:src="@{/js/alumno/detalle-oferta.js}"></script>
 </body>
+
 </html>
