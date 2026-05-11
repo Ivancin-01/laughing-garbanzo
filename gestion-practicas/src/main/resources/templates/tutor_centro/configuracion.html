@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Configuración Tutor Centro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor_centro/configuracion.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button" aria-label="Abrir menú lateral">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de tutor centro">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav" th:text="${tutorCentro.nombre + ' ' + tutorCentro.apellidos}">
+                        Tutor Centro
+                    </p>
+                    <p class="rol-nav">Tutor Centro</p>
+                </div>
+
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(tutorCentro.nombre, 0, 1)}">T</span>
+                </div>
+
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/tutor_centro/perfil}">
+                    <i class="bi bi-person-circle"></i>
+                    <b>Mi perfil</b>
+                </a>
+
+                <a th:href="@{/tutor_centro/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/tutor_centro/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i>
+                    Inicio
+                </a>
+
+                <a th:href="@{/tutor_centro/tutores}" class="sidebar-link">
+                    <i class="bi bi-person-workspace"></i>
+                    Tutores
+                </a>
+
+                <a th:href="@{/tutor_centro/alumnos}" class="sidebar-link">
+                    <i class="bi bi-mortarboard"></i>
+                    Alumnos
+                </a>
+
+                <a th:href="@{/tutor_centro/asignaciones}" class="sidebar-link">
+                    <i class="bi bi-diagram-3"></i>
+                    Asignaciones
+                </a>
+
+                <a th:href="@{/tutor_centro/estadisticas}" class="sidebar-link">
+                    <i class="bi bi-bar-chart"></i>
+                    Estadísticas
+                </a>
+
+                <a th:href="@{/tutor_centro/perfil}" class="sidebar-link">
+                    <i class="bi bi-person-circle"></i>
+                    Perfil
+                </a>
+
+                <a th:href="@{/tutor_centro/configuracion}" class="sidebar-link active">
+                    <i class="bi bi-gear"></i>
+                    Configuración
+                </a>
+            </nav>
+        </aside>
+
+        <main class="contenedor">
+
+            <header class="config-hero">
+                <div class="hero-texto">
+                    <span class="hero-etiqueta">
+                        <i class="bi bi-shield-lock"></i>
+                        Seguridad y cuenta
+                    </span>
+
+                    <h1>Configuración</h1>
+
+                    <p>
+                        Gestiona la seguridad de tu cuenta, revisa tus datos de acceso y controla el estado de tu
+                        perfil.
+                    </p>
+                </div>
+
+                <div class="hero-icono">
+                    <i class="bi bi-gear-wide-connected"></i>
+                </div>
+            </header>
+
+            <section class="config-grid">
+
+                <article class="config-card cuenta-card">
+                    <div class="card-header">
+                        <div>
+                            <span class="bloque-kicker">Cuenta</span>
+                            <h2>Información de acceso</h2>
+                            <p>Datos principales asociados a tu usuario.</p>
+                        </div>
+                    </div>
+
+                    <div class="datos-cuenta">
+                        <div class="dato-cuenta">
+                            <i class="bi bi-person"></i>
+                            <div>
+                                <span>Usuario</span>
+                                <strong th:text="${tutorCentro.username}">username</strong>
+                            </div>
+                        </div>
+
+                        <div class="dato-cuenta">
+                            <i class="bi bi-envelope"></i>
+                            <div>
+                                <span>Correo</span>
+                                <strong th:text="${tutorCentro.correo}">correo@centro.com</strong>
+                            </div>
+                        </div>
+
+                        <div class="dato-cuenta">
+                            <i class="bi bi-building"></i>
+                            <div>
+                                <span>Centro</span>
+                                <strong th:text="${nombreCentro}">Centro educativo</strong>
+                            </div>
+                        </div>
+
+                        <div class="dato-cuenta">
+                            <i class="bi bi-check-circle"></i>
+                            <div>
+                                <span>Estado</span>
+                                <strong th:text="${tutorCentro.activo ? 'Cuenta activa' : 'Cuenta desactivada'}">
+                                    Cuenta activa
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="config-card password-card">
+                    <div class="card-header">
+                        <div>
+                            <span class="bloque-kicker">Contraseña</span>
+                            <h2>Cambiar contraseña</h2>
+                            <p>Actualiza tu contraseña de acceso de forma segura.</p>
+                        </div>
+                    </div>
+
+                    <div th:if="${successPassword}" class="alerta alerta-exito">
+                        <i class="bi bi-check-circle"></i>
+                        <span th:text="${successPassword}">Contraseña actualizada.</span>
+                    </div>
+
+                    <div th:if="${errorPassword}" class="alerta alerta-error">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span th:text="${errorPassword}">Error al cambiar contraseña.</span>
+                    </div>
+
+                    <form th:action="@{/tutor_centro/configuracion/password}" method="post" class="form-config"
+                        id="formPassword">
+
+                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
+                            th:value="${_csrf.token}">
+
+                        <div class="campo">
+                            <label for="passwordActual">
+                                <i class="bi bi-lock"></i>
+                                Contraseña actual
+                            </label>
+
+                            <div class="input-password">
+                                <input type="password" id="passwordActual" name="passwordActual" required>
+                                <button type="button" class="btn-ver-password" data-target="passwordActual">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="nuevaPassword">
+                                <i class="bi bi-shield-lock"></i>
+                                Nueva contraseña
+                            </label>
+
+                            <div class="input-password">
+                                <input type="password" id="nuevaPassword" name="nuevaPassword" required minlength="6">
+                                <button type="button" class="btn-ver-password" data-target="nuevaPassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+
+                            <div class="password-strength">
+                                <div id="passwordStrengthBar" class="password-strength-bar"></div>
+                            </div>
+
+                            <small id="passwordHelp" class="password-help">
+                                Usa al menos 6 caracteres. Mejor si combinas letras, números y símbolos.
+                            </small>
+                        </div>
+
+                        <div class="campo">
+                            <label for="confirmarPassword">
+                                <i class="bi bi-check2-square"></i>
+                                Confirmar nueva contraseña
+                            </label>
+
+                            <div class="input-password">
+                                <input type="password" id="confirmarPassword" name="confirmarPassword" required
+                                    minlength="6">
+                                <button type="button" class="btn-ver-password" data-target="confirmarPassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-principal">
+                            <i class="bi bi-save"></i>
+                            Guardar contraseña
+                        </button>
+                    </form>
+                </article>
+
+            </section>
+
+            <section class="zona-peligro">
+                <article class="config-card danger-card">
+                    <div class="danger-icono">
+                        <i class="bi bi-exclamation-octagon"></i>
+                    </div>
+
+                    <div class="danger-texto">
+                        <span class="bloque-kicker bloque-kicker-danger">Zona sensible</span>
+                        <h2>Desactivar cuenta</h2>
+                        <p>
+                            Esta acción desactivará tu usuario y cerrará tu sesión. Para volver a acceder, un
+                            administrador
+                            tendría que reactivar tu cuenta.
+                        </p>
+
+                        <div th:if="${errorCuenta}" class="alerta alerta-error">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <span th:text="${errorCuenta}">Error al desactivar cuenta.</span>
+                        </div>
+
+                        <form th:action="@{/tutor_centro/configuracion/desactivar}" method="post"
+                            class="form-desactivar" id="formDesactivar">
+
+                            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}"
+                                th:value="${_csrf.token}">
+
+                            <label for="confirmacion">
+                                Escribe <strong>DESACTIVAR</strong> para confirmar:
+                            </label>
+
+                            <div class="desactivar-row">
+                                <input type="text" id="confirmacion" name="confirmacion" placeholder="DESACTIVAR">
+                                <button type="submit" class="btn-danger" id="btnDesactivar" disabled>
+                                    <i class="bi bi-person-x"></i>
+                                    Desactivar cuenta
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </article>
+            </section>
+
+        </main>
+    </div>
+    <script th:src="@{/js/tutor_centro/configuracion.js}"></script>
+</body>
+</html>

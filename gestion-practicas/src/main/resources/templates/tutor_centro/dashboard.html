@@ -306,6 +306,14 @@
 
                             <strong th:text="${alumnosAdministracion != null ? alumnosAdministracion : 0}">0</strong>
                         </article>
+                        <article class="especialidad-card especialidad-card--melocoton">
+                            <div>
+                                <h3>Peluquería</h3>
+                                <p>Imagen personal</p>
+                            </div>
+
+                            <strong th:text="${alumnosPeluqueria != null ? alumnosPeluqueria : 0}">0</strong>
+                        </article>
 
                         <article class="especialidad-card especialidad-card--melocoton">
                             <div>
@@ -322,4 +330,5 @@
     </div>
     <script th:src="@{/js/tutor_centro/dashboard.js}"></script>
 </body>
+
 </html>

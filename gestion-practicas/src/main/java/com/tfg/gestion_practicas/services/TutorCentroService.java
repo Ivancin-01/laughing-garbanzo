@@ -20,7 +20,7 @@ public class TutorCentroService {
     }
 
     public List<TutorCentro> buscarPorNombreCentro(String nombre) {
-        return tutorCentroRepository.findByNombreCentroContainingIgnoreCase(nombre);
+        return tutorCentroRepository.findByCentroNombreContainingIgnoreCase(nombre);
     }
 
     public TutorCentro guardar(TutorCentro tutorCentro) {

@@ -1,26 +1,26 @@
 package com.tfg.gestion_practicas.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import com.tfg.gestion_practicas.model.TutorCentro;
-import com.tfg.gestion_practicas.repository.TutorCentroRepository;
-import com.tfg.gestion_practicas.model.Tutor;
-import com.tfg.gestion_practicas.model.Alumno;
-import com.tfg.gestion_practicas.repository.AlumnoRepository;
-import com.tfg.gestion_practicas.repository.TutorRepository;
-
-import java.util.List;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tfg.gestion_practicas.dto.TutorCentroTutorDTO;
+import com.tfg.gestion_practicas.model.Alumno;
+import com.tfg.gestion_practicas.model.Tutor;
+import com.tfg.gestion_practicas.model.TutorCentro;
+import com.tfg.gestion_practicas.repository.AlumnoRepository;
+import com.tfg.gestion_practicas.repository.TutorCentroRepository;
+import com.tfg.gestion_practicas.repository.TutorRepository;
+import com.tfg.gestion_practicas.repository.UsuarioRepository;
 
 @Controller
 public class TutorCentroController {
@@ -34,6 +34,12 @@ public class TutorCentroController {
     @Autowired
     private AlumnoRepository alumnoRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     @GetMapping("/tutor_centro/dashboard")
     public String dashboardTutorCentro(Model model, Principal principal) {
         if (principal == null) {
@@ -41,24 +47,55 @@ public class TutorCentroController {
         }
 
         TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+        String nombreCentro = obtenerNombreCentro(tutorCentro);
+
+        List<Tutor> tutores = tutorRepository.findByCentroEducativoIgnoreCase(nombreCentro);
+        List<Alumno> alumnos = alumnoRepository.findByCentroNombreIgnoreCase(nombreCentro);
+
+        long totalTutores = tutores.size();
+        long totalAlumnos = alumnos.size();
+
+        long alumnosPracticas = alumnos.stream()
+                .filter(this::esAlumnoEnPracticas)
+                .count();
+
+        long totalEmpresas = alumnos.stream()
+                .filter(a -> a.getEmpresaFct() != null && !a.getEmpresaFct().isBlank())
+                .map(a -> a.getEmpresaFct().trim().toLowerCase())
+                .distinct()
+                .count();
+
+        long alumnosInformatica = alumnos.stream()
+                .filter(this::esAlumnoInformatica)
+                .count();
+
+        long alumnosAdministracion = alumnos.stream()
+                .filter(this::esAlumnoAdministracion)
+                .count();
+
+        long alumnosPeluqueria = alumnos.stream()
+                .filter(this::esAlumnoPeluqueria)
+                .count();
+
+        long alumnosOtrasAreas = totalAlumnos - alumnosInformatica - alumnosAdministracion - alumnosPeluqueria;
+
+        if (alumnosOtrasAreas < 0) {
+            alumnosOtrasAreas = 0;
+        }
 
         model.addAttribute("tutorCentro", tutorCentro.getUsuario());
-        model.addAttribute("nombreCentro", tutorCentro.getNombreCentro());
-        model.addAttribute("tutorDocente", tutorCentro.getTutor());
+        model.addAttribute("datosTutorCentro", tutorCentro);
+        model.addAttribute("nombreCentro", nombreCentro);
 
-        /*
-         * Datos temporales para que el dashboard no rompa.
-         * Más adelante los conectamos con AlumnoRepository, TutorRepository y
-         * EmpresaRepository.
-         */
-        model.addAttribute("totalTutores", 0);
-        model.addAttribute("totalAlumnos", 0);
-        model.addAttribute("alumnosPracticas", 0);
-        model.addAttribute("totalEmpresas", 0);
+        model.addAttribute("totalTutores", totalTutores);
+        model.addAttribute("totalAlumnos", totalAlumnos);
+        model.addAttribute("alumnosPracticas", alumnosPracticas);
+        model.addAttribute("totalEmpresas", totalEmpresas);
 
-        model.addAttribute("alumnosInformatica", 0);
-        model.addAttribute("alumnosAdministracion", 0);
-        model.addAttribute("alumnosOtrasAreas", 0);
+        model.addAttribute("alumnosInformatica", alumnosInformatica);
+        model.addAttribute("alumnosAdministracion", alumnosAdministracion);
+        model.addAttribute("alumnosPeluqueria", alumnosPeluqueria);
+        model.addAttribute("alumnosOtrasAreas", alumnosOtrasAreas);
 
         return "tutor_centro/dashboard";
     }
@@ -70,9 +107,11 @@ public class TutorCentroController {
         }
 
         TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+        String nombreCentro = obtenerNombreCentro(tutorCentro);
 
         model.addAttribute("tutorCentro", tutorCentro.getUsuario());
         model.addAttribute("datosTutorCentro", tutorCentro);
+        model.addAttribute("nombreCentro", nombreCentro);
 
         return "tutor_centro/perfil";
     }
@@ -84,104 +123,13 @@ public class TutorCentroController {
         }
 
         TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+        String nombreCentro = obtenerNombreCentro(tutorCentro);
 
         model.addAttribute("tutorCentro", tutorCentro.getUsuario());
         model.addAttribute("datosTutorCentro", tutorCentro);
+        model.addAttribute("nombreCentro", nombreCentro);
 
         return "tutor_centro/configuracion";
-    }
-
-    private TutorCentro obtenerTutorCentroLogueado(Principal principal) {
-        return tutorCentroRepository.findByUsuarioCorreo(principal.getName())
-                .orElseThrow(() -> new RuntimeException("Tutor de centro no encontrado"));
-    }
-
-    private boolean esAlumnoEnBusqueda(Alumno alumno) {
-        if (alumno.getEstadoFct() == null) {
-            return true;
-        }
-
-        String estado = alumno.getEstadoFct().trim();
-
-        return estado.equalsIgnoreCase("PENDIENTE")
-                || estado.equalsIgnoreCase("EN_BUSQUEDA")
-                || estado.equalsIgnoreCase("EN BÚSQUEDA")
-                || estado.equalsIgnoreCase("EN BUSQUEDA");
-    }
-
-    private boolean esAlumnoEnPracticas(Alumno alumno) {
-        if (alumno.getEstadoFct() == null) {
-            return false;
-        }
-
-        String estado = alumno.getEstadoFct().trim();
-
-        return estado.equalsIgnoreCase("EN_PRACTICAS")
-                || estado.equalsIgnoreCase("EN PRÁCTICAS")
-                || estado.equalsIgnoreCase("EN PRACTICAS");
-    }
-
-    private boolean esAlumnoFinalizado(Alumno alumno) {
-        if (alumno.getEstadoFct() == null) {
-            return false;
-        }
-
-        return alumno.getEstadoFct().trim().equalsIgnoreCase("FINALIZADO");
-    }
-
-    private int calcularPorcentaje(long parte, long total) {
-        if (total == 0) {
-            return 0;
-        }
-
-        return (int) Math.round((parte * 100.0) / total);
-    }
-
-    private int calcularIndiceGestion(int porcentajePracticas, int porcentajeConTutor, int porcentajeConEmpresa) {
-        double indice = (porcentajePracticas * 0.4)
-                + (porcentajeConTutor * 0.35)
-                + (porcentajeConEmpresa * 0.25);
-
-        return (int) Math.round(indice);
-    }
-
-    private String obtenerEstadoCentro(int indiceGestion) {
-        if (indiceGestion >= 80) {
-            return "Excelente";
-        }
-
-        if (indiceGestion >= 60) {
-            return "Buen avance";
-        }
-
-        if (indiceGestion >= 40) {
-            return "Necesita seguimiento";
-        }
-
-        return "Prioridad alta";
-    }
-
-    private String obtenerRecomendacionPrincipal(long alumnosSinTutor,
-            long alumnosEnBusqueda,
-            long alumnosSinEmpresa,
-            long totalAlumnos) {
-        if (totalAlumnos == 0) {
-            return "Todavía no hay alumnos registrados en este centro.";
-        }
-
-        if (alumnosSinTutor > 0) {
-            return "Hay alumnos sin tutor asignado. Conviene revisar la página de asignaciones.";
-        }
-
-        if (alumnosEnBusqueda > 0) {
-            return "Hay alumnos todavía en búsqueda. Sería útil revisar ofertas disponibles y empresas colaboradoras.";
-        }
-
-        if (alumnosSinEmpresa > 0) {
-            return "Algunos alumnos aún no tienen empresa FCT asociada.";
-        }
-
-        return "El centro presenta una gestión FCT muy completa. Mantén el seguimiento periódico.";
     }
 
     @GetMapping("/tutor_centro/tutores")
@@ -191,9 +139,9 @@ public class TutorCentroController {
         }
 
         TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+        String nombreCentro = obtenerNombreCentro(tutorCentro);
 
-        List<Tutor> tutores = tutorRepository
-                .findByCentroEducativoIgnoreCase(tutorCentro.getNombreCentro());
+        List<Tutor> tutores = tutorRepository.findByCentroEducativoIgnoreCase(nombreCentro);
 
         List<TutorCentroTutorDTO> tutoresDTO = tutores.stream()
                 .map(tutor -> new TutorCentroTutorDTO(
@@ -217,7 +165,7 @@ public class TutorCentroController {
 
         model.addAttribute("tutorCentro", tutorCentro.getUsuario());
         model.addAttribute("datosTutorCentro", tutorCentro);
-        model.addAttribute("nombreCentro", tutorCentro.getNombreCentro());
+        model.addAttribute("nombreCentro", nombreCentro);
 
         model.addAttribute("tutores", tutoresDTO);
         model.addAttribute("totalTutores", totalTutores);
@@ -235,12 +183,13 @@ public class TutorCentroController {
         }
 
         TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+        String nombreCentro = obtenerNombreCentro(tutorCentro);
 
         Tutor tutor = tutorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Tutor no encontrado"));
 
         if (tutor.getCentroEducativo() == null ||
-                !tutor.getCentroEducativo().equalsIgnoreCase(tutorCentro.getNombreCentro())) {
+                !tutor.getCentroEducativo().equalsIgnoreCase(nombreCentro)) {
             return "redirect:/tutor_centro/tutores?error=no-autorizado";
         }
 
@@ -250,6 +199,7 @@ public class TutorCentroController {
 
         model.addAttribute("tutorCentro", tutorCentro.getUsuario());
         model.addAttribute("datosTutorCentro", tutorCentro);
+        model.addAttribute("nombreCentro", nombreCentro);
 
         model.addAttribute("tutor", tutor);
         model.addAttribute("alumnos", alumnos);
@@ -267,15 +217,16 @@ public class TutorCentroController {
         }
 
         TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+        String nombreCentro = obtenerNombreCentro(tutorCentro);
 
-        List<Tutor> tutores = tutorRepository
-                .findByCentroEducativoIgnoreCase(tutorCentro.getNombreCentro());
+        List<Tutor> tutores = tutorRepository.findByCentroEducativoIgnoreCase(nombreCentro);
 
         List<Alumno> alumnosSinTutor = alumnoRepository
-                .findByCentroNombreIgnoreCaseAndTutorIsNull(tutorCentro.getNombreCentro());
+                .findByCentroNombreIgnoreCaseAndTutorIsNull(nombreCentro);
 
         model.addAttribute("tutorCentro", tutorCentro.getUsuario());
         model.addAttribute("datosTutorCentro", tutorCentro);
+        model.addAttribute("nombreCentro", nombreCentro);
 
         model.addAttribute("tutores", tutores);
         model.addAttribute("alumnosSinTutor", alumnosSinTutor);
@@ -294,6 +245,7 @@ public class TutorCentroController {
         }
 
         TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+        String nombreCentro = obtenerNombreCentro(tutorCentro);
 
         Alumno alumno = alumnoRepository.findById(alumnoId)
                 .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
@@ -301,12 +253,15 @@ public class TutorCentroController {
         Tutor tutor = tutorRepository.findById(tutorId)
                 .orElseThrow(() -> new RuntimeException("Tutor no encontrado"));
 
-        /*
-         * Seguridad:
-         * Evitamos asignar alumnos a tutores de otro centro.
-         */
-        if (tutor.getCentroEducativo() == null ||
-                !tutor.getCentroEducativo().equalsIgnoreCase(tutorCentro.getNombreCentro())) {
+        if (alumno.getCentro() == null
+                || alumno.getCentro().getNombre() == null
+                || !alumno.getCentro().getNombre().equalsIgnoreCase(nombreCentro)) {
+            redirectAttributes.addFlashAttribute("error", "No puedes asignar alumnos de otro centro.");
+            return "redirect:/tutor_centro/asignaciones";
+        }
+
+        if (tutor.getCentroEducativo() == null
+                || !tutor.getCentroEducativo().equalsIgnoreCase(nombreCentro)) {
             redirectAttributes.addFlashAttribute("error", "No puedes asignar alumnos a un tutor de otro centro.");
             return "redirect:/tutor_centro/asignaciones";
         }
@@ -326,30 +281,32 @@ public class TutorCentroController {
         }
 
         TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+        String nombreCentro = obtenerNombreCentro(tutorCentro);
 
-        List<Alumno> alumnos = alumnoRepository.findByCentroNombreIgnoreCase(tutorCentro.getNombreCentro());
-
-        List<Tutor> tutores = tutorRepository.findByCentroEducativoIgnoreCase(tutorCentro.getNombreCentro());
+        List<Alumno> alumnos = alumnoRepository.findByCentroNombreIgnoreCase(nombreCentro);
+        List<Tutor> tutores = tutorRepository.findByCentroEducativoIgnoreCase(nombreCentro);
 
         long totalAlumnos = alumnos.size();
 
-        long alumnosEnBusqueda = alumnos.stream().filter(a -> a.getEstadoFct() == null
-                || a.getEstadoFct().equalsIgnoreCase("PENDIENTE") || a.getEstadoFct().equalsIgnoreCase("EN_BUSQUEDA"))
+        long alumnosEnBusqueda = alumnos.stream()
+                .filter(this::esAlumnoEnBusqueda)
                 .count();
 
         long alumnosEnPracticas = alumnos.stream()
-                .filter(a -> a.getEstadoFct() == null && a.getEstadoFct().equalsIgnoreCase("EN_PRACTICAS")).count();
-
-        long alumnosFinalizados = alumnos.stream()
-                .filter(a -> a.getEstadoFct() != null
-                        && a.getEstadoFct().equalsIgnoreCase("FINALIZADO"))
+                .filter(this::esAlumnoEnPracticas)
                 .count();
 
-        long alumnosSinTutor = alumnos.stream().filter(a -> a.getTutor() == null).count();
+        long alumnosFinalizados = alumnos.stream()
+                .filter(this::esAlumnoFinalizado)
+                .count();
+
+        long alumnosSinTutor = alumnos.stream()
+                .filter(a -> a.getTutor() == null)
+                .count();
 
         model.addAttribute("tutorCentro", tutorCentro.getUsuario());
         model.addAttribute("datosTutorCentro", tutorCentro);
-        model.addAttribute("nombreCentro", tutorCentro.getNombreCentro());
+        model.addAttribute("nombreCentro", nombreCentro);
 
         model.addAttribute("alumnos", alumnos);
         model.addAttribute("tutores", tutores);
@@ -373,6 +330,7 @@ public class TutorCentroController {
         }
 
         TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+        String nombreCentro = obtenerNombreCentro(tutorCentro);
 
         Alumno alumno = alumnoRepository.findById(alumnoId)
                 .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
@@ -382,13 +340,13 @@ public class TutorCentroController {
 
         if (alumno.getCentro() == null
                 || alumno.getCentro().getNombre() == null
-                || !alumno.getCentro().getNombre().equalsIgnoreCase(tutorCentro.getNombreCentro())) {
+                || !alumno.getCentro().getNombre().equalsIgnoreCase(nombreCentro)) {
             redirectAttributes.addFlashAttribute("error", "No puedes asignar alumnos de otro centro.");
             return "redirect:/tutor_centro/alumnos";
         }
 
         if (tutor.getCentroEducativo() == null
-                || !tutor.getCentroEducativo().equalsIgnoreCase(tutorCentro.getNombreCentro())) {
+                || !tutor.getCentroEducativo().equalsIgnoreCase(nombreCentro)) {
             redirectAttributes.addFlashAttribute("error", "No puedes asignar un tutor de otro centro.");
             return "redirect:/tutor_centro/alumnos";
         }
@@ -408,12 +366,10 @@ public class TutorCentroController {
         }
 
         TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+        String nombreCentro = obtenerNombreCentro(tutorCentro);
 
-        List<Alumno> alumnos = alumnoRepository
-                .findByCentroNombreIgnoreCase(tutorCentro.getNombreCentro());
-
-        List<Tutor> tutores = tutorRepository
-                .findByCentroEducativoIgnoreCase(tutorCentro.getNombreCentro());
+        List<Alumno> alumnos = alumnoRepository.findByCentroNombreIgnoreCase(nombreCentro);
+        List<Tutor> tutores = tutorRepository.findByCentroEducativoIgnoreCase(nombreCentro);
 
         long totalAlumnos = alumnos.size();
         long totalTutores = tutores.size();
@@ -479,7 +435,7 @@ public class TutorCentroController {
 
         model.addAttribute("tutorCentro", tutorCentro.getUsuario());
         model.addAttribute("datosTutorCentro", tutorCentro);
-        model.addAttribute("nombreCentro", tutorCentro.getNombreCentro());
+        model.addAttribute("nombreCentro", nombreCentro);
 
         model.addAttribute("totalAlumnos", totalAlumnos);
         model.addAttribute("totalTutores", totalTutores);
@@ -511,5 +467,233 @@ public class TutorCentroController {
         model.addAttribute("recomendacionPrincipal", recomendacionPrincipal);
 
         return "tutor_centro/estadisticas";
+    }
+
+    @PostMapping("/tutor_centro/perfil/actualizar")
+    public String actualizarPerfilTutorCentro(@RequestParam("nombre") String nombre,
+            @RequestParam("apellidos") String apellidos,
+            @RequestParam("telefono") String telefono,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+
+        tutorCentro.getUsuario().setNombre(nombre);
+        tutorCentro.getUsuario().setApellidos(apellidos);
+        tutorCentro.setTelefono(telefono);
+
+        tutorCentroRepository.save(tutorCentro);
+
+        redirectAttributes.addFlashAttribute("success", "Perfil actualizado correctamente.");
+
+        return "redirect:/tutor_centro/perfil";
+    }
+
+    @PostMapping("/tutor_centro/configuracion/password")
+    public String cambiarPasswordTutorCentro(@RequestParam("passwordActual") String passwordActual,
+            @RequestParam("nuevaPassword") String nuevaPassword,
+            @RequestParam("confirmarPassword") String confirmarPassword,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+
+        if (!passwordEncoder.matches(passwordActual, tutorCentro.getUsuario().getPwd())) {
+            redirectAttributes.addFlashAttribute("errorPassword", "La contraseña actual no es correcta.");
+            return "redirect:/tutor_centro/configuracion";
+        }
+
+        if (nuevaPassword == null || nuevaPassword.length() < 6) {
+            redirectAttributes.addFlashAttribute("errorPassword",
+                    "La nueva contraseña debe tener al menos 6 caracteres.");
+            return "redirect:/tutor_centro/configuracion";
+        }
+
+        if (!nuevaPassword.equals(confirmarPassword)) {
+            redirectAttributes.addFlashAttribute("errorPassword", "Las contraseñas nuevas no coinciden.");
+            return "redirect:/tutor_centro/configuracion";
+        }
+
+        tutorCentro.getUsuario().setPwd(passwordEncoder.encode(nuevaPassword));
+        usuarioRepository.save(tutorCentro.getUsuario());
+
+        redirectAttributes.addFlashAttribute("successPassword", "Contraseña actualizada correctamente.");
+
+        return "redirect:/tutor_centro/configuracion";
+    }
+
+    @PostMapping("/tutor_centro/configuracion/desactivar")
+    public String desactivarCuentaTutorCentro(@RequestParam("confirmacion") String confirmacion,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+
+        if (!"DESACTIVAR".equals(confirmacion)) {
+            redirectAttributes.addFlashAttribute("errorCuenta", "Debes escribir DESACTIVAR para confirmar la acción.");
+            return "redirect:/tutor_centro/configuracion";
+        }
+
+        tutorCentro.getUsuario().setActivo(false);
+        usuarioRepository.save(tutorCentro.getUsuario());
+
+        return "redirect:/logout";
+    }
+
+    private TutorCentro obtenerTutorCentroLogueado(Principal principal) {
+        return tutorCentroRepository.findByUsuarioCorreo(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Tutor de centro no encontrado"));
+    }
+
+    private String obtenerNombreCentro(TutorCentro tutorCentro) {
+        if (tutorCentro.getCentro() == null || tutorCentro.getCentro().getNombre() == null) {
+            throw new RuntimeException("El tutor de centro no tiene centro educativo asignado.");
+        }
+
+        return tutorCentro.getCentro().getNombre();
+    }
+
+    private boolean esAlumnoEnBusqueda(Alumno alumno) {
+        if (alumno.getEstadoFct() == null) {
+            return true;
+        }
+
+        String estado = alumno.getEstadoFct().trim();
+
+        return estado.equalsIgnoreCase("PENDIENTE")
+                || estado.equalsIgnoreCase("EN_BUSQUEDA")
+                || estado.equalsIgnoreCase("EN BÚSQUEDA")
+                || estado.equalsIgnoreCase("EN BUSQUEDA")
+                || estado.equalsIgnoreCase("EN BÚSQUEDA");
+    }
+
+    private boolean esAlumnoEnPracticas(Alumno alumno) {
+        if (alumno.getEstadoFct() == null) {
+            return false;
+        }
+
+        String estado = alumno.getEstadoFct().trim();
+
+        return estado.equalsIgnoreCase("EN_PRACTICAS")
+                || estado.equalsIgnoreCase("EN PRÁCTICAS")
+                || estado.equalsIgnoreCase("EN PRACTICAS");
+    }
+
+    private boolean esAlumnoFinalizado(Alumno alumno) {
+        if (alumno.getEstadoFct() == null) {
+            return false;
+        }
+
+        return alumno.getEstadoFct().trim().equalsIgnoreCase("FINALIZADO");
+    }
+
+    private boolean esAlumnoInformatica(Alumno alumno) {
+        String texto = obtenerTextoClasificacionAlumno(alumno);
+
+        return texto.contains("DAW")
+                || texto.contains("DAM")
+                || texto.contains("ASIR")
+                || texto.contains("INFORMATICA")
+                || texto.contains("INFORMÁTICA");
+    }
+
+    private boolean esAlumnoAdministracion(Alumno alumno) {
+        String texto = obtenerTextoClasificacionAlumno(alumno);
+
+        return texto.contains("ADMINISTRACION")
+                || texto.contains("ADMINISTRACIÓN")
+                || texto.contains("GESTION ADMINISTRATIVA")
+                || texto.contains("GESTIÓN ADMINISTRATIVA");
+    }
+
+    private boolean esAlumnoPeluqueria(Alumno alumno) {
+        String texto = obtenerTextoClasificacionAlumno(alumno);
+
+        return texto.contains("PELUQUERÍA")
+                || texto.contains("PELUQUERIA");
+    }
+
+    private String obtenerTextoClasificacionAlumno(Alumno alumno) {
+        StringBuilder texto = new StringBuilder();
+
+        if (alumno.getMatricula() != null) {
+            texto.append(alumno.getMatricula()).append(" ");
+        }
+
+        if (alumno.getTutor() != null) {
+            if (alumno.getTutor().getEspecialidad() != null) {
+                texto.append(alumno.getTutor().getEspecialidad()).append(" ");
+            }
+
+            if (alumno.getTutor().getDepartamento() != null) {
+                texto.append(alumno.getTutor().getDepartamento()).append(" ");
+            }
+        }
+
+        return texto.toString().trim().toUpperCase();
+    }
+
+    private int calcularPorcentaje(long parte, long total) {
+        if (total == 0) {
+            return 0;
+        }
+
+        return (int) Math.round((parte * 100.0) / total);
+    }
+
+    private int calcularIndiceGestion(int porcentajePracticas, int porcentajeConTutor, int porcentajeConEmpresa) {
+        double indice = (porcentajePracticas * 0.4)
+                + (porcentajeConTutor * 0.35)
+                + (porcentajeConEmpresa * 0.25);
+
+        return (int) Math.round(indice);
+    }
+
+    private String obtenerEstadoCentro(int indiceGestion) {
+        if (indiceGestion >= 80) {
+            return "Excelente";
+        }
+
+        if (indiceGestion >= 60) {
+            return "Buen avance";
+        }
+
+        if (indiceGestion >= 40) {
+            return "Necesita seguimiento";
+        }
+
+        return "Prioridad alta";
+    }
+
+    private String obtenerRecomendacionPrincipal(long alumnosSinTutor,
+            long alumnosEnBusqueda,
+            long alumnosSinEmpresa,
+            long totalAlumnos) {
+        if (totalAlumnos == 0) {
+            return "Todavía no hay alumnos registrados en este centro.";
+        }
+
+        if (alumnosSinTutor > 0) {
+            return "Hay alumnos sin tutor asignado. Conviene revisar la página de asignaciones.";
+        }
+
+        if (alumnosEnBusqueda > 0) {
+            return "Hay alumnos todavía en búsqueda. Sería útil revisar ofertas disponibles y empresas colaboradoras.";
+        }
+
+        if (alumnosSinEmpresa > 0) {
+            return "Algunos alumnos aún no tienen empresa FCT asociada.";
+        }
+
+        return "El centro presenta una gestión FCT muy completa. Mantén el seguimiento periódico.";
     }
 }

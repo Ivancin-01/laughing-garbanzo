@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
-          rel="stylesheet">
+        rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" th:href="@{/css/empresa/dashboard.css}">
@@ -18,217 +18,216 @@
 
 <body>
 
-<nav class="navbar-superior">
-    <div class="nav-izq">
-        <button id="btn-toggle-sidebar" class="btn-toggle" type="button">
-            <i class="bi bi-list"></i>
-        </button>
-    </div>
-
-    <div class="logo-central">
-        <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
-    </div>
-
-    <div class="usuario-nav-container perfil-trigger">
-        <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de empresa">
-            <div class="info-usuario-nav">
-                <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
-                <p class="rol-nav">Empresa colaboradora</p>
-            </div>
-
-            <div class="avatar-wrapper">
-                <span class="avatar-inicial" th:text="${#strings.substring(empresa.nombre, 0, 1)}">E</span>
-            </div>
-
-            <i class="bi bi-chevron-down perfil-flecha"></i>
-        </button>
-
-        <div id="dropdown-perfil" class="dropdown-content">
-            <a th:href="@{/empresa/dashboard}">
-                <i class="bi bi-grid-fill"></i>
-                <b>Dashboard</b>
-            </a>
-
-            <a th:href="@{/empresa/perfil}">
-                <i class="bi bi-building-gear"></i>
-                <b>Perfil empresa</b>
-            </a>
-
-            <a th:href="@{/empresa/configuracion}">
-                <i class="bi bi-gear"></i>
-                <b>Configuración</b>
-            </a>
-
-            <hr>
-
-            <a th:href="@{/logout}" class="dropdown-danger">
-                <i class="bi bi-box-arrow-right"></i>
-                <b>Cerrar sesión</b>
-            </a>
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button">
+                <i class="bi bi-list"></i>
+            </button>
         </div>
-    </div>
-</nav>
 
-<div class="dashboard-container">
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
 
-    <aside class="sidebar">
-        <nav class="sidebar-nav">
-            <a th:href="@{/empresa/dashboard}" class="sidebar-link">
-                <i class="bi bi-house-door"></i> Inicio
-            </a>
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de empresa">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav" th:text="${empresa.nombre}">Nombre Empresa</p>
+                    <p class="rol-nav">Empresa colaboradora</p>
+                </div>
 
-            <a th:href="@{/empresa/ofertas}" class="sidebar-link active">
-                <i class="bi bi-megaphone"></i> Mis Ofertas
-            </a>
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(empresa.nombre, 0, 1)}">E</span>
+                </div>
 
-            <a th:href="@{/empresa/solicitudes}" class="sidebar-link">
-                <i class="bi bi-person-lines-fill"></i> Solicitudes Recibidas
-            </a>
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
 
-            <a th:href="@{/empresa/alumnos-fct}" class="sidebar-link">
-                <i class="bi bi-mortarboard"></i> Alumnos en Prácticas
-            </a>
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/empresa/dashboard}">
+                    <i class="bi bi-grid-fill"></i>
+                    <b>Dashboard</b>
+                </a>
 
-            <a th:href="@{/empresa/configuracion}" class="sidebar-link">
-                <i class="bi bi-gear"></i> Configuración
-            </a>
-        </nav>
-    </aside>
+                <a th:href="@{/empresa/perfil}">
+                    <i class="bi bi-building-gear"></i>
+                    <b>Perfil empresa</b>
+                </a>
 
-    <main class="contenedor">
+                <a th:href="@{/empresa/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
 
-        <header class="dashboard-header crear-oferta-header flex-between">
-            <div>
-                <span class="crear-oferta-badge">Nueva publicación</span>
-                <h1>Publicar oferta de FCT</h1>
-                <p>Define los detalles de la vacante para que los alumnos puedan solicitarla.</p>
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
             </div>
+        </div>
+    </nav>
 
-            <a th:href="@{/empresa/ofertas}" class="btn-dash btn-dash--secundario">
-                <i class="bi bi-arrow-left"></i>
-                Volver a ofertas
-            </a>
-        </header>
+    <div class="dashboard-container">
 
-        <section class="crear-oferta-layout">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/empresa/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i> Inicio
+                </a>
 
-            <article class="crear-oferta-card">
+                <a th:href="@{/empresa/ofertas}" class="sidebar-link active">
+                    <i class="bi bi-megaphone"></i> Mis Ofertas
+                </a>
 
-                <div class="crear-oferta-card__header">
-                    <div class="crear-oferta-card__icono">
-                        <i class="bi bi-megaphone"></i>
-                    </div>
+                <a th:href="@{/empresa/solicitudes}" class="sidebar-link">
+                    <i class="bi bi-person-lines-fill"></i> Solicitudes Recibidas
+                </a>
 
-                    <div>
-                        <h2>Datos de la oferta</h2>
-                        <p>Los campos marcados con <strong>*</strong> son obligatorios.</p>
-                    </div>
+                <a th:href="@{/empresa/alumnos-fct}" class="sidebar-link">
+                    <i class="bi bi-mortarboard"></i> Alumnos en Prácticas
+                </a>
+
+                <a th:href="@{/empresa/configuracion}" class="sidebar-link">
+                    <i class="bi bi-gear"></i> Configuración
+                </a>
+            </nav>
+        </aside>
+
+        <main class="contenedor">
+
+            <header class="dashboard-header crear-oferta-header flex-between">
+                <div>
+                    <span class="crear-oferta-badge">Nueva publicación</span>
+                    <h1>Publicar oferta de FCT</h1>
+                    <p>Define los detalles de la vacante para que los alumnos puedan solicitarla.</p>
                 </div>
 
-                <form th:action="@{/empresa/ofertas/guardar}" method="POST" class="crear-oferta-form" id="formCrearOferta">
+                <a th:href="@{/empresa/ofertas}" class="btn-dash btn-dash--secundario">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a ofertas
+                </a>
+            </header>
 
-                    <div class="form-grupo form-grupo--completo">
-                        <label for="titulo">Título de la vacante *</label>
-                        <input type="text"
-                               id="titulo"
-                               name="titulo"
-                               placeholder="Ej: Desarrollador Java Junior, Auxiliar Administrativo..."
-                               minlength="5"
-                               required>
-                        <small>Usa un título claro y específico para que el alumno entienda el puesto.</small>
+            <section class="crear-oferta-layout">
+
+                <article class="crear-oferta-card">
+
+                    <div class="crear-oferta-card__header">
+                        <div class="crear-oferta-card__icono">
+                            <i class="bi bi-megaphone"></i>
+                        </div>
+
+                        <div>
+                            <h2>Datos de la oferta</h2>
+                            <p>Los campos marcados con <strong>*</strong> son obligatorios.</p>
+                        </div>
                     </div>
 
-                    <div class="form-grupo">
-                        <label for="plazas">Número de plazas *</label>
-                        <input type="number"
-                               id="plazas"
-                               name="plazas"
-                               min="1"
-                               max="10"
-                               value="1"
-                               required>
+                    <form th:action="@{/empresa/ofertas/guardar}" method="POST" class="crear-oferta-form"
+                        id="formCrearOferta">
+
+                        <div class="form-grupo form-grupo--completo">
+                            <label for="titulo">Título de la vacante *</label>
+                            <input type="text" id="titulo" name="titulo"
+                                placeholder="Ej: Desarrollador Java Junior, Auxiliar Administrativo..." minlength="5"
+                                required>
+                            <small>Usa un título claro y específico para que el alumno entienda el puesto.</small>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="plazas">Número de plazas *</label>
+                            <input type="number" id="plazas" name="plazas" min="1" max="10" value="1" required>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="modalidad">Modalidad *</label>
+                            <select name="modalidad" id="modalidad" required>
+                                <option value="Presencial">Presencial</option>
+                                <option value="Hibrido">Híbrido</option>
+                                <option value="Remoto">Remoto</option>
+                            </select>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="especialidad">Especialidad recomendada *</label>
+                            <select name="especialidad" id="especialidad" required>
+                                <option value="">Selecciona una especialidad</option>
+                                <option value="DAW">Desarrollo de Aplicaciones Web</option>
+                                <option value="DAM">Desarrollo de Aplicaciones Multiplataforma</option>
+                                <option value="ASIR">Administración de Sistemas Informáticos en Red</option>
+                                <option value="Administración">Administración y Gestión</option>
+                                <option value="Marketing">Marketing y Comercio</option>
+                                <option value="Peluquería">Peluquería e Imagen Personal</option>
+                                <option value="Otra">Otra especialidad</option>
+                            </select>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="ciudad">Ciudad *</label>
+                            <input type="text" id="ciudad" name="ciudad" th:value="${empresa.ciudad}"
+                                placeholder="Ej: Alcalá de Henares" required>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="horario">Horario aproximado</label>
+                            <input type="text" id="horario" name="horario" placeholder="Ej: 08:00 a 14:00">
+                        </div>
+
+                        <div class="form-grupo form-grupo--completo">
+                            <label for="descripcion">Descripción de tareas y requisitos *</label>
+                            <textarea id="descripcion" name="descripcion" rows="6" minlength="20" maxlength="800"
+                                placeholder="Describe qué hará el alumno, qué herramientas usará y qué perfil buscáis..."
+                                required></textarea>
+                            <small>Mínimo 20 caracteres. Explica tareas, tecnologías, horario y requisitos
+                                básicos.</small>
+                        </div>
+
+                        <div class="crear-oferta-form__acciones">
+                            <a th:href="@{/empresa/ofertas}" class="btn-cancelar-oferta">
+                                Cancelar
+                            </a>
+
+                            <button type="submit" class="btn-dash">
+                                <i class="bi bi-cloud-upload"></i>
+                                Publicar oferta
+                            </button>
+                        </div>
+
+                    </form>
+                </article>
+
+                <aside class="crear-oferta-ayuda">
+                    <div class="ayuda-card">
+                        <i class="bi bi-lightbulb"></i>
+                        <h3>Consejo</h3>
+                        <p>Una oferta clara recibe mejores solicitudes. Explica bien las tareas, la modalidad y qué
+                            aprenderá el alumno.</p>
                     </div>
 
-                    <div class="form-grupo">
-                        <label for="modalidad">Modalidad *</label>
-                        <select name="modalidad" id="modalidad" required>
-                            <option value="Presencial">Presencial</option>
-                            <option value="Hibrido">Híbrido</option>
-                            <option value="Remoto">Remoto</option>
-                        </select>
+                    <div class="ayuda-card">
+                        <i class="bi bi-shield-check"></i>
+                        <h3>Control de datos</h3>
+                        <p>La oferta quedará vinculada a tu empresa y solo podrá ser editada o eliminada desde tu
+                            cuenta.</p>
                     </div>
 
-                    <div class="form-grupo">
-                        <label for="ciudad">Ciudad *</label>
-                        <input type="text"
-                               id="ciudad"
-                               name="ciudad"
-                               th:value="${empresa.ciudad}"
-                               placeholder="Ej: Alcalá de Henares"
-                               required>
+                    <div class="ayuda-card ayuda-card--destacada">
+                        <i class="bi bi-info-circle"></i>
+                        <h3>Importante</h3>
+                        <p>Si una oferta recibe solicitudes, recomendamos no eliminarla para conservar el historial.</p>
                     </div>
+                </aside>
 
-                    <div class="form-grupo">
-                        <label for="horario">Horario aproximado</label>
-                        <input type="text"
-                               id="horario"
-                               name="horario"
-                               placeholder="Ej: 08:00 a 14:00">
-                    </div>
+            </section>
 
-                    <div class="form-grupo form-grupo--completo">
-                        <label for="descripcion">Descripción de tareas y requisitos *</label>
-                        <textarea id="descripcion"
-                                  name="descripcion"
-                                  rows="6"
-                                  minlength="20"
-                                  maxlength="800"
-                                  placeholder="Describe qué hará el alumno, qué herramientas usará y qué perfil buscáis..."
-                                  required></textarea>
-                        <small>Mínimo 20 caracteres. Explica tareas, tecnologías, horario y requisitos básicos.</small>
-                    </div>
+        </main>
+    </div>
 
-                    <div class="crear-oferta-form__acciones">
-                        <a th:href="@{/empresa/ofertas}" class="btn-cancelar-oferta">
-                            Cancelar
-                        </a>
-
-                        <button type="submit" class="btn-dash">
-                            <i class="bi bi-cloud-upload"></i>
-                            Publicar oferta
-                        </button>
-                    </div>
-
-                </form>
-            </article>
-
-            <aside class="crear-oferta-ayuda">
-                <div class="ayuda-card">
-                    <i class="bi bi-lightbulb"></i>
-                    <h3>Consejo</h3>
-                    <p>Una oferta clara recibe mejores solicitudes. Explica bien las tareas, la modalidad y qué aprenderá el alumno.</p>
-                </div>
-
-                <div class="ayuda-card">
-                    <i class="bi bi-shield-check"></i>
-                    <h3>Control de datos</h3>
-                    <p>La oferta quedará vinculada a tu empresa y solo podrá ser editada o eliminada desde tu cuenta.</p>
-                </div>
-
-                <div class="ayuda-card ayuda-card--destacada">
-                    <i class="bi bi-info-circle"></i>
-                    <h3>Importante</h3>
-                    <p>Si una oferta recibe solicitudes, recomendamos no eliminarla para conservar el historial.</p>
-                </div>
-            </aside>
-
-        </section>
-
-    </main>
-</div>
-
-<script th:src="@{/js/empresa/dashboard.js}"></script>
-<script th:src="@{/js/empresa/crear-oferta.js}"></script>
+    <script th:src="@{/js/empresa/dashboard.js}"></script>
+    <script th:src="@{/js/empresa/crear-oferta.js}"></script>
 
 </body>
+
 </html>

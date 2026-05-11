@@ -161,7 +161,8 @@
                 </div>
 
                 <div class="acciones-cv">
-                    <a th:if="${alumno.cvUrl != null}" th:href="${alumno.cvUrl}" target="_blank" class="btn-secundario">
+                    <a th:if="${alumno.cvUrl != null}" th:href="@{/alumno/perfil/cv/ver}" target="_blank"
+                        class="btn-secundario">
                         <i class="bi bi-eye"></i>
                         Ver CV actual
                     </a>

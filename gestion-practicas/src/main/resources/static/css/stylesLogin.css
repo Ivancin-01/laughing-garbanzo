@@ -427,3 +427,53 @@ input.campo-error {
     gap: 12px;
   }
 }
+
+/* =====================================================
+   CUENTA DESACTIVADA
+   ===================================================== */
+
+.cuenta-desactivada-card {
+  text-align: center;
+}
+
+.cuenta-desactivada-avatar {
+  background-color: rgba(217, 83, 79, 0.12);
+}
+
+.cuenta-desactivada-info {
+  margin-bottom: 24px;
+  color: var(--texto-suave);
+}
+
+.cuenta-desactivada-info p {
+  margin-bottom: 18px;
+}
+
+.admin-contacto {
+  padding: 16px;
+  border-radius: 14px;
+  background-color: var(--crema);
+  border: 1px solid rgba(217, 83, 79, 0.18);
+}
+
+.admin-contacto span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--texto-suave);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.admin-contacto strong {
+  display: block;
+  color: var(--error);
+  font-family: var(--fuente-titulo);
+  word-break: break-word;
+}
+
+.btn-volver-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

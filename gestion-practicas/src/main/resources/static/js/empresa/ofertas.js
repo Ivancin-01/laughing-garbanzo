@@ -14,11 +14,13 @@ document.addEventListener("DOMContentLoaded", function () {
         filas.forEach(function (fila) {
             const titulo = (fila.dataset.titulo || "").toLowerCase();
             const modalidad = (fila.dataset.modalidad || "").toLowerCase();
+            const especialidad = (fila.dataset.especialidad || "").toLowerCase();
             const solicitudes = Number(fila.dataset.solicitudes || 0);
 
             const coincideTexto =
                 titulo.includes(textoBusqueda) ||
-                modalidad.includes(textoBusqueda);
+                modalidad.includes(textoBusqueda) ||
+                especialidad.includes(textoBusqueda);
 
             const coincideFiltro =
                 filtro === "TODAS" ||

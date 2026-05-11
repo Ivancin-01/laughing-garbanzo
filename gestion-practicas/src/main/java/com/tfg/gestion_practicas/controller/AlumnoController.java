@@ -28,6 +28,7 @@ import com.tfg.gestion_practicas.repository.CentroRepository;
 import com.tfg.gestion_practicas.repository.OfertaRepository;
 import com.tfg.gestion_practicas.repository.SolicitudRepository;
 import com.tfg.gestion_practicas.services.SolicitudService;
+import com.tfg.gestion_practicas.services.SupabaseStorageService;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -50,6 +51,9 @@ public class AlumnoController {
 
     @Autowired
     private CentroRepository centroRepository;
+
+    @Autowired
+    private SupabaseStorageService supabaseStorageService;
 
     AlumnoController(AlumnoService alumnoService) {
         this.alumnoService = alumnoService;
@@ -225,7 +229,7 @@ public class AlumnoController {
         }
     }
 
-    @GetMapping({"/alumno/ofertas/{id}", "/ofertas/detalle/{id}"})
+    @GetMapping({ "/alumno/ofertas/{id}", "/ofertas/detalle/{id}" })
     public String detalleOferta(@PathVariable Long id, Model model, Principal principal) {
         if (principal == null)
             return "redirect:/login";
@@ -236,12 +240,12 @@ public class AlumnoController {
         Oferta oferta = ofertaRepository.findById(id).orElse(null);
 
         if (oferta == null) {
-            return "redirect:/alumno/ofertas?error=no-encontrada";
+            return "redirect:/ofertas?error=no-encontrada";
         }
 
         boolean yaSolicitada = solicitudService.obtenerPorAlumno(al.getId())
-            .stream()
-            .anyMatch(s -> s.getOferta().getId().equals(id));
+                .stream()
+                .anyMatch(s -> s.getOferta().getId().equals(id));
 
         boolean tienePracticasActivas = alumnoTienePracticasActivas(al);
 
@@ -254,10 +258,10 @@ public class AlumnoController {
     }
 
     private boolean alumnoTienePracticasActivas(Alumno alumno) {
-        return solicitudRepository.existsByAlumnoIdAndEstadoAndEstadoPracticaIn(alumno.getId(), EstadoSolicitud.ACEPTADA, 
-                    List.of(EstadoPractica.PENDIENTE_INICIO,
-                        EstadoPractica.EN_PRACTICAS
-                    ));
+        return solicitudRepository.existsByAlumnoIdAndEstadoAndEstadoPracticaIn(alumno.getId(),
+                EstadoSolicitud.ACEPTADA,
+                List.of(EstadoPractica.PENDIENTE_INICIO,
+                        EstadoPractica.EN_PRACTICAS));
     }
 
     @PostMapping("/alumno/solicitar")
@@ -315,27 +319,64 @@ public class AlumnoController {
         return "redirect:/alumno/solicitudes?exito";
     }
 
-
     @PostMapping("/alumno/perfil/cv")
-    public String subirCv(@RequestParam("cv") MultipartFile cv, Principal principal,
+    public String subirCv(@RequestParam("cv") MultipartFile cv,
+            Principal principal,
             RedirectAttributes redirectAttributes) {
         try {
+            if (principal == null) {
+                return "redirect:/login";
+            }
+
             if (cv.isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "Selecciona un archivo antes de subirlo.");
                 return "redirect:/alumno/perfil";
             }
 
             alumnoService.guardarCvAlumno(cv, principal.getName());
-            redirectAttributes.addFlashAttribute("success", "CV subido correctamente.");
+
+            redirectAttributes.addFlashAttribute("success", "CV subido correctamente a Supabase Storage.");
+
         } catch (Exception e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "No se pudo subir el CV.");
+
+            String mensaje = e.getMessage();
+
+            if (mensaje == null && e.getCause() != null) {
+                mensaje = e.getCause().getMessage();
+            }
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    mensaje != null ? mensaje : "No se pudo subir el CV.");
         }
 
-        System.out.println("Usuario logueado: " + principal.getName());
-        System.out.println("Archivo recibido: " + cv.getOriginalFilename());
-        System.out.println("Tamaño archivo: " + cv.getSize());
-
         return "redirect:/alumno/perfil";
+    }
+
+    @GetMapping("/alumno/perfil/cv/ver")
+    public String verCvAlumno(Principal principal, RedirectAttributes redirectAttributes) {
+        try {
+            if (principal == null) {
+                return "redirect:/login";
+            }
+
+            Alumno alumno = alumnoRepository.findByUsuarioCorreo(principal.getName())
+                    .orElseThrow(() -> new RuntimeException("Alumno no encontrado."));
+
+            if (alumno.getCvUrl() == null || alumno.getCvUrl().isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Todavía no has subido ningún CV.");
+                return "redirect:/alumno/perfil";
+            }
+
+            String urlFirmada = supabaseStorageService.crearUrlFirmada(alumno.getCvUrl());
+
+            return "redirect:" + urlFirmada;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "No se pudo abrir el CV.");
+            return "redirect:/alumno/perfil";
+        }
     }
 }

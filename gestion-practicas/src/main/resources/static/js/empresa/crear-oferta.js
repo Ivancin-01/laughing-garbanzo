@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("formCrearOferta");
     const titulo = document.getElementById("titulo");
     const descripcion = document.getElementById("descripcion");
+    const especialidad = document.getElementById("especialidad");
 
     if (!form) {
         return;
@@ -15,6 +16,15 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault();
             alert("Por favor, introduce un título más descriptivo.");
             titulo.focus();
+            return;
+        }
+
+        const especialidadValor = especialidad ? especialidad.value.trim() : "";
+
+        if (!especialidadValor) {
+            event.preventDefault();
+            alert("Selecciona una especialidad recomendada para la oferta.");
+            especialidad.focus();
             return;
         }
 

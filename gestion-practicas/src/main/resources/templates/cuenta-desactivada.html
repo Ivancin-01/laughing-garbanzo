@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect — Cuenta desactivada</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/stylesLogin.css}">
+</head>
+
+<body>
+
+<nav class="navbar" id="navbar">
+    <a th:href="@{/}" class="navbar__logo">
+        <span class="logo-fp">FP</span><span class="logo-connect">Connect</span>
+    </a>
+
+    <ul class="navbar__menu">
+        <li><a th:href="@{/login}">← Volver al login</a></li>
+    </ul>
+</nav>
+
+<main class="login-main">
+
+    <section class="login-card cuenta-desactivada-card">
+
+        <div class="login-avatar cuenta-desactivada-avatar">⚠️</div>
+
+        <div class="login-cabecera">
+            <h1>Cuenta desactivada</h1>
+
+            <p>
+                Tu cuenta de FP Connect está actualmente desactivada y no puedes acceder al panel.
+            </p>
+        </div>
+
+        <div class="mensaje mensaje--error">
+            ❌ El acceso ha sido bloqueado porque esta cuenta no está activa.
+        </div>
+
+        <div class="cuenta-desactivada-info">
+            <p>
+                Si crees que se trata de un error o quieres solicitar la reactivación de tu cuenta,
+                contacta con el administrador de la plataforma.
+            </p>
+
+            <div class="admin-contacto">
+                <span>Correo de contacto</span>
+                <strong>admin.fpconnect@centro.es</strong>
+            </div>
+        </div>
+
+        <a th:href="@{/login}" class="btn-submit btn-volver-login">
+            Volver al login
+        </a>
+
+    </section>
+</main>
+</body>
+</html>

@@ -135,12 +135,7 @@ public class UsuarioService {
 
             nuevoTutorCentro.setUsuario(usuarioGuardado);
             nuevoTutorCentro.setTelefono(telefono);
-
-            /*
-             * De momento mantenemos TutorCentro.nombreCentro como String,
-             * para no romper dashboard, tutores y asignaciones.
-             */
-            nuevoTutorCentro.setNombreCentro(centroSeleccionado.getNombre());
+            nuevoTutorCentro.setCentro(centroSeleccionado);
 
             tutorCentroRepository.save(nuevoTutorCentro);
 

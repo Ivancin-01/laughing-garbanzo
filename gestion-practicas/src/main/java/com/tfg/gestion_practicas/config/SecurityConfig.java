@@ -11,12 +11,18 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.tfg.gestion_practicas.services.CustomUserDetailsService;
 
+import com.tfg.gestion_practicas.model.Usuario;
+import com.tfg.gestion_practicas.repository.UsuarioRepository;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -32,65 +38,75 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, DaoAuthenticationProvider authenticationProvider) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, DaoAuthenticationProvider authenticationProvider)
+            throws Exception {
         http
-            .authenticationProvider(authenticationProvider)
+                .authenticationProvider(authenticationProvider)
 
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/", "/login", "/usuarios/registro", "/usuarios/registrar",
-                    "/css/**", "/js/**", "/img/**", "/json/**", "/error",
-                    "/ofertas", "/ofertas/**"
-                ).permitAll()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/", "/login", "/cuenta-desactivada", "/usuarios/registro", "/usuarios/registrar",
+                                "/css/**", "/js/**", "/img/**", "/json/**", "/error",
+                                "/ofertas", "/ofertas/**")
+                        .permitAll()
 
-                .requestMatchers("/alumno/**").hasRole("ALUMNO")
-                .requestMatchers("/tutor/**").hasRole("TUTOR")
-                .requestMatchers("/tutor_centro/**").hasRole("TUTOR_CENTRO")
-                .requestMatchers("/empresa/**").hasRole("EMPRESA")
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/alumno/**").hasRole("ALUMNO")
+                        .requestMatchers("/tutor/**").hasRole("TUTOR")
+                        .requestMatchers("/tutor_centro/**").hasRole("TUTOR_CENTRO")
+                        .requestMatchers("/empresa/**").hasRole("EMPRESA")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .successHandler((request, response, authentication) -> {
-                    String role = authentication.getAuthorities().iterator().next().getAuthority();
-                    switch (role) {
-                        case "ROLE_ALUMNO":
-                            response.sendRedirect("/alumno/dashboard");
-                            break;
-                        case "ROLE_TUTOR":
-                            response.sendRedirect("/tutor/dashboard");
-                            break;
-                        case "ROLE_TUTOR_CENTRO":
-                            response.sendRedirect("/tutor_centro/dashboard");
-                            break;
-                        case "ROLE_EMPRESA":
-                            response.sendRedirect("/empresa/dashboard");
-                            break;
-                        case "ROLE_ADMIN":
-                            response.sendRedirect("/admin/dashboard");
-                            break;
-                        default:
-                            response.sendRedirect("/");
-                    }
-                })
-                .failureUrl("/login?error")
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
-            )
-            .exceptionHandling(ex -> ex
-                .accessDeniedPage("/error/403")
-            )
-            .csrf(csrf -> csrf.disable());
+                        .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .successHandler((request, response, authentication) -> {
+
+                            String loginIntroducido = request.getParameter("username");
+
+                            Usuario usuario = usuarioRepository.encontrarPorEmailONombre(loginIntroducido)
+                                    .orElse(null);
+
+                            if (usuario != null && !usuario.isActivo()) {
+                                request.getSession().invalidate();
+                                response.sendRedirect("/cuenta-desactivada");
+                                return;
+                            }
+
+                            String role = authentication.getAuthorities().iterator().next().getAuthority();
+
+                            switch (role) {
+                                case "ROLE_ALUMNO":
+                                    response.sendRedirect("/alumno/dashboard");
+                                    break;
+                                case "ROLE_TUTOR":
+                                    response.sendRedirect("/tutor/dashboard");
+                                    break;
+                                case "ROLE_TUTOR_CENTRO":
+                                    response.sendRedirect("/tutor_centro/dashboard");
+                                    break;
+                                case "ROLE_EMPRESA":
+                                    response.sendRedirect("/empresa/dashboard");
+                                    break;
+                                case "ROLE_ADMIN":
+                                    response.sendRedirect("/admin/dashboard");
+                                    break;
+                                default:
+                                    response.sendRedirect("/");
+                            }
+                        })
+                        .failureUrl("/login?error")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll())
+                .exceptionHandling(ex -> ex
+                        .accessDeniedPage("/error/403"))
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }

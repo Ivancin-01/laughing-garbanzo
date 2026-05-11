@@ -292,6 +292,8 @@ public class EmpresaController {
             ofertaOriginal.setDescripcion(ofertaEditada.getDescripcion());
             ofertaOriginal.setModalidad(ofertaEditada.getModalidad());
             ofertaOriginal.setPlazas(ofertaEditada.getPlazas());
+            ofertaOriginal.setCiudad(ofertaEditada.getCiudad());
+            ofertaOriginal.setEspecialidad(ofertaEditada.getEspecialidad());
 
             ofertaRepository.save(ofertaOriginal);
         }
@@ -386,85 +388,89 @@ public class EmpresaController {
         }
     }
 
-    /*private String aceptarSolicitudEmpresa(Solicitud solicitud, String origen) {
-        Oferta oferta = solicitud.getOferta();
-        Alumno alumno = solicitud.getAlumno();
-
-        if (oferta == null) {
-            return redirigirGestionSolicitud(origen, "error", "oferta_no_valida");
-        }
-
-        if (alumno == null) {
-            return redirigirGestionSolicitud(origen, "error", "alumno_no_encontrado");
-        }
-
-        if (alumnoTienePracticaActivaPorSolicitudes(alumno)) {
-            return redirigirGestionSolicitud(origen, "error", "alumno_ya_en_practicas");
-        }
-
-        long aceptadasActuales = solicitudRepository.countByOfertaIdAndEstado(
-                oferta.getId(),
-                EstadoSolicitud.ACEPTADA);
-
-        if (oferta.getPlazas() != null && aceptadasActuales >= oferta.getPlazas()) {
-            return redirigirGestionSolicitud(origen, "error", "plazas_completas");
-        }
-
-        solicitud.setEstado(EstadoSolicitud.ACEPTADA);
-        solicitud.setEstadoPractica(EstadoPractica.PENDIENTE_INICIO);
-        solicitudRepository.save(solicitud);
-
-        sincronizarEstadoFctAlumno(alumno);
-
-        List<Solicitud> pendientesDelAlumno = solicitudRepository.findByAlumnoIdAndEstado(
-                alumno.getId(),
-                EstadoSolicitud.PENDIENTE);
-
-        for (Solicitud s : pendientesDelAlumno) {
-            if (!s.getId().equals(solicitud.getId())) {
-                s.setEstado(EstadoSolicitud.RECHAZADA);
-                s.setEstadoPractica(null);
-            }
-        }
-
-        solicitudRepository.saveAll(pendientesDelAlumno);
-
-        long aceptadasDespues = solicitudRepository.countByOfertaIdAndEstado(
-                oferta.getId(),
-                EstadoSolicitud.ACEPTADA);
-
-        if (oferta.getPlazas() != null && aceptadasDespues >= oferta.getPlazas()) {
-            List<Solicitud> pendientesMismaOferta = solicitudRepository.findByOfertaIdAndEstado(
-                    oferta.getId(),
-                    EstadoSolicitud.PENDIENTE);
-
-            for (Solicitud s : pendientesMismaOferta) {
-                if (!s.getId().equals(solicitud.getId())) {
-                    s.setEstado(EstadoSolicitud.RECHAZADA);
-                    s.setEstadoPractica(null);
-                }
-            }
-
-            solicitudRepository.saveAll(pendientesMismaOferta);
-
-        }
-
-        return redirigirGestionSolicitud(origen, "exito", "estado_actualizado");
-    }
-
-    private String rechazarSolicitudEmpresa(Solicitud solicitud, String origen) {
-        Alumno alumno = solicitud.getAlumno();
-
-        solicitud.setEstado(EstadoSolicitud.RECHAZADA);
-        solicitud.setEstadoPractica(null);
-        solicitudRepository.save(solicitud);
-
-        if (alumno != null) {
-            sincronizarEstadoFctAlumno(alumno);
-        }
-
-        return redirigirGestionSolicitud(origen, "exito", "estado_actualizado");
-    }*/
+    /*
+     * private String aceptarSolicitudEmpresa(Solicitud solicitud, String origen) {
+     * Oferta oferta = solicitud.getOferta();
+     * Alumno alumno = solicitud.getAlumno();
+     * 
+     * if (oferta == null) {
+     * return redirigirGestionSolicitud(origen, "error", "oferta_no_valida");
+     * }
+     * 
+     * if (alumno == null) {
+     * return redirigirGestionSolicitud(origen, "error", "alumno_no_encontrado");
+     * }
+     * 
+     * if (alumnoTienePracticaActivaPorSolicitudes(alumno)) {
+     * return redirigirGestionSolicitud(origen, "error", "alumno_ya_en_practicas");
+     * }
+     * 
+     * long aceptadasActuales = solicitudRepository.countByOfertaIdAndEstado(
+     * oferta.getId(),
+     * EstadoSolicitud.ACEPTADA);
+     * 
+     * if (oferta.getPlazas() != null && aceptadasActuales >= oferta.getPlazas()) {
+     * return redirigirGestionSolicitud(origen, "error", "plazas_completas");
+     * }
+     * 
+     * solicitud.setEstado(EstadoSolicitud.ACEPTADA);
+     * solicitud.setEstadoPractica(EstadoPractica.PENDIENTE_INICIO);
+     * solicitudRepository.save(solicitud);
+     * 
+     * sincronizarEstadoFctAlumno(alumno);
+     * 
+     * List<Solicitud> pendientesDelAlumno =
+     * solicitudRepository.findByAlumnoIdAndEstado(
+     * alumno.getId(),
+     * EstadoSolicitud.PENDIENTE);
+     * 
+     * for (Solicitud s : pendientesDelAlumno) {
+     * if (!s.getId().equals(solicitud.getId())) {
+     * s.setEstado(EstadoSolicitud.RECHAZADA);
+     * s.setEstadoPractica(null);
+     * }
+     * }
+     * 
+     * solicitudRepository.saveAll(pendientesDelAlumno);
+     * 
+     * long aceptadasDespues = solicitudRepository.countByOfertaIdAndEstado(
+     * oferta.getId(),
+     * EstadoSolicitud.ACEPTADA);
+     * 
+     * if (oferta.getPlazas() != null && aceptadasDespues >= oferta.getPlazas()) {
+     * List<Solicitud> pendientesMismaOferta =
+     * solicitudRepository.findByOfertaIdAndEstado(
+     * oferta.getId(),
+     * EstadoSolicitud.PENDIENTE);
+     * 
+     * for (Solicitud s : pendientesMismaOferta) {
+     * if (!s.getId().equals(solicitud.getId())) {
+     * s.setEstado(EstadoSolicitud.RECHAZADA);
+     * s.setEstadoPractica(null);
+     * }
+     * }
+     * 
+     * solicitudRepository.saveAll(pendientesMismaOferta);
+     * 
+     * }
+     * 
+     * return redirigirGestionSolicitud(origen, "exito", "estado_actualizado");
+     * }
+     * 
+     * private String rechazarSolicitudEmpresa(Solicitud solicitud, String origen) {
+     * Alumno alumno = solicitud.getAlumno();
+     * 
+     * solicitud.setEstado(EstadoSolicitud.RECHAZADA);
+     * solicitud.setEstadoPractica(null);
+     * solicitudRepository.save(solicitud);
+     * 
+     * if (alumno != null) {
+     * sincronizarEstadoFctAlumno(alumno);
+     * }
+     * 
+     * return redirigirGestionSolicitud(origen, "exito", "estado_actualizado");
+     * }
+     */
 
     private String redirigirGestionSolicitud(String origen, String tipo, String codigo) {
         String destino = "dashboard".equalsIgnoreCase(origen)

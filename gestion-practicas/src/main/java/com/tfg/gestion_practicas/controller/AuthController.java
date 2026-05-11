@@ -10,4 +10,9 @@ public class AuthController {
     public String mostrarLogin() {
         return "login";
     }
+
+    @GetMapping("/cuenta-desactivada")
+    public String cuentaDesactivada() {
+        return "cuenta-desactivada";
+    }
 }

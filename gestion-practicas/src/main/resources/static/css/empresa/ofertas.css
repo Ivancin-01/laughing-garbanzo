@@ -322,6 +322,16 @@ tr:hover .oferta-icono {
     display: none;
 }
 
+.btn-mini--detalle {
+    color: var(--verde);
+    border-color: rgba(106, 143, 106, 0.24);
+}
+
+.btn-mini--detalle:hover {
+    background-color: rgba(106, 143, 106, 0.10);
+    color: var(--verde);
+}
+
 /* Animaciones */
 
 @keyframes entradaOfertas {

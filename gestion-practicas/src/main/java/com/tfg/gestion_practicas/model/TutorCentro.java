@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name="tutor_centro")
+@Table(name = "tutor_centro")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,15 +18,19 @@ public class TutorCentro {
 
     private String telefono;
 
-    @Column(name = "nombre_centro")
-    private String nombreCentro;
-
-
     @OneToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "id_tutores")
-    private Tutor tutor;
+    @JoinColumn(name = "id_centro")
+    private Centro centro;
+
+    public String getNombreCentro() {
+        if (centro != null && centro.getNombre() != null) {
+            return centro.getNombre();
+        }
+
+        return "Centro no asignado";
+    }
 }
