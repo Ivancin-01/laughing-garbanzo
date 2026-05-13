@@ -34,6 +34,9 @@ public class Oferta {
     @NotBlank
     private String modalidad;
 
+    @Size(max = 50)
+    private String horario;
+
     // Añadimos este campo para que coincida con tu formulario
     private String especialidad;
 

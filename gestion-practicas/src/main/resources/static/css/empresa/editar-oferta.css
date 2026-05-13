@@ -248,6 +248,43 @@
     color: var(--verde);
 }
 
+.horario-edicion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid var(--crema-oscura);
+    background:
+        linear-gradient(135deg, rgba(106, 143, 106, 0.06), rgba(244, 168, 124, 0.07)),
+        var(--crema);
+}
+
+.horario-edicion i {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+    background-color: rgba(106, 143, 106, 0.12);
+    color: var(--verde);
+    font-size: 1.25rem;
+}
+
+.horario-edicion input {
+    background-color: var(--blanco);
+}
+
+.texto-ayuda-horario {
+    color: var(--texto-suave);
+    font-size: 0.78rem;
+}
+
 @keyframes entradaEditarOferta {
     from {
         opacity: 0;

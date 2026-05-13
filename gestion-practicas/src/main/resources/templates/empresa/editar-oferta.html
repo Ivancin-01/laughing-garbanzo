@@ -165,6 +165,21 @@
                         </div>
 
                         <div class="form-grupo form-grupo--completo">
+                            <label for="horario">Horario aproximado</label>
+
+                            <div class="horario-edicion">
+                                <i class="bi bi-clock-history"></i>
+
+                                <input type="text" id="horario" th:field="*{horario}" placeholder="Ej: 08:00 - 14:00"
+                                    maxlength="50">
+                            </div>
+
+                            <small class="texto-ayuda-horario">
+                                Puedes mantener el horario generado o editarlo manualmente.
+                            </small>
+                        </div>
+
+                        <div class="form-grupo form-grupo--completo">
                             <label for="descripcion">Descripción detallada</label>
                             <textarea id="descripcion" th:field="*{descripcion}" rows="6"
                                 placeholder="Describe las tareas, requisitos, tecnologías y condiciones de la oferta..."></textarea>

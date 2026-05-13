@@ -163,6 +163,17 @@
                         </div>
 
                         <div class="meta-card">
+                            <i class="bi bi-clock-history"></i>
+                            <div>
+                                <span>Horario</span>
+                                <strong
+                                    th:text="${oferta.horario != null && !oferta.horario.isBlank() ? oferta.horario : 'No indicado'}">
+                                    08:00 - 14:00
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="meta-card">
                             <i class="bi bi-people-fill"></i>
                             <div>
                                 <span>Plazas</span>

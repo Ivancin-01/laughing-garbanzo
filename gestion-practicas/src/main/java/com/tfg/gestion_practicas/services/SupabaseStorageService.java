@@ -88,7 +88,14 @@ public class SupabaseStorageService {
             }
 
             tools.jackson.databind.JsonNode json = objectMapper.readTree(response.body());
-            String signedUrl = json.has("signedURL") ? json.get("signedURL").asText() : json.get("signedUrl").asText();
+
+            tools.jackson.databind.JsonNode signedUrlNode = json.has("signedURL") ? json.get("signedURL") : json.get("signedUrl");
+
+            if (signedUrlNode == null || signedUrlNode.isNull()) {
+                throw new RuntimeException("Supabase no devolvió una URL firmada válida.");
+            }
+
+            String signedUrl = signedUrlNode.asString();
 
             if (signedUrl.startsWith("http")) {
                 return signedUrl;

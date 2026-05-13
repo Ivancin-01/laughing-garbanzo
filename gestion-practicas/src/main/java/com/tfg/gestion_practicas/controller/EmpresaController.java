@@ -291,6 +291,7 @@ public class EmpresaController {
             ofertaOriginal.setTitulo(ofertaEditada.getTitulo());
             ofertaOriginal.setDescripcion(ofertaEditada.getDescripcion());
             ofertaOriginal.setModalidad(ofertaEditada.getModalidad());
+            ofertaOriginal.setHorario(ofertaEditada.getHorario());
             ofertaOriginal.setPlazas(ofertaEditada.getPlazas());
             ofertaOriginal.setCiudad(ofertaEditada.getCiudad());
             ofertaOriginal.setEspecialidad(ofertaEditada.getEspecialidad());

@@ -165,6 +165,13 @@
                         </div>
 
                         <div class="detalle-info-item">
+                            <span>Horario</span>
+                                <strong th:text="${oferta.horario != null && !oferta.horario.isBlank() ? oferta.horario : 'No especificado'}">
+                                    08:00 - 14:00
+                                </strong>
+                        </div>
+
+                        <div class="detalle-info-item">
                             <span>Fecha publicación</span>
                             <strong
                                 th:text="${#temporals.format(oferta.fechaPublicacion, 'dd/MM/yyyy')}">01/01/2026</strong>

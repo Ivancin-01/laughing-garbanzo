@@ -1,7 +1,6 @@
 /* =====================================================
    FP Connect — main.js
-   Usamos jQuery para el carrusel y eventos básicos
-   para el navbar.
+   Navbar, carrusel responsive y efecto wow con ratón
    ===================================================== */
 
 
@@ -9,102 +8,200 @@
    1. NAVBAR — cambia de aspecto al hacer scroll
    ------------------------------------------------------- */
 
-// Guardamos el elemento navbar en una variable
 var navbar = document.getElementById("navbar");
 
-// Añadimos un listener al evento "scroll" de la ventana
 window.addEventListener("scroll", function () {
-
-  // Si el usuario ha bajado más de 40px, añadimos la clase
   if (window.scrollY > 40) {
     navbar.classList.add("navbar--scrolled");
   } else {
     navbar.classList.remove("navbar--scrolled");
   }
+});
+
+
+/* -------------------------------------------------------
+   2. MENÚ HAMBURGUESA RESPONSIVE
+   ------------------------------------------------------- */
+
+var navbarToggle = document.getElementById("navbar-toggle");
+var navbarMenu = document.getElementById("navbar-menu");
+
+if (navbarToggle && navbarMenu) {
+  navbarToggle.addEventListener("click", function () {
+    navbarToggle.classList.toggle("activo");
+    navbarMenu.classList.toggle("abierto");
+  });
+
+  var enlacesMenu = navbarMenu.querySelectorAll("a");
+
+  enlacesMenu.forEach(function (enlace) {
+    enlace.addEventListener("click", function () {
+      navbarToggle.classList.remove("activo");
+      navbarMenu.classList.remove("abierto");
+    });
+  });
+}
+
+
+/* -------------------------------------------------------
+   3. CARRUSEL RESPONSIVE — controlado con jQuery
+   ------------------------------------------------------- */
+
+$(document).ready(function () {
+
+  var pista = $("#carrusel-pista");
+  var contenedorPuntos = $("#carrusel-puntos");
+  var tarjetas = $(".carrusel-tarjeta");
+
+  var indiceActual = 0;
+  var totalTarjetas = tarjetas.length;
+  var puntos = $();
+
+  function calcularMedidas() {
+    var anchoVentana = $(".carrusel-ventana").outerWidth();
+    var anchoTarjeta = tarjetas.first().outerWidth();
+    var gap = parseInt(pista.css("gap")) || 24;
+
+    var tarjetasVisibles = Math.max(1, Math.floor((anchoVentana + gap) / (anchoTarjeta + gap)));
+    var indiceMaximo = Math.max(0, totalTarjetas - tarjetasVisibles);
+    var paso = anchoTarjeta + gap;
+
+    return {
+      anchoVentana: anchoVentana,
+      anchoTarjeta: anchoTarjeta,
+      gap: gap,
+      tarjetasVisibles: tarjetasVisibles,
+      indiceMaximo: indiceMaximo,
+      paso: paso
+    };
+  }
+
+  function crearPuntos() {
+    var medidas = calcularMedidas();
+
+    contenedorPuntos.empty();
+
+    for (var i = 0; i <= medidas.indiceMaximo; i++) {
+      var punto = $("<button></button>").addClass("punto");
+
+      if (i === indiceActual) {
+        punto.addClass("activo");
+      }
+
+      contenedorPuntos.append(punto);
+    }
+
+    puntos = $(".punto");
+  }
+
+  function irA(nuevoIndice, animar) {
+    var medidas = calcularMedidas();
+
+    if (nuevoIndice < 0) {
+      nuevoIndice = 0;
+    }
+
+    if (nuevoIndice > medidas.indiceMaximo) {
+      nuevoIndice = medidas.indiceMaximo;
+    }
+
+    indiceActual = nuevoIndice;
+
+    var desplazamiento = indiceActual * medidas.paso;
+
+    pista.stop(true, true);
+
+    if (animar === false) {
+      pista.css("margin-left", -desplazamiento + "px");
+    } else {
+      pista.animate(
+        { marginLeft: -desplazamiento + "px" },
+        400,
+        "easeInOutQuad"
+      );
+    }
+
+    puntos.removeClass("activo");
+    puntos.eq(indiceActual).addClass("activo");
+  }
+
+  crearPuntos();
+  irA(0, false);
+
+  $("#btn-siguiente").on("click", function () {
+    irA(indiceActual + 1, true);
+  });
+
+  $("#btn-anterior").on("click", function () {
+    irA(indiceActual - 1, true);
+  });
+
+  contenedorPuntos.on("click", ".punto", function () {
+    irA($(this).index(), true);
+  });
+
+  $(window).on("resize", function () {
+    crearPuntos();
+    irA(indiceActual, false);
+  });
 
 });
 
 
 /* -------------------------------------------------------
-   2. CARRUSEL — controlado con jQuery
+   4. EFECTO WOW — tarjeta 3D que sigue el ratón
    ------------------------------------------------------- */
 
-// Esperamos a que jQuery y el DOM estén listos
-$(document).ready(function () {
+var tarjetaHero = document.querySelector(".hero__tarjeta");
 
-  // --- Variables del carrusel ---
-  var pista         = $("#carrusel-pista");      // La pista que se desplaza
-  var contenedorPuntos = $("#carrusel-puntos");  // Donde pondremos los puntos
-  var anchaTarjeta  = 338;   // Ancho de cada tarjeta (igual que en CSS: min-width)
-  var gap           = 24;    // Espacio entre tarjetas (igual que en CSS: gap)
-  var paso          = anchaTarjeta + gap;        // Cuánto desplazamos en cada clic
-  var indiceActual  = 0;     // Tarjeta en la que estamos
-  var totalTarjetas = $(".carrusel-tarjeta").length; // Contamos las tarjetas
-  var tarjetasVisibles = 2;  // Cuántas se ven a la vez en la ventana
+if (tarjetaHero) {
+  tarjetaHero.addEventListener("mousemove", function (evento) {
+    var rect = tarjetaHero.getBoundingClientRect();
 
-  // El máximo índice al que podemos llegar sin mostrar tarjetas vacías
-  var indiceMaximo = totalTarjetas - tarjetasVisibles;
+    var x = evento.clientX - rect.left;
+    var y = evento.clientY - rect.top;
 
-  // --- Generamos los puntos indicadores dinámicamente ---
-  for (var i = 0; i <= indiceMaximo; i++) {
-    // Creamos un botón por cada posición posible del carrusel
-    var punto = $("<button></button>").addClass("punto");
-    if (i === 0) {
-      punto.addClass("activo"); // El primero empieza activo
-    }
-    contenedorPuntos.append(punto);
-  }
+    var porcentajeX = x / rect.width;
+    var porcentajeY = y / rect.height;
 
-  // Guardamos todos los puntos en una variable para usarlos luego
-  var puntos = $(".punto");
+    var rotacionY = (porcentajeX - 0.5) * 18;
+    var rotacionX = (0.5 - porcentajeY) * 18;
 
-  // --- Función que mueve el carrusel a un índice concreto ---
-  function irA(nuevoIndice) {
+    tarjetaHero.style.setProperty("--mouse-x", (porcentajeX * 100) + "%");
+    tarjetaHero.style.setProperty("--mouse-y", (porcentajeY * 100) + "%");
 
-    // Nos aseguramos de que el índice esté dentro del rango permitido
-    if (nuevoIndice < 0) {
-      nuevoIndice = 0;
-    }
-    if (nuevoIndice > indiceMaximo) {
-      nuevoIndice = indiceMaximo;
-    }
-
-    // Actualizamos el índice actual
-    indiceActual = nuevoIndice;
-
-    // Calculamos cuántos píxeles hay que desplazar la pista
-    var desplazamiento = indiceActual * paso;
-
-    // Animamos el margen izquierdo de la pista con jQuery UI
-    // (easing "easeInOutQuad" es una curva de aceleración suave)
-    pista.animate(
-      { marginLeft: -desplazamiento + "px" },
-      400,               // duración en milisegundos
-      "easeInOutQuad"    // tipo de animación (de jQuery UI)
-    );
-
-    // Actualizamos los puntos: quitamos "activo" a todos y se lo ponemos al actual
-    puntos.removeClass("activo");
-    puntos.eq(indiceActual).addClass("activo");
-
-  }
-
-  // --- Botón SIGUIENTE ---
-  $("#btn-siguiente").on("click", function () {
-    irA(indiceActual + 1);
+    tarjetaHero.style.transform =
+      "rotateX(" + rotacionX + "deg) rotateY(" + rotacionY + "deg) translateY(-8px)";
   });
 
-  // --- Botón ANTERIOR ---
-  $("#btn-anterior").on("click", function () {
-    irA(indiceActual - 1);
+  tarjetaHero.addEventListener("mouseleave", function () {
+    tarjetaHero.style.transform = "";
+    tarjetaHero.style.setProperty("--mouse-x", "50%");
+    tarjetaHero.style.setProperty("--mouse-y", "50%");
   });
+}
 
-  // --- Clic en un punto ---
-  // Usamos delegación de eventos porque los puntos se crearon dinámicamente
-  contenedorPuntos.on("click", ".punto", function () {
-    // Obtenemos el índice del punto pulsado con .index()
-    var indicePunto = $(this).index();
-    irA(indicePunto);
+
+/* -------------------------------------------------------
+   5. SCROLL REVEAL — aparece al hacer scroll
+   ------------------------------------------------------- */
+
+var elementosReveal = document.querySelectorAll(".card, .carrusel-tarjeta, .footer__contenido");
+
+elementosReveal.forEach(function (elemento) {
+  elemento.classList.add("reveal");
+});
+
+var observer = new IntersectionObserver(function (entradas) {
+  entradas.forEach(function (entrada) {
+    if (entrada.isIntersecting) {
+      entrada.target.classList.add("visible");
+    }
   });
+}, {
+  threshold: 0.15
+});
 
-}); // fin document.ready
+elementosReveal.forEach(function (elemento) {
+  observer.observe(elemento);
+});
