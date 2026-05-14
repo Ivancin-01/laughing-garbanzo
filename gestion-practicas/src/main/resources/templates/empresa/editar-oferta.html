@@ -111,6 +111,22 @@
                 </a>
             </header>
 
+            <div th:if="${param.error != null}" class="alerta-error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                <span th:if="${param.error[0] == 'plazas-menores-aceptadas'}">
+                    No puedes reducir las plazas por debajo del número de solicitudes ya aceptadas.
+                </span>
+
+                <span th:if="${param.error[0] == 'plazas-invalidas'}">
+                    El número de plazas debe ser igual o superior a 1.
+                </span>
+
+                <span th:if="${param.error[0] != 'plazas-menores-aceptadas' and param.error[0] != 'plazas-invalidas'}">
+                    No se pudieron guardar los cambios de la oferta.
+                </span>
+            </div>
+
             <section class="editar-oferta-layout">
 
                 <article class="editar-oferta-card">
@@ -130,6 +146,7 @@
                         class="oferta-form">
 
                         <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{ciudad}">
 
                         <div class="form-grupo form-grupo--completo">
                             <label for="titulo">Título de la posición</label>
@@ -162,24 +179,88 @@
 
                         <div class="form-grupo">
                             <label for="plazas">Plazas disponibles</label>
-                            <input type="number" id="plazas" th:field="*{plazas}" min="1" required>
-                        </div>
 
-                        <div class="form-grupo form-grupo--completo">
-                            <label for="horario">Horario aproximado</label>
+                            <input type="number" id="plazas" th:field="*{plazas}" min="1"
+                                th:attr="data-min-aceptadas=${solicitudesAceptadas}" required>
 
-                            <div class="horario-edicion">
-                                <i class="bi bi-clock-history"></i>
-
-                                <input type="text" id="horario" th:field="*{horario}" placeholder="Ej: 08:00 - 14:00"
-                                    maxlength="50">
-                            </div>
-
-                            <small class="texto-ayuda-horario">
-                                Puedes mantener el horario generado o editarlo manualmente.
+                            <small class="texto-ayuda-horario"
+                                th:if="${solicitudesAceptadas != null and solicitudesAceptadas > 0}"
+                                th:text="'Esta oferta ya tiene ' + ${solicitudesAceptadas} + ' solicitud/es aceptada/s. No puedes poner menos plazas que eso.'">
                             </small>
                         </div>
 
+                        <div class="form-grupo form-grupo--completo">
+                            <label>Horario aproximado</label>
+
+                            <div class="horario-edicion horario-edicion--selects">
+
+                                <div class="horario-select-card">
+                                    <span class="horario-icono">
+                                        <i class="bi bi-clock"></i>
+                                    </span>
+
+                                    <div class="horario-campo">
+                                        <label for="horaInicio">Hora inicio</label>
+                                        <select id="horaInicio">
+                                            <option value="">Inicio</option>
+                                            <option value="07:00">07:00</option>
+                                            <option value="07:30">07:30</option>
+                                            <option value="08:00">08:00</option>
+                                            <option value="08:30">08:30</option>
+                                            <option value="09:00">09:00</option>
+                                            <option value="09:30">09:30</option>
+                                            <option value="10:00">10:00</option>
+                                            <option value="10:30">10:30</option>
+                                            <option value="11:00">11:00</option>
+                                            <option value="11:30">11:30</option>
+                                            <option value="12:00">12:00</option>
+                                            <option value="12:30">12:30</option>
+                                            <option value="13:00">13:00</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="horario-separador">
+                                    <i class="bi bi-arrow-right"></i>
+                                </div>
+
+                                <div class="horario-select-card">
+                                    <span class="horario-icono horario-icono--fin">
+                                        <i class="bi bi-clock-history"></i>
+                                    </span>
+
+                                    <div class="horario-campo">
+                                        <label for="horaFin">Hora fin</label>
+                                        <select id="horaFin">
+                                            <option value="">Fin</option>
+                                            <option value="12:00">12:00</option>
+                                            <option value="12:30">12:30</option>
+                                            <option value="13:00">13:00</option>
+                                            <option value="13:30">13:30</option>
+                                            <option value="14:00">14:00</option>
+                                            <option value="14:30">14:30</option>
+                                            <option value="15:00">15:00</option>
+                                            <option value="15:30">15:30</option>
+                                            <option value="16:00">16:00</option>
+                                            <option value="16:30">16:30</option>
+                                            <option value="17:00">17:00</option>
+                                            <option value="17:30">17:30</option>
+                                            <option value="18:00">18:00</option>
+                                            <option value="18:30">18:30</option>
+                                            <option value="19:00">19:00</option>
+                                            <option value="19:30">19:30</option>
+                                            <option value="20:00">20:00</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="horario" th:field="*{horario}">
+
+                            <small id="horarioPreview" class="texto-ayuda-horario">
+                                Selecciona una hora de inicio y una hora de fin.
+                            </small>
+                        </div>
                         <div class="form-grupo form-grupo--completo">
                             <label for="descripcion">Descripción detallada</label>
                             <textarea id="descripcion" th:field="*{descripcion}" rows="6"

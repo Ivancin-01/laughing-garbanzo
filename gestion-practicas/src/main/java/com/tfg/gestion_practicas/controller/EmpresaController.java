@@ -275,35 +275,82 @@ public class EmpresaController {
             return "redirect:/login";
         }
 
-        if (oferta == null || !oferta.getEmpresa().getId().equals(empresa.getId())) {
+        if (oferta == null
+                || oferta.getEmpresa() == null
+                || !oferta.getEmpresa().getId().equals(empresa.getId())) {
             return "redirect:/empresa/ofertas?error=no-autorizado";
         }
 
+        List<Solicitud> solicitudesOferta = solicitudRepository.findByOfertaId(id);
+
+        long solicitudesAceptadas = solicitudesOferta.stream()
+                .filter(s -> s.getEstado() == EstadoSolicitud.ACEPTADA)
+                .count();
+
         model.addAttribute("empresa", empresa);
         model.addAttribute("oferta", oferta);
+        model.addAttribute("solicitudesAceptadas", solicitudesAceptadas);
 
         return "empresa/editar-oferta";
     }
 
     @PostMapping("/empresa/ofertas/actualizar")
-    public String actualizarOferta(@ModelAttribute("oferta") Oferta ofertaEditada, Principal principal) {
+    public String actualizarOferta(@ModelAttribute("oferta") Oferta ofertaEditada,
+            Principal principal) {
+
         if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String email = principal.getName();
+        Empresa empresa = empresaRepository.findByUsuarioCorreo(email).orElse(null);
+
+        if (empresa == null) {
             return "redirect:/login";
         }
 
         Oferta ofertaOriginal = ofertaRepository.findById(ofertaEditada.getId()).orElse(null);
 
-        if (ofertaOriginal != null) {
-            ofertaOriginal.setTitulo(ofertaEditada.getTitulo());
-            ofertaOriginal.setDescripcion(ofertaEditada.getDescripcion());
-            ofertaOriginal.setModalidad(ofertaEditada.getModalidad());
-            ofertaOriginal.setHorario(ofertaEditada.getHorario());
-            ofertaOriginal.setPlazas(ofertaEditada.getPlazas());
-            ofertaOriginal.setCiudad(ofertaEditada.getCiudad());
-            ofertaOriginal.setEspecialidad(ofertaEditada.getEspecialidad());
-
-            ofertaRepository.save(ofertaOriginal);
+        if (ofertaOriginal == null) {
+            return "redirect:/empresa/ofertas?error=oferta-no-encontrada";
         }
+
+        if (ofertaOriginal.getEmpresa() == null
+                || !ofertaOriginal.getEmpresa().getId().equals(empresa.getId())) {
+            return "redirect:/empresa/ofertas?error=no-autorizado";
+        }
+
+        List<Solicitud> solicitudesOferta = solicitudRepository.findByOfertaId(ofertaOriginal.getId());
+
+        long solicitudesAceptadas = solicitudesOferta.stream()
+                .filter(s -> s.getEstado() == EstadoSolicitud.ACEPTADA)
+                .count();
+
+        Integer nuevasPlazas = ofertaEditada.getPlazas();
+
+        if (nuevasPlazas == null || nuevasPlazas < 1) {
+            return "redirect:/empresa/ofertas/editar/" + ofertaOriginal.getId() + "?error=plazas-invalidas";
+        }
+
+        if (nuevasPlazas < solicitudesAceptadas) {
+            return "redirect:/empresa/ofertas/editar/" + ofertaOriginal.getId() + "?error=plazas-menores-aceptadas";
+        }
+
+        ofertaOriginal.setTitulo(ofertaEditada.getTitulo());
+        ofertaOriginal.setDescripcion(ofertaEditada.getDescripcion());
+        ofertaOriginal.setModalidad(ofertaEditada.getModalidad());
+        ofertaOriginal.setPlazas(nuevasPlazas);
+        ofertaOriginal.setEspecialidad(ofertaEditada.getEspecialidad());
+
+        if(ofertaEditada.getHorario() != null && !ofertaEditada.getHorario().isBlank()) {
+            ofertaOriginal.setHorario(ofertaEditada.getHorario());
+        }
+
+        if (ofertaEditada.getCiudad() != null && !ofertaEditada.getCiudad().isBlank()) {
+            ofertaOriginal.setCiudad(ofertaEditada.getCiudad());
+        }
+        
+        ofertaRepository.save(ofertaOriginal);
 
         return "redirect:/empresa/ofertas?editada=true";
     }

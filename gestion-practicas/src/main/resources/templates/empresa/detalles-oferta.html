@@ -167,9 +167,10 @@
 
                         <div class="detalle-info-item">
                             <span>Horario</span>
-                                <strong th:text="${oferta.horario != null && !oferta.horario.isBlank() ? oferta.horario : 'No especificado'}">
-                                    08:00 - 14:00
-                                </strong>
+                            <strong
+                                th:text="${oferta.horario != null && !oferta.horario.isBlank() ? oferta.horario : 'No especificado'}">
+                                08:00 - 14:00
+                            </strong>
                         </div>
 
                         <div class="detalle-info-item">
@@ -257,13 +258,16 @@
                                     </td>
 
                                     <td>
-                                        <a th:if="${solicitud.alumno.cvUrl != null}" th:href="${solicitud.alumno.cvUrl}"
+                                        <a th:if="${solicitud.alumno.cvUrl != null and !solicitud.alumno.cvUrl.isBlank()}"
+                                            th:href="@{/empresa/solicitudes/{id}/cv(id=${solicitud.id})}"
                                             target="_blank" class="btn-mini">
                                             <i class="bi bi-file-earmark-pdf"></i>
                                             Ver CV
                                         </a>
 
-                                        <span th:unless="${solicitud.alumno.cvUrl != null}" class="texto-tabla-suave">
+                                        <span
+                                            th:unless="${solicitud.alumno.cvUrl != null and !solicitud.alumno.cvUrl.isBlank()}"
+                                            class="texto-tabla-suave">
                                             Sin CV
                                         </span>
                                     </td>

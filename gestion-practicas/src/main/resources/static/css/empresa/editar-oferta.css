@@ -29,7 +29,8 @@
 
 .editar-oferta-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-columns: minmax(0, 760px) minmax(260px, 320px);
+    justify-content: center;
     gap: 26px;
     align-items: start;
 }
@@ -249,9 +250,10 @@
 }
 
 .horario-edicion {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
     align-items: center;
-    gap: 12px;
+    gap: 14px;
 
     padding: 12px;
     border-radius: 16px;
@@ -261,10 +263,23 @@
         var(--crema);
 }
 
-.horario-edicion i {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
+.horario-select-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    min-width: 0;
+    padding: 10px;
+    border-radius: 15px;
+
+    background-color: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(106, 143, 106, 0.10);
+}
+
+.horario-icono {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
 
     display: flex;
     align-items: center;
@@ -273,16 +288,93 @@
     border-radius: 14px;
     background-color: rgba(106, 143, 106, 0.12);
     color: var(--verde);
-    font-size: 1.25rem;
+    font-size: 1.15rem;
 }
 
-.horario-edicion input {
+.horario-icono--fin {
+    background-color: rgba(244, 168, 124, 0.18);
+    color: #c97831;
+}
+
+.horario-campo {
+    width: 100%;
+    min-width: 0;
+}
+
+.horario-campo label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--texto-suave);
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.horario-campo select {
+    width: 100%;
+    padding: 9px 10px;
+    border-radius: 12px;
     background-color: var(--blanco);
+}
+
+.horario-separador {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(106, 143, 106, 0.10);
+    color: var(--verde);
+    font-size: 1.1rem;
 }
 
 .texto-ayuda-horario {
     color: var(--texto-suave);
     font-size: 0.78rem;
+}
+
+#horarioPreview.horario-preview--ok {
+    color: var(--verde);
+    font-weight: 700;
+}
+
+#horarioPreview.horario-preview--error {
+    color: #c74440;
+    font-weight: 700;
+}
+
+.alerta-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 24px;
+    padding: 15px 18px;
+
+    background-color: #fff1f1;
+    color: #b6403d;
+    border: 1px solid rgba(217, 83, 79, 0.24);
+    border-radius: 14px;
+
+    font-weight: 700;
+    animation: entradaEditarOferta 0.55s ease both;
+}
+
+.alerta-error {
+    max-width: 760px;
+}
+
+@media (max-width: 700px) {
+    .horario-edicion {
+        grid-template-columns: 1fr;
+    }
+
+    .horario-separador {
+        margin: 0 auto;
+        transform: rotate(90deg);
+    }
 }
 
 @keyframes entradaEditarOferta {
