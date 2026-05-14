@@ -37,4 +37,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    const filtroCiudad = document.getElementById("filtroCiudad");
+
+    if (filtroCiudad) {
+        filtroCiudad.addEventListener("change", function () {
+            const form = filtroCiudad.closest("form");
+
+            if (form) {
+                form.submit();
+            }
+        });
+    }
 });

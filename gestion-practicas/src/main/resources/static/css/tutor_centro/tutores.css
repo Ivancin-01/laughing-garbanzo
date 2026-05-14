@@ -677,8 +677,8 @@ a {
 
 .tutor-card {
     display: grid;
-    grid-template-columns: minmax(230px, 1.1fr) minmax(300px, 1.4fr) 145px auto;
-    gap: 18px;
+    grid-template-columns: minmax(230px, 1.05fr) minmax(360px, 1.6fr) 130px minmax(210px, auto);
+    gap: 20px;
     align-items: center;
 
     padding: 20px;
@@ -713,7 +713,7 @@ a {
     min-width: 0;
 }
 
-.tutor-principal > div:last-child {
+.tutor-principal>div:last-child {
     min-width: 0;
 }
 
@@ -782,25 +782,36 @@ a {
 
 .tutor-datos {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
     gap: 10px;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.tutor-datos--compactos .dato-linea {
+    flex: 1 1 150px;
+    min-width: 145px;
 }
 
 .dato-linea {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 9px;
 
     min-width: 0;
-    padding: 11px;
+    padding: 10px 12px;
 
     background-color: var(--blanco);
     border-radius: 14px;
+    border: 1px solid rgba(106, 143, 106, 0.08);
 }
 
 .dato-linea i {
+    width: 24px;
+    min-width: 24px;
     color: var(--verde);
-    margin-top: 2px;
+    margin-top: 0;
+    text-align: center;
 }
 
 .dato-linea strong {
@@ -811,6 +822,7 @@ a {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 130px;
 }
 
 .tutor-carga {
@@ -1025,6 +1037,18 @@ a {
     .tutor-acciones {
         justify-content: stretch;
     }
+
+    .tutor-datos {
+        width: 100%;
+    }
+
+    .tutor-datos--compactos .dato-linea {
+        flex: 1 1 220px;
+    }
+
+    .dato-linea strong {
+        max-width: none;
+    }
 }
 
 @media (max-width: 950px) {
@@ -1055,6 +1079,15 @@ a {
 
     .tutor-datos {
         grid-template-columns: 1fr;
+    }
+
+    .tutor-datos {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tutor-datos--compactos .dato-linea {
+        width: 100%;
     }
 }
 

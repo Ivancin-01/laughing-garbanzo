@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Detalle Alumno</title>
-
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
@@ -147,8 +148,9 @@
                             <i class="bi bi-geo-alt"></i>
                             <div>
                                 <span>Ciudad</span>
-                                <strong th:text="${alumno.ciudad != null ? alumno.ciudad : 'No indicada'}">
-                                    Madrid
+                                <strong
+                                    th:text="${alumno.ciudad != null and !alumno.ciudad.isBlank() ? alumno.ciudad : 'No indicada'}">
+                                    No indicada
                                 </strong>
                             </div>
                         </article>
@@ -182,10 +184,13 @@
                         </h2>
 
                         <span class="badge"
-                              th:classappend="${alumno.estadoFct == 'EN_PRACTICAS' ? ' badge-aceptada' :
-                                              (alumno.estadoFct == 'PENDIENTE' or alumno.estadoFct == 'Pendiente' ? ' badge-pendiente' : ' badge-busqueda')}"
-                              th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'EN_BUSQUEDA'}">
-                            EN_BUSQUEDA
+                            th:classappend="${alumno.estadoFct == 'EN_PRACTICAS' ? ' badge-aceptada' :
+                            (alumno.estadoFct == 'PENDIENTE' or alumno.estadoFct == 'Pendiente' ? ' badge-pendiente' : ' badge-busqueda')}"
+                            th:text="${alumno.estadoFct == 'EN_PRACTICAS' ? 'En prácticas' :
+                            alumno.estadoFct == 'EN_BUSQUEDA' ? 'En búsqueda' :
+                            alumno.estadoFct == 'PENDIENTE' ? 'Pendiente' :
+                            alumno.estadoFct != null ? alumno.estadoFct : 'En búsqueda'}">
+                            En búsqueda
                         </span>
                     </section>
 
@@ -203,18 +208,13 @@
                         Desde aquí puedes revisar sus solicitudes, consultar su CV y crear reportes de seguimiento.
                     </p>
 
-                    <a th:if="${alumno.cvUrl != null}"
-                       th:href="${alumno.cvUrl}"
-                       target="_blank"
-                       class="btn-principal">
+                    <a th:if="${alumno.cvUrl != null and !alumno.cvUrl.isBlank()}"
+                        th:href="@{/tutor/alumnos/{id}/cv/ver(id=${alumno.id})}" target="_blank" class="btn-principal">
                         <i class="bi bi-eye"></i>
                         Ver CV
                     </a>
 
-                    <button th:if="${alumno.cvUrl == null}"
-                            type="button"
-                            class="btn-principal btn-disabled"
-                            disabled>
+                    <button th:if="${alumno.cvUrl == null}" type="button" class="btn-principal btn-disabled" disabled>
                         <i class="bi bi-file-earmark-x"></i>
                         Sin CV subido
                     </button>
@@ -301,7 +301,8 @@
                     <article class="solicitud-card" th:each="s : ${solicitudes}">
 
                         <div class="solicitud-info">
-                            <span th:text="${s.oferta != null && s.oferta.empresa != null ? s.oferta.empresa.nombre : 'Empresa no asignada'}">
+                            <span
+                                th:text="${s.oferta != null && s.oferta.empresa != null ? s.oferta.empresa.nombre : 'Empresa no asignada'}">
                                 Empresa
                             </span>
 
@@ -309,24 +310,25 @@
                                 Título oferta
                             </h3>
 
-                            <p th:text="${s.fechaSolicitud != null ? #temporals.format(s.fechaSolicitud, 'dd/MM/yyyy') : 'Sin fecha'}">
+                            <p
+                                th:text="${s.fechaSolicitud != null ? #temporals.format(s.fechaSolicitud, 'dd/MM/yyyy') : 'Sin fecha'}">
                                 01/01/2026
                             </p>
                         </div>
 
                         <span class="badge"
-                              th:classappend="${s.estado.name() == 'PENDIENTE' ? ' badge-pendiente' :
+                            th:classappend="${s.estado.name() == 'PENDIENTE' ? ' badge-pendiente' :
                                               (s.estado.name() == 'ACEPTADA' ? ' badge-aceptada' : ' badge-rechazada')}"
-                              th:text="${s.estado}">
+                            th:text="${s.estado}">
                             PENDIENTE
                         </span>
 
                         <a th:if="${s.oferta != null}"
-                           th:href="@{/ofertas/detalle/{id}(id=${s.oferta.id})}"
-                           class="btn-mini">
-                            Ver oferta
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
+   th:href="@{/tutor/ofertas/{id}(id=${s.oferta.id})}"
+   class="btn-mini">
+    Ver oferta
+    <i class="bi bi-arrow-right"></i>
+</a>
                     </article>
                 </div>
             </section>
@@ -334,4 +336,5 @@
     </div>
     <script th:src="@{/js/tutor/detalle-alumno.js}"></script>
 </body>
+
 </html>

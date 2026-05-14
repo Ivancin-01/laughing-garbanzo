@@ -456,7 +456,7 @@ a {
 
 .form-buscador {
     display: grid;
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: minmax(0, 1fr) 250px auto auto;
     gap: 12px;
     align-items: center;
 }
@@ -498,6 +498,72 @@ a {
 
     font-family: var(--fuente-texto);
     font-size: 0.96rem;
+}
+
+.select-ciudad-ofertas {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    min-width: 0;
+    padding: 0 16px;
+    border: 1px solid var(--crema-oscura);
+    border-radius: 999px;
+    background-color: var(--crema);
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+}
+
+.select-ciudad-ofertas:hover,
+.select-ciudad-ofertas:focus-within {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 4px rgba(106, 143, 106, 0.10);
+    transform: translateY(-1px);
+}
+
+.select-ciudad-ofertas i {
+    color: var(--verde);
+    font-size: 1rem;
+}
+
+.select-ciudad-ofertas select {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 14px 28px 14px 0;
+
+    background-color: transparent;
+    color: var(--texto);
+
+    font-family: var(--fuente-texto);
+    font-size: 0.96rem;
+    cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--verde) 50%),
+        linear-gradient(135deg, var(--verde) 50%, transparent 50%);
+
+    background-position:
+        calc(100% - 10px) 50%,
+        calc(100% - 4px) 50%;
+
+    background-size:
+        6px 6px,
+        6px 6px;
+
+    background-repeat: no-repeat;
+}
+
+.select-ciudad-ofertas select option {
+    color: var(--texto);
+    background-color: var(--blanco);
 }
 
 .btn-buscar,

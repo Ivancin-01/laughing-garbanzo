@@ -30,7 +30,7 @@ public class OfertaController {
 
     // Mostramos todas las ofertas disponibles en la web.
     @GetMapping("/ofertas")
-    public String listarOfertas(@RequestParam(name = "buscar", required = false) String buscar,
+    public String listarOfertas(@RequestParam(name = "buscar", required = false) String buscar, @RequestParam(name = "ciudad", required = false) String ciudad,
             Model model, Principal principal) {
         if (principal == null) {
             return "redirect:/login";
@@ -38,13 +38,14 @@ public class OfertaController {
 
         Alumno alumno = alumnoRepository.findByUsuarioCorreo(principal.getName()).orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
         
-        List<Oferta> ofertas = (buscar != null && !buscar.isBlank())
-            ? ofertaRepository.findByTituloContainingIgnoreCaseOrEmpresaNombreContainingIgnoreCase(buscar, buscar)
-            : ofertaRepository.findAll();
+        List<Oferta> ofertas = ofertaRepository.buscarOfertasAlumno(buscar, ciudad);
+        List<String> ciudades = ofertaRepository.findCiudadesDisponibles();
 
         model.addAttribute("alumno", alumno);
         model.addAttribute("ofertas", ofertas);
         model.addAttribute("query", buscar);
+        model.addAttribute("ciudadSeleccionada", ciudad);
+        model.addAttribute("ciudades", ciudades);
 
         return "alumno/buscar-ofertas"; // Aquí va el listado de tarjetas
     }

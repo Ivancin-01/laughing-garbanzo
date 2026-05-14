@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Dashboard - Alumno</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
@@ -32,8 +33,7 @@
         <div class="usuario-nav-container perfil-trigger">
             <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de alumno">
                 <div class="info-usuario-nav">
-                    <p class="nombre-nav"
-                        th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                    <p class="nombre-nav" th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
                         Nombre Alumno
                     </p>
                     <p class="rol-nav">Alumno</p>
@@ -86,6 +86,10 @@
 
                 <a th:href="@{/alumno/perfil}" class="sidebar-link">
                     <i class="bi bi-person-vcard"></i> Mi Perfil
+                </a>
+
+                <a th:href="@{/alumno/configuracion}" class="sidebar-link">
+                    <i class="bi bi-gear"></i> Configuración
                 </a>
             </nav>
         </aside>
@@ -164,7 +168,13 @@
 
                     <div class="widget-info">
                         <h3>Estado FCT</h3>
-                        <p th:text="${alumno.estadoFct}">Pendiente</p>
+                        <p th:text="${alumno.estadoFct == 'EN_PRACTICAS' ? 'En prácticas' :
+                            alumno.estadoFct == 'EN_BUSQUEDA' ? 'En búsqueda' :
+                            alumno.estadoFct == 'FINALIZADO' ? 'Finalizado' :
+                            alumno.estadoFct == 'PENDIENTE' ? 'Pendiente' :
+                            'Pendiente'}">
+                            Pendiente
+                        </p>
                     </div>
                 </div>
 
@@ -203,8 +213,7 @@
                             <tr th:each="solicitud : ${solicitudes}">
                                 <td>
                                     <strong th:text="${solicitud.oferta.titulo}">Desarrollador Java</strong><br>
-                                    <small class="texto-tabla-suave"
-                                        th:text="${solicitud.oferta.modalidad}">
+                                    <small class="texto-tabla-suave" th:text="${solicitud.oferta.modalidad}">
                                         Presencial
                                     </small>
                                 </td>
@@ -218,11 +227,9 @@
                                 </td>
 
                                 <td>
-                                    <span class="badge"
-                                        th:classappend="${solicitud.estado.name() == 'ACEPTADA' ? ' badge-aceptada' : 
+                                    <span class="badge" th:classappend="${solicitud.estado.name() == 'ACEPTADA' ? ' badge-aceptada' : 
                                                         solicitud.estado.name() == 'RECHAZADA' ? ' badge-rechazada' : 
-                                                        ' badge-pendiente'}"
-                                        th:text="${solicitud.estado}">
+                                                        ' badge-pendiente'}" th:text="${solicitud.estado}">
                                         PENDIENTE
                                     </span>
                                 </td>

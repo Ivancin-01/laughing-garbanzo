@@ -27,6 +27,9 @@ import com.tfg.gestion_practicas.repository.OfertaRepository;
 import com.tfg.gestion_practicas.repository.SolicitudRepository;
 import com.tfg.gestion_practicas.services.EmpresaService;
 
+import com.tfg.gestion_practicas.services.SupabaseStorageService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 @Controller
 public class EmpresaController {
 
@@ -44,6 +47,9 @@ public class EmpresaController {
 
     @Autowired
     private AlumnoRepository alumnoRepository;
+
+    @Autowired
+    private SupabaseStorageService supabaseStorageService;
 
     @GetMapping("/empresa/dashboard")
     public String dashboardEmpresa(Model model, Principal principal) {
@@ -699,5 +705,101 @@ public class EmpresaController {
         }
 
         alumnoRepository.save(alumno);
+    }
+
+    @GetMapping("/empresa/solicitudes/{id}/cv")
+    public String verCvSolicitudEmpresa(@PathVariable Long id,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+        try {
+            if (principal == null) {
+                return "redirect:/login";
+            }
+
+            String email = principal.getName();
+            Empresa empresa = empresaRepository.findByUsuarioCorreo(email).orElse(null);
+
+            if (empresa == null) {
+                return "redirect:/login";
+            }
+
+            Solicitud solicitud = solicitudRepository.findById(id).orElse(null);
+
+            if (solicitud == null) {
+                redirectAttributes.addFlashAttribute("error", "Solicitud no encontrada.");
+                return "redirect:/empresa/solicitudes";
+            }
+
+            if (solicitud.getOferta() == null
+                    || solicitud.getOferta().getEmpresa() == null
+                    || !solicitud.getOferta().getEmpresa().getId().equals(empresa.getId())) {
+                redirectAttributes.addFlashAttribute("error", "No tienes permiso para ver este CV.");
+                return "redirect:/empresa/solicitudes";
+            }
+
+            if (solicitud.getAlumno() == null
+                    || solicitud.getAlumno().getCvUrl() == null
+                    || solicitud.getAlumno().getCvUrl().isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Este alumno no tiene CV subido.");
+                return "redirect:/empresa/solicitudes";
+            }
+
+            String urlFirmada = supabaseStorageService.crearUrlFirmada(solicitud.getAlumno().getCvUrl());
+
+            return "redirect:" + urlFirmada;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "No se pudo abrir el CV del alumno.");
+            return "redirect:/empresa/solicitudes";
+        }
+    }
+
+    @GetMapping("/empresa/alumnos-fct/{id}/cv")
+    public String verCvAlumnoFctEmpresa(@PathVariable Long id,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+        try {
+            if (principal == null) {
+                return "redirect:/login";
+            }
+
+            String email = principal.getName();
+            Empresa empresa = empresaRepository.findByUsuarioCorreo(email).orElse(null);
+
+            if (empresa == null) {
+                return "redirect:/login";
+            }
+
+            Solicitud solicitud = solicitudRepository.findById(id).orElse(null);
+
+            if (solicitud == null) {
+                redirectAttributes.addFlashAttribute("error", "Solicitud no encontrada.");
+                return "redirect:/empresa/alumnos-fct";
+            }
+
+            if (solicitud.getOferta() == null
+                    || solicitud.getOferta().getEmpresa() == null
+                    || !solicitud.getOferta().getEmpresa().getId().equals(empresa.getId())) {
+                redirectAttributes.addFlashAttribute("error", "No tienes permiso para ver este CV.");
+                return "redirect:/empresa/alumnos-fct";
+            }
+
+            if (solicitud.getAlumno() == null
+                    || solicitud.getAlumno().getCvUrl() == null
+                    || solicitud.getAlumno().getCvUrl().isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Este alumno no tiene CV subido.");
+                return "redirect:/empresa/alumnos-fct";
+            }
+
+            String urlFirmada = supabaseStorageService.crearUrlFirmada(solicitud.getAlumno().getCvUrl());
+
+            return "redirect:" + urlFirmada;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "No se pudo abrir el CV del alumno.");
+            return "redirect:/empresa/alumnos-fct";
+        }
     }
 }

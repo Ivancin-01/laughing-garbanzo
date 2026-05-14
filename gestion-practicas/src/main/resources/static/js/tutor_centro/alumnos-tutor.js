@@ -92,4 +92,23 @@ document.addEventListener("DOMContentLoaded", function () {
     if (filtroEstado) {
         filtroEstado.addEventListener("change", filtrarAlumnos);
     }
+
+    // ==========================================
+    // DROPDOWN DE DATOS EN CADA CARD DE ALUMNO
+    // ==========================================
+    const botonesToggleAlumno = document.querySelectorAll(".btn-toggle-alumno");
+
+    botonesToggleAlumno.forEach(function (boton) {
+        boton.addEventListener("click", function () {
+            const card = boton.closest(".alumno-card");
+
+            if (!card) {
+                return;
+            }
+
+            const estaAbierta = card.classList.toggle("abierta");
+
+            boton.setAttribute("aria-expanded", estaAbierta ? "true" : "false");
+        });
+    });
 });

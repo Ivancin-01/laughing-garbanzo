@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.tfg.gestion_practicas.model.Alumno;
 import com.tfg.gestion_practicas.model.Solicitud;
 import com.tfg.gestion_practicas.model.Tutor;
+import com.tfg.gestion_practicas.model.Oferta;
 import com.tfg.gestion_practicas.repository.AlumnoRepository;
 import com.tfg.gestion_practicas.repository.SolicitudRepository;
 import com.tfg.gestion_practicas.repository.TutorRepository;
+import com.tfg.gestion_practicas.repository.OfertaRepository;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +25,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tfg.gestion_practicas.model.ReporteTutor;
 import com.tfg.gestion_practicas.repository.ReporteTutorRepository;
+
+import com.tfg.gestion_practicas.services.SupabaseStorageService;
 
 @Controller
 public class TutorController {
@@ -40,7 +44,13 @@ public class TutorController {
     private ReporteTutorRepository reporteTutorRepository;
 
     @Autowired
+    private OfertaRepository ofertaRepository;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SupabaseStorageService supabaseStorageService;
 
     @GetMapping("/tutor/dashboard")
     public String dashboardTutor(Model model, Principal principal) {
@@ -163,7 +173,8 @@ public class TutorController {
     }
 
     @GetMapping("/tutor/reportes")
-    public String verReportes(@RequestParam(value = "alumnoId", required = false) Long alumnoId, Model model, Principal principal) {
+    public String verReportes(@RequestParam(value = "alumnoId", required = false) Long alumnoId, Model model,
+            Principal principal) {
         if (principal == null) {
             return "redirect:/login";
         }
@@ -229,10 +240,10 @@ public class TutorController {
 
     @PostMapping("/tutor/configuracion/password")
     public String cambiarPasswordTutor(@RequestParam("passwordActual") String passwordActual,
-                                    @RequestParam("passwordNueva") String passwordNueva,
-                                    @RequestParam("passwordConfirmacion") String passwordConfirmacion,
-                                    Principal principal,
-                                    RedirectAttributes redirectAttributes) {
+            @RequestParam("passwordNueva") String passwordNueva,
+            @RequestParam("passwordConfirmacion") String passwordConfirmacion,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
         if (principal == null) {
             return "redirect:/login";
@@ -263,7 +274,6 @@ public class TutorController {
         return "redirect:/tutor/configuracion";
     }
 
-
     private Tutor obtenerTutorLogueado(Principal principal) {
         return tutorRepository.findByUsuarioCorreo(principal.getName())
                 .orElseThrow(() -> new RuntimeException("Tutor no encontrado"));
@@ -271,10 +281,10 @@ public class TutorController {
 
     @PostMapping("/tutor/reportes/crear")
     public String crearReporte(@RequestParam("alumnoId") Long alumnoId,
-                            @RequestParam("tipo") String tipo,
-                            @RequestParam("comentario") String comentario,
-                            Principal principal,
-                            RedirectAttributes redirectAttributes) {
+            @RequestParam("tipo") String tipo,
+            @RequestParam("comentario") String comentario,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
         if (principal == null) {
             return "redirect:/login";
@@ -286,7 +296,8 @@ public class TutorController {
                 .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
 
         if (alumno.getTutor() == null || !alumno.getTutor().getId().equals(tutor.getId())) {
-            redirectAttributes.addFlashAttribute("error", "No puedes crear reportes sobre alumnos que no tienes asignados.");
+            redirectAttributes.addFlashAttribute("error",
+                    "No puedes crear reportes sobre alumnos que no tienes asignados.");
             return "redirect:/tutor/reportes";
         }
 
@@ -310,10 +321,10 @@ public class TutorController {
 
     @PostMapping("/tutor/perfil/actualizar")
     public String actualizarPerfilTutor(@RequestParam("especialidad") String especialidad,
-                                        @RequestParam("telefono") String telefono,
-                                        @RequestParam("departamento") String departamento,
-                                        Principal principal,
-                                        RedirectAttributes redirectAttributes) {
+            @RequestParam("telefono") String telefono,
+            @RequestParam("departamento") String departamento,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
         if (principal == null) {
             return "redirect:/login";
@@ -333,9 +344,10 @@ public class TutorController {
     }
 
     @PostMapping("/tutor/configuracion/preferencias")
-    public String actualizarPreferenciasTutor(@RequestParam(value = "notificacionesEmail", defaultValue = "false") Boolean notificacionesEmail,
-                                            Principal principal,
-                                            RedirectAttributes redirectAttributes) {
+    public String actualizarPreferenciasTutor(
+            @RequestParam(value = "notificacionesEmail", defaultValue = "false") Boolean notificacionesEmail,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
         if (principal == null) {
             return "redirect:/login";
@@ -354,8 +366,8 @@ public class TutorController {
 
     @PostMapping("/tutor/configuracion/desactivar")
     public String desactivarCuentaTutor(@RequestParam("confirmacion") String confirmacion,
-                                        Principal principal,
-                                        RedirectAttributes redirectAttributes) {
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
 
         if (principal == null) {
             return "redirect:/login";
@@ -373,5 +385,65 @@ public class TutorController {
         tutorRepository.save(tutor);
 
         return "redirect:/logout";
+    }
+
+    @GetMapping("/tutor/alumnos/{id}/cv/ver")
+    public String verCvAlumnoTutor(@PathVariable Long id,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+        try {
+            if (principal == null) {
+                return "redirect:/login";
+            }
+
+            Tutor tutor = obtenerTutorLogueado(principal);
+
+            Alumno alumno = alumnoRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
+
+            if (alumno.getTutor() == null || !alumno.getTutor().getId().equals(tutor.getId())) {
+                redirectAttributes.addFlashAttribute("error", "No puedes acceder al CV de este alumno.");
+                return "redirect:/tutor/alumnos";
+            }
+
+            if (alumno.getCvUrl() == null || alumno.getCvUrl().isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Este alumno todavía no ha subido ningún CV.");
+                return "redirect:/tutor/alumnos/" + id;
+            }
+
+            String urlFirmada = supabaseStorageService.crearUrlFirmada(alumno.getCvUrl());
+
+            return "redirect:" + urlFirmada;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "No se pudo abrir el CV del alumno.");
+            return "redirect:/tutor/alumnos/" + id;
+        }
+    }
+
+    @GetMapping("/tutor/ofertas/{id}")
+    public String detalleOfertaTutor(@PathVariable Long id,
+            Model model,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        Tutor tutor = obtenerTutorLogueado(principal);
+
+        Oferta oferta = ofertaRepository.findById(id).orElse(null);
+
+        if (oferta == null) {
+            redirectAttributes.addFlashAttribute("error", "La oferta no existe.");
+            return "redirect:/tutor/alumnos";
+        }
+
+        model.addAttribute("tutor", tutor.getUsuario());
+        model.addAttribute("datosTutor", tutor);
+        model.addAttribute("oferta", oferta);
+
+        return "tutor/detalle-oferta";
     }
 }

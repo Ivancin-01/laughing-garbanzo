@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Alumnos del Tutor</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
@@ -212,7 +213,7 @@
                                 </span>
                             </div>
 
-                            <div>
+                            <div class="alumno-card__info">
                                 <span>Alumno</span>
 
                                 <h3 th:text="${alumno.usuario.nombre + ' ' + alumno.usuario.apellidos}">
@@ -223,9 +224,26 @@
                                     alumno@ejemplo.com
                                 </p>
                             </div>
+
+                            <button type="button" class="btn-toggle-alumno" aria-expanded="false">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
                         </div>
 
-                        <div class="alumno-datos">
+                        <div class="alumno-resumen">
+                            <span
+                                th:class="${'estado-badge estado-' + (alumno.estadoFct != null ? alumno.estadoFct.toLowerCase() : 'en_busqueda')}"
+                                th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'EN_BUSQUEDA'}">
+                                Estado
+                            </span>
+
+                            <span class="alumno-resumen__empresa"
+                                th:text="${alumno.empresaFct != null ? alumno.empresaFct : 'Sin empresa asignada'}">
+                                Sin empresa
+                            </span>
+                        </div>
+
+                        <div class="alumno-datos alumno-datos--colapsado">
                             <div class="dato-linea">
                                 <i class="bi bi-geo-alt"></i>
                                 <div>
@@ -265,12 +283,13 @@
                                 <div>
                                     <span>CV</span>
 
-                                    <a th:if="${alumno.cvUrl != null}" th:href="${alumno.cvUrl}" target="_blank"
+                                    <a th:if="${alumno.cvUrl != null and !alumno.cvUrl.isBlank()}"
+                                        th:href="@{/tutor_centro/alumnos/{id}/cv(id=${alumno.id})}" target="_blank"
                                         class="cv-link">
                                         Ver CV
                                     </a>
 
-                                    <strong th:unless="${alumno.cvUrl != null}">
+                                    <strong th:unless="${alumno.cvUrl != null and !alumno.cvUrl.isBlank()}">
                                         Sin CV
                                     </strong>
                                 </div>
@@ -292,4 +311,5 @@
     </div>
     <script th:src="@{/js/tutor_centro/alumnos-tutor.js}"></script>
 </body>
+
 </html>

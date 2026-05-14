@@ -23,12 +23,22 @@ var btnSubmit   = document.querySelector(".btn-submit");
    ------------------------------------------------------- */
 btnOjo.addEventListener("click", function () {
 
+  var icono = btnOjo.querySelector("i");
+
   if (campoPwd.type === "password") {
     campoPwd.type = "text";
-    btnOjo.textContent = "🙈";
+    
+    if (icono) {
+      icono.classList.remove("bi-eye");
+      icono.classList.add("bi-eye-slash");
+    }
   } else {
     campoPwd.type = "password";
-    btnOjo.textContent = "👁";
+    
+    if (icono) {
+      icono.classList.remove("bi-eye-slash");
+      icono.classList.add("bi-eye");
+    }
   }
 
 });

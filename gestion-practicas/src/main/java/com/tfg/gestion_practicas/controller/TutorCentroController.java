@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.tfg.gestion_practicas.services.SupabaseStorageService;
 
 import com.tfg.gestion_practicas.dto.TutorCentroTutorDTO;
 import com.tfg.gestion_practicas.model.Alumno;
@@ -39,6 +40,9 @@ public class TutorCentroController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private SupabaseStorageService supabaseStorageService;
 
     @GetMapping("/tutor_centro/dashboard")
     public String dashboardTutorCentro(Model model, Principal principal) {
@@ -547,6 +551,44 @@ public class TutorCentroController {
         usuarioRepository.save(tutorCentro.getUsuario());
 
         return "redirect:/logout";
+    }
+
+    @GetMapping("/tutor_centro/alumnos/{id}/cv")
+    public String verCvAlumnoTutorCentro(@PathVariable Long id,
+            Principal principal,
+            RedirectAttributes redirectAttributes) {
+        try {
+            if (principal == null) {
+                return "redirect:/login";
+            }
+
+            TutorCentro tutorCentro = obtenerTutorCentroLogueado(principal);
+            String nombreCentro = obtenerNombreCentro(tutorCentro);
+
+            Alumno alumno = alumnoRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
+
+            if (alumno.getCentro() == null
+                    || alumno.getCentro().getNombre() == null
+                    || !alumno.getCentro().getNombre().equalsIgnoreCase(nombreCentro)) {
+                redirectAttributes.addFlashAttribute("error", "No puedes acceder al CV de un alumno de otro centro.");
+                return "redirect:/tutor_centro/alumnos";
+            }
+
+            if (alumno.getCvUrl() == null || alumno.getCvUrl().isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Este alumno no tiene CV subido.");
+                return "redirect:/tutor_centro/alumnos";
+            }
+
+            String urlFirmada = supabaseStorageService.crearUrlFirmada(alumno.getCvUrl());
+
+            return "redirect:" + urlFirmada;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "No se pudo abrir el CV del alumno.");
+            return "redirect:/tutor_centro/alumnos";
+        }
     }
 
     private TutorCentro obtenerTutorCentroLogueado(Principal principal) {

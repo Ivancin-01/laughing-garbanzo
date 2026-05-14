@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Mis Alumnos</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
@@ -112,7 +114,8 @@
                     <h1>Mis alumnos asignados</h1>
 
                     <p>
-                        Supervisa el estado de tus alumnos, revisa su empresa de prácticas y accede a su seguimiento individual.
+                        Supervisa el estado de tus alumnos, revisa su empresa de prácticas y accede a su seguimiento
+                        individual.
                     </p>
                 </div>
 
@@ -152,7 +155,8 @@
 
                     <div>
                         <span>En búsqueda</span>
-                        <strong th:text="${#lists.size(alumnos.?[estadoFct == 'EN_BUSQUEDA' or estadoFct == 'En búsqueda'])}">0</strong>
+                        <strong
+                            th:text="${#lists.size(alumnos.?[estadoFct == 'EN_BUSQUEDA' or estadoFct == 'En búsqueda'])}">0</strong>
                     </div>
                 </article>
 
@@ -163,7 +167,8 @@
 
                     <div>
                         <span>Pendientes</span>
-                        <strong th:text="${#lists.size(alumnos.?[estadoFct == 'PENDIENTE' or estadoFct == 'Pendiente'])}">0</strong>
+                        <strong
+                            th:text="${#lists.size(alumnos.?[estadoFct == 'PENDIENTE' or estadoFct == 'Pendiente'])}">0</strong>
                     </div>
                 </article>
             </section>
@@ -247,9 +252,7 @@
 
                 <div class="alumnos-lista" th:if="${not #lists.isEmpty(alumnos)}">
 
-                    <article class="alumno-card fila-alumno"
-                             th:each="alumno : ${alumnos}"
-                             th:attr="data-nombre=${alumno.usuario.nombre + ' ' + alumno.usuario.apellidos},
+                    <article class="alumno-card fila-alumno" th:each="alumno : ${alumnos}" th:attr="data-nombre=${alumno.usuario.nombre + ' ' + alumno.usuario.apellidos},
                                       data-correo=${alumno.usuario.correo},
                                       data-estado=${alumno.estadoFct},
                                       data-especialidad=${alumno.matricula}">
@@ -287,8 +290,9 @@
 
                             <span>
                                 <i class="bi bi-geo-alt"></i>
-                                <span th:text="${alumno.ciudad != null ? alumno.ciudad : 'Sin ciudad'}">
-                                    Madrid
+                                <span
+                                    th:text="${alumno.ciudad != null and !alumno.ciudad.isBlank() ? alumno.ciudad : 'Sin ciudad'}">
+                                    Sin ciudad
                                 </span>
                             </span>
                         </div>
@@ -302,10 +306,13 @@
 
                         <div class="alumno-estado">
                             <span class="badge"
-                                  th:classappend="${alumno.estadoFct == 'EN_PRACTICAS' ? ' badge-aceptada' :
-                                                  (alumno.estadoFct == 'PENDIENTE' or alumno.estadoFct == 'Pendiente' ? ' badge-pendiente' : ' badge-busqueda')}"
-                                  th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'EN_BUSQUEDA'}">
-                                EN_BUSQUEDA
+                                th:classappend="${alumno.estadoFct == 'EN_PRACTICAS' ? ' badge-aceptada' :
+                                (alumno.estadoFct == 'PENDIENTE' or alumno.estadoFct == 'Pendiente' ? ' badge-pendiente' : ' badge-busqueda')}"
+                                th:text="${alumno.estadoFct == 'EN_PRACTICAS' ? 'En prácticas' :
+                                alumno.estadoFct == 'EN_BUSQUEDA' ? 'En búsqueda' :
+                                alumno.estadoFct == 'PENDIENTE' ? 'Pendiente' :
+                                alumno.estadoFct != null ? alumno.estadoFct : 'En búsqueda'}">
+                                En búsqueda
                             </span>
                         </div>
 
@@ -314,8 +321,7 @@
                                 <i class="bi bi-eye"></i>
                                 Ver detalle
                             </a>
-                            <a th:href="@{/tutor/reportes(alumnoId=${alumno.id})}" 
-                            class="btn-mini btn-mini--reporte">
+                            <a th:href="@{/tutor/reportes(alumnoId=${alumno.id})}" class="btn-mini btn-mini--reporte">
                                 <i class="bi bi-file-earmark-text"></i>
                                 Reporte
                             </a>
@@ -337,4 +343,5 @@
     </div>
     <script th:src="@{/js/tutor/alumnos.js}"></script>
 </body>
+
 </html>

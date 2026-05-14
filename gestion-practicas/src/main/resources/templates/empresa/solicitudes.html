@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Solicitudes Recibidas</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
@@ -278,13 +279,16 @@
                                 </td>
 
                                 <td>
-                                    <a th:if="${solicitud.alumno.cvUrl != null}" th:href="${solicitud.alumno.cvUrl}"
-                                        target="_blank" class="btn-mini">
+                                    <a th:if="${solicitud.alumno.cvUrl != null and !solicitud.alumno.cvUrl.isBlank()}"
+                                        th:href="@{/empresa/solicitudes/{id}/cv(id=${solicitud.id})}" target="_blank"
+                                        class="btn-mini">
                                         <i class="bi bi-file-earmark-pdf"></i>
                                         Ver CV
                                     </a>
 
-                                    <span th:unless="${solicitud.alumno.cvUrl != null}" class="sin-cv">
+                                    <span
+                                        th:unless="${solicitud.alumno.cvUrl != null and !solicitud.alumno.cvUrl.isBlank()}"
+                                        class="sin-cv">
                                         Sin CV
                                     </span>
                                 </td>

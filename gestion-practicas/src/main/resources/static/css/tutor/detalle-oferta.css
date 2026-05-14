@@ -1,0 +1,385 @@
+/* =====================================================
+   DETALLE OFERTA - TUTOR
+   ===================================================== */
+
+/* Botón volver */
+
+.btn-volver-oferta {
+    width: fit-content;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-bottom: 18px;
+    padding: 10px 16px;
+
+    border-radius: 999px;
+    border: 1px solid rgba(106, 143, 106, 0.16);
+
+    background-color: rgba(255, 255, 255, 0.82);
+    color: var(--verde);
+
+    font-family: var(--fuente-titulo);
+    font-size: 0.9rem;
+    font-weight: 700;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.btn-volver-oferta i {
+    font-size: 1rem;
+    transition: transform 0.25s ease;
+}
+
+.btn-volver-oferta:hover {
+    background-color: var(--verde);
+    color: var(--blanco);
+    border-color: var(--verde);
+    transform: translateX(-3px);
+    box-shadow: 0 10px 24px rgba(106, 143, 106, 0.22);
+}
+
+.btn-volver-oferta:hover i {
+    transform: translateX(-3px);
+}
+
+.oferta-detalle-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    gap: 28px;
+    align-items: flex-start;
+}
+
+.oferta-detalle-card,
+.oferta-panel-lateral {
+    background-color: var(--blanco);
+    border: 1px solid rgba(106, 143, 106, 0.12);
+    border-radius: 22px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+    animation: entradaSuave 0.55s ease both;
+}
+
+.oferta-detalle-card {
+    overflow: hidden;
+}
+
+.oferta-detalle-header {
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 28px;
+
+    padding: 34px;
+    border-bottom: 1px solid var(--crema-oscura);
+}
+
+.oferta-detalle-header::before {
+    content: "";
+    position: absolute;
+    right: -90px;
+    top: -90px;
+
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+
+    background: rgba(106, 143, 106, 0.08);
+}
+
+.oferta-detalle-header > div {
+    position: relative;
+    z-index: 1;
+}
+
+.oferta-etiqueta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 12px;
+    padding: 7px 13px;
+    border-radius: 999px;
+
+    background-color: rgba(106, 143, 106, 0.10);
+    color: var(--verde);
+
+    font-family: var(--fuente-titulo);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.oferta-detalle-header h1 {
+    margin: 0 0 10px;
+
+    color: var(--texto);
+    font-family: var(--fuente-titulo);
+    font-size: 2.05rem;
+    line-height: 1.25;
+}
+
+.oferta-detalle-header p {
+    max-width: 650px;
+    margin: 0;
+
+    color: var(--texto-suave);
+    line-height: 1.55;
+}
+
+.oferta-header-icono {
+    position: relative;
+    z-index: 1;
+
+    width: 92px;
+    height: 92px;
+    min-width: 92px;
+
+    border-radius: 24px;
+    background: linear-gradient(135deg, var(--verde), var(--verde-claro));
+    color: var(--blanco);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 2.6rem;
+    box-shadow: 0 14px 28px rgba(106, 143, 106, 0.25);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.oferta-header-icono:hover {
+    transform: translateY(-5px) rotate(-3deg) scale(1.03);
+    box-shadow: 0 18px 34px rgba(106, 143, 106, 0.32);
+}
+
+.oferta-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+
+    padding: 28px 34px;
+}
+
+.oferta-meta-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 18px;
+    border-radius: 18px;
+
+    background-color: var(--crema);
+    border: 1px solid rgba(106, 143, 106, 0.12);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.oferta-meta-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    border-color: rgba(106, 143, 106, 0.30);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.07);
+}
+
+.oferta-meta-card i {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(106, 143, 106, 0.12);
+    color: var(--verde);
+
+    font-size: 1.18rem;
+}
+
+.oferta-meta-card span {
+    display: block;
+    margin-bottom: 4px;
+
+    color: var(--texto-suave);
+    font-family: var(--fuente-titulo);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.oferta-meta-card strong {
+    display: block;
+    color: var(--texto);
+    word-break: break-word;
+}
+
+.oferta-descripcion {
+    padding: 0 34px 34px;
+}
+
+.oferta-descripcion h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin: 0 0 14px;
+
+    color: var(--texto);
+    font-family: var(--fuente-titulo);
+    font-size: 1.18rem;
+}
+
+.oferta-descripcion h2 i {
+    color: var(--verde);
+}
+
+.oferta-descripcion p {
+    margin: 0;
+    padding: 24px;
+
+    white-space: pre-line;
+    color: var(--texto-suave);
+    line-height: 1.7;
+
+    background-color: var(--crema);
+    border: 1px solid rgba(106, 143, 106, 0.10);
+    border-radius: 18px;
+}
+
+.oferta-panel-lateral {
+    position: sticky;
+    top: 104px;
+
+    padding: 28px;
+    text-align: center;
+}
+
+.oferta-panel-lateral .panel-icono {
+    width: 82px;
+    height: 82px;
+    margin: 0 auto 18px;
+
+    border-radius: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(135deg, var(--verde), var(--verde-claro));
+    color: var(--blanco);
+
+    font-size: 2.2rem;
+    box-shadow: 0 12px 26px rgba(106, 143, 106, 0.22);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.oferta-panel-lateral .panel-icono:hover {
+    transform: translateY(-4px) rotate(-3deg) scale(1.04);
+    box-shadow: 0 18px 34px rgba(106, 143, 106, 0.30);
+}
+
+.oferta-panel-lateral h2 {
+    margin: 0 0 10px;
+
+    color: var(--texto);
+    font-family: var(--fuente-titulo);
+}
+
+.oferta-panel-lateral p {
+    margin: 0 0 20px;
+
+    color: var(--texto-suave);
+    line-height: 1.55;
+}
+
+.oferta-panel-lateral .btn-principal,
+.oferta-panel-lateral .btn-secundario {
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.panel-aviso {
+    margin-top: 16px;
+    padding: 18px;
+
+    text-align: left;
+
+    background-color: var(--crema);
+    border: 1px dashed rgba(106, 143, 106, 0.28);
+    border-radius: 18px;
+}
+
+.panel-aviso h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin: 0 0 8px;
+
+    color: var(--verde);
+    font-family: var(--fuente-titulo);
+    font-size: 0.98rem;
+}
+
+.panel-aviso p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 1120px) {
+    .oferta-detalle-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .oferta-panel-lateral {
+        position: static;
+    }
+}
+
+@media (max-width: 760px) {
+    .oferta-detalle-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .oferta-meta-grid {
+        grid-template-columns: 1fr;
+        padding-left: 22px;
+        padding-right: 22px;
+    }
+
+    .oferta-descripcion {
+        padding-left: 22px;
+        padding-right: 22px;
+    }
+
+    .oferta-detalle-header h1 {
+        font-size: 1.55rem;
+    }
+}

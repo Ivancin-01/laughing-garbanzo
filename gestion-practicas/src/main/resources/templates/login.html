@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FP Connect — Login</title>
+  <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
 
   <!-- Mismas fuentes que la landing y el registro -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+    rel="stylesheet">
 
   <!-- Normalize -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
 
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
   <link rel="stylesheet" th:href="@{/css/stylesLogin.css}">
 </head>
+
 <body>
 
   <!-- =====================================================
@@ -47,13 +54,18 @@
 
       <!-- Mensajes Thymeleaf -->
       <div th:if="${param.error}" class="mensaje mensaje--error">
-        ❌ Usuario o contraseña incorrectos. Inténtalo de nuevo.
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>Usuario o contraseña incorrectos. Inténtalo de nuevo.</span>
       </div>
+
       <div th:if="${param.logout}" class="mensaje mensaje--exito">
-        ✅ Has cerrado sesión correctamente.
+        <i class="bi bi-check-circle-fill"></i>
+        <span>Has cerrado sesión correctamente.</span>
       </div>
+
       <div th:if="${param.registrado}" class="mensaje mensaje--exito">
-        ✅ Cuenta creada con éxito. Ya puedes iniciar sesión.
+        <i class="bi bi-check-circle-fill"></i>
+        <span>Cuenta creada con éxito. Ya puedes iniciar sesión.</span>
       </div>
 
       <!-- ===================================================
@@ -66,12 +78,8 @@
         <!-- USERNAME / EMAIL -->
         <div class="form-group">
           <label for="username">Usuario o email</label>
-          <input type="text"
-                 id="username"
-                 name="username"
-                 placeholder="ej: ana.garcia o correo@ejemplo.com"
-                 autocomplete="username"
-                 required>
+          <input type="text" id="username" name="username" placeholder="ej: ana.garcia o correo@ejemplo.com"
+            autocomplete="username" required>
           <span class="error-msg" id="err-username"></span>
         </div>
 
@@ -79,13 +87,12 @@
         <div class="form-group">
           <label for="password">Contraseña</label>
           <div class="input-wrapper">
-            <input type="password"
-                   id="password"
-                   name="password"
-                   placeholder="Tu contraseña"
-                   autocomplete="current-password"
-                   required>
-            <button type="button" id="btnOjo" class="btn-ojo" title="Mostrar u ocultar contraseña">👁</button>
+            <input type="password" id="password" name="password" placeholder="Tu contraseña"
+              autocomplete="current-password" required>
+            <button type="button" id="btnOjo" class="btn-ojo" title="Mostrar u ocultar contraseña"
+              aria-label="Mostrar u ocultar contraseña">
+              <i class="bi bi-eye"></i>
+            </button>
           </div>
           <span class="error-msg" id="err-password"></span>
         </div>
@@ -109,8 +116,9 @@
       <p class="link-registro">
         ¿No tienes cuenta? <a th:href="@{/usuarios/registro}">Regístrate aquí</a>
       </p>
-    </div>  <!-- fin login-card -->
+    </div> <!-- fin login-card -->
   </main>
   <script th:src="@{/js/login.js}"></script>
 </body>
+
 </html>

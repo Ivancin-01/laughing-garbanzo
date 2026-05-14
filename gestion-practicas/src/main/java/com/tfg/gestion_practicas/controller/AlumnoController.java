@@ -163,8 +163,7 @@ public class AlumnoController {
         alumnoDb.setDni(alumnoForm.getDni());
         alumnoDb.setCiudad(alumnoForm.getCiudad());
         alumnoDb.setCentro(centro);
-        alumnoDb.setHorasFct(alumnoForm.getHorasFct());
-
+        
         alumnoService.guardar(alumnoDb);
         System.out.println("Ciudad recibida: " + alumnoForm.getCiudad());
 

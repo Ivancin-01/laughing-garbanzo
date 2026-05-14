@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Dashboard - Empresa</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
@@ -73,6 +75,15 @@
                 </a>
                 <a th:href="@{/empresa/alumnos-fct}" class="sidebar-link">
                     <i class="bi bi-mortarboard"></i> Alumnos en Prácticas
+                </a>
+                <a th:href="@{/empresa/perfil}" class="sidebar-link">
+                    <i class="bi bi-person-vcard"></i>
+                    Mi perfil
+                </a>
+
+                <a th:href="@{/empresa/configuracion}" class="sidebar-link">
+                    <i class="bi bi-gear"></i>
+                    Configuración
                 </a>
             </nav>
         </aside>

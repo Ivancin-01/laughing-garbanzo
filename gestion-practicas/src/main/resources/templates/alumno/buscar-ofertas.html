@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Buscar Ofertas</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
@@ -32,8 +33,7 @@
         <div class="usuario-nav-container perfil-trigger">
             <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de alumno">
                 <div class="info-usuario-nav">
-                    <p class="nombre-nav"
-                       th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
+                    <p class="nombre-nav" th:text="${alumno.usuario.nombre} + ' ' + ${alumno.usuario.apellidos}">
                         Nombre Alumno
                     </p>
                     <p class="rol-nav">Alumno</p>
@@ -118,31 +118,49 @@
                 <form th:action="@{/ofertas}" method="get" class="form-buscador">
                     <div class="input-buscador">
                         <i class="bi bi-search"></i>
-                        <input type="text"
-                               name="buscar"
-                               th:value="${query}"
-                               placeholder="Buscar por puesto, empresa o tecnología...">
+                        <input type="text" name="buscar" th:value="${query}"
+                            placeholder="Buscar por puesto, empresa o tecnología...">
+                    </div>
+
+                    <div class="select-ciudad-ofertas">
+                        <i class="bi bi-geo-alt"></i>
+
+                        <select name="ciudad" id="filtroCiudad">
+                            <option value="">Todas las ciudades</option>
+
+                            <option th:each="ciudadItem : ${ciudades}" th:value="${ciudadItem}" th:text="${ciudadItem}"
+                                th:selected="${ciudadSeleccionada != null and ciudadSeleccionada == ciudadItem}">
+                                Madrid
+                            </option>
+                        </select>
                     </div>
 
                     <button type="submit" class="btn-buscar">
+                        <i class="bi bi-search"></i>
                         Buscar
                     </button>
 
-                    <a th:if="${query != null and !query.isBlank()}"
-                       th:href="@{/ofertas}"
-                       class="btn-limpiar">
+                    <a th:if="${(query != null and !query.isBlank()) or (ciudadSeleccionada != null and !ciudadSeleccionada.isBlank())}"
+                        th:href="@{/ofertas}" class="btn-limpiar">
+                        <i class="bi bi-x-circle"></i>
                         Limpiar
                     </a>
                 </form>
 
                 <div class="resultado-busqueda">
-                    <p th:if="${query == null or query.isBlank()}">
+                    <p
+                        th:if="${(query == null or query.isBlank()) and (ciudadSeleccionada == null or ciudadSeleccionada.isBlank())}">
                         Mostrando todas las ofertas disponibles.
                     </p>
 
-                    <p th:if="${query != null and !query.isBlank()}">
-                        Resultados para:
-                        <strong th:text="${query}">búsqueda</strong>
+                    <p
+                        th:if="${(query != null and !query.isBlank()) or (ciudadSeleccionada != null and !ciudadSeleccionada.isBlank())}">
+                        Filtros aplicados:
+                        <strong th:if="${query != null and !query.isBlank()}" th:text="${query}">búsqueda</strong>
+                        <strong th:if="${ciudadSeleccionada != null and !ciudadSeleccionada.isBlank()}"
+                            th:text="${query != null and !query.isBlank() ? ' · ' + ciudadSeleccionada : ciudadSeleccionada}">
+                            Madrid
+                        </strong>
                     </p>
 
                     <span>
@@ -166,7 +184,8 @@
 
                             <div>
                                 <span>Empresa</span>
-                                <strong th:text="${oferta.empresa != null ? oferta.empresa.nombre : 'Empresa no asignada'}">
+                                <strong
+                                    th:text="${oferta.empresa != null ? oferta.empresa.nombre : 'Empresa no asignada'}">
                                     Empresa
                                 </strong>
                             </div>
@@ -183,7 +202,7 @@
                         </h2>
 
                         <p th:if="${oferta.descripcion != null}"
-                           th:text="${#strings.length(oferta.descripcion) > 130 ? #strings.substring(oferta.descripcion, 0, 130) + '...' : oferta.descripcion}">
+                            th:text="${#strings.length(oferta.descripcion) > 130 ? #strings.substring(oferta.descripcion, 0, 130) + '...' : oferta.descripcion}">
                             Descripción breve de la oferta.
                         </p>
 
@@ -200,7 +219,8 @@
 
                         <span>
                             <i class="bi bi-people"></i>
-                            <span th:text="${oferta.plazas != null ? oferta.plazas + ' plazas' : 'Plazas no indicadas'}">
+                            <span
+                                th:text="${oferta.plazas != null ? oferta.plazas + ' plazas' : 'Plazas no indicadas'}">
                                 1 plaza
                             </span>
                         </span>

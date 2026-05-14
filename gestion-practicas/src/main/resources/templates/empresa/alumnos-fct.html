@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Alumnos en Prácticas</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
@@ -176,7 +177,7 @@
                                 data-centro='No indicado',
                                 data-oferta=${item.oferta.titulo},
                                 data-estado-practica=${item.estadoPractica},
-                                data-cv=${item.alumno.cvUrl != null ? item.alumno.cvUrl : ''}">
+                                data-cv=${item.alumno.cvUrl != null and !item.alumno.cvUrl.isBlank() ? '/empresa/alumnos-fct/' + item.id + '/cv' : ''}">
 
                         <div class="alumno-card__avatar">
                             <span th:text="${#strings.substring(item.alumno.usuario.nombre, 0, 1)}">A</span>

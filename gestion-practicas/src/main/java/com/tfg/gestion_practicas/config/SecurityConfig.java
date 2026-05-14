@@ -98,11 +98,17 @@ public class SecurityConfig {
                         })
                         .failureUrl("/login?error")
                         .permitAll())
+                        .rememberMe(remember -> remember 
+                            .key("fpconnect-recordarme-key")
+                            .rememberMeParameter("remember-me")
+                            .tokenValiditySeconds(60 * 60 * 24 * 7)
+                            .userDetailsService(userDetailsService)
+                        )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
+                        .deleteCookies("JSESSIONID", "remember-me")
                         .permitAll())
                 .exceptionHandling(ex -> ex
                         .accessDeniedPage("/error/403"))

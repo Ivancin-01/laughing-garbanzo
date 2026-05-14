@@ -252,8 +252,26 @@ textarea:focus {
   transition: all 0.2s;
 }
 
+.rol-icon {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--verde);
+  font-size: 1.8rem;
+  line-height: 1;
+  transition: transform 0.25s ease-in, color 0.25s ease;
+}
+
 .rol-btn span {
-  font-size: 1.5rem;
+  font-size: 0.98rem;
+}
+
+.rol-btn:hover .rol-icon {
+  transform: translateY(-3px) scale(1.1);
+}
+
+.rol-btn.seleccionado .rol-icon {
+  color: var(--verde);
+  transform: scale(1.12);
 }
 
 .rol-btn:hover {
@@ -361,4 +379,12 @@ select:disabled {
 .form-group:has(select[id^="centroId"]) label::after {
   content: " *";
   color: var(--error);
+}
+
+.form-group small {
+  display: block;
+  margin-top: 4px;
+  color: var(--texto-suave);
+  font-size: 0.78rem;
+  line-height: 1.4;
 }

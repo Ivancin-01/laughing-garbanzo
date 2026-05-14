@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Dashboard - Tutor</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
@@ -100,6 +101,11 @@
                     <i class="bi bi-person-vcard"></i>
                     Mi perfil
                 </a>
+
+                <a th:href="@{/tutor/configuracion}" class="sidebar-link">
+                    <i class="bi bi-gear"></i>
+                    Configuración
+                </a>
             </nav>
         </aside>
 
@@ -116,7 +122,8 @@
                     </h1>
 
                     <p>
-                        Supervisa a tus alumnos asignados, revisa sus solicitudes y realiza seguimiento de su progreso en las FCT.
+                        Supervisa a tus alumnos asignados, revisa sus solicitudes y realiza seguimiento de su progreso
+                        en las FCT.
                     </p>
                 </div>
 
@@ -264,9 +271,12 @@
 
                         <div class="alumno-estado">
                             <span class="badge"
-                                  th:classappend="${alumno.estadoFct == 'EN_PRACTICAS' ? ' badge-aceptada' : ' badge-pendiente'}"
-                                  th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'EN_BUSQUEDA'}">
-                                EN_BUSQUEDA
+                                th:classappend="${alumno.estadoFct == 'EN_PRACTICAS' ? ' badge-aceptada' : ' badge-pendiente'}"
+                                th:text="${alumno.estadoFct == 'EN_PRACTICAS' ? 'En prácticas' :
+                                alumno.estadoFct == 'EN_BUSQUEDA' ? 'En búsqueda' :
+                                alumno.estadoFct == 'PENDIENTE' ? 'Pendiente' :
+                                alumno.estadoFct != null ? alumno.estadoFct : 'En búsqueda'}">
+                                En búsqueda
                             </span>
                         </div>
 
@@ -281,4 +291,5 @@
     </div>
     <script th:src="@{/js/tutor/dashboard.js}"></script>
 </body>
+
 </html>

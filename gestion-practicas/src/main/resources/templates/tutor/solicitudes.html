@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Solicitudes de Alumnos</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
@@ -308,7 +309,7 @@
                             </a>
 
                             <a th:if="${s.oferta != null}"
-                               th:href="@{/ofertas/detalle/{id}(id=${s.oferta.id})}"
+                               th:href="@{/tutor/ofertas/{id}(id=${s.oferta.id})}"
                                class="btn-mini">
                                 Ver oferta
                                 <i class="bi bi-arrow-right"></i>

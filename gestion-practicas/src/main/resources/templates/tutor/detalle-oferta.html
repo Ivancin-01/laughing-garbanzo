@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Connect | Detalle Oferta - Tutor</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" th:href="@{/css/tutor/alumnos.css}">
+    <link rel="stylesheet" th:href="@{/css/tutor/detalle-oferta.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar-superior">
+        <div class="nav-izq">
+            <button id="btn-toggle-sidebar" class="btn-toggle" type="button" aria-label="Abrir menú lateral">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+
+        <div class="logo-central">
+            <span class="logo-fp">FP</span><span class="logo-connect-span">Connect</span>
+        </div>
+
+        <div class="usuario-nav-container perfil-trigger">
+            <button type="button" class="perfil-boton" id="perfil-boton" aria-label="Abrir menú de tutor">
+                <div class="info-usuario-nav">
+                    <p class="nombre-nav" th:text="${tutor.nombre} + ' ' + ${tutor.apellidos}">
+                        Nombre Tutor
+                    </p>
+                    <p class="rol-nav">Tutor</p>
+                </div>
+
+                <div class="avatar-wrapper">
+                    <span class="avatar-inicial" th:text="${#strings.substring(tutor.nombre, 0, 1)}">T</span>
+                </div>
+
+                <i class="bi bi-chevron-down perfil-flecha"></i>
+            </button>
+
+            <div id="dropdown-perfil" class="dropdown-content">
+                <a th:href="@{/tutor/dashboard}">
+                    <i class="bi bi-grid-fill"></i>
+                    <b>Dashboard</b>
+                </a>
+
+                <a th:href="@{/tutor/perfil}">
+                    <i class="bi bi-person-circle"></i>
+                    <b>Mi perfil</b>
+                </a>
+
+                <a th:href="@{/tutor/configuracion}">
+                    <i class="bi bi-gear"></i>
+                    <b>Configuración</b>
+                </a>
+
+                <hr>
+
+                <a th:href="@{/logout}" class="dropdown-danger">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <b>Cerrar sesión</b>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/tutor/dashboard}" class="sidebar-link">
+                    <i class="bi bi-house-door"></i>
+                    Inicio
+                </a>
+
+                <a th:href="@{/tutor/alumnos}" class="sidebar-link active">
+                    <i class="bi bi-people"></i>
+                    Mis alumnos
+                </a>
+
+                <a th:href="@{/tutor/solicitudes}" class="sidebar-link">
+                    <i class="bi bi-send"></i>
+                    Solicitudes
+                </a>
+
+                <a th:href="@{/tutor/reportes}" class="sidebar-link">
+                    <i class="bi bi-file-earmark-text"></i>
+                    Reportes
+                </a>
+
+                <a th:href="@{/tutor/perfil}" class="sidebar-link">
+                    <i class="bi bi-person-vcard"></i>
+                    Mi perfil
+                </a>
+            </nav>
+        </aside>
+
+        <main class="contenedor">
+
+            <a th:href="@{/tutor/alumnos}" class="btn-volver-oferta">
+                <i class="bi bi-arrow-left"></i>
+                Volver a mis alumnos
+            </a>
+
+            <section class="oferta-detalle-layout">
+
+                <article class="oferta-detalle-card">
+
+                    <header class="oferta-detalle-header">
+                        <div>
+                            <span class="oferta-etiqueta">
+                                <i class="bi bi-briefcase"></i>
+                                Oferta de prácticas
+                            </span>
+
+                            <h1 th:text="${oferta.titulo}">
+                                Título de la oferta
+                            </h1>
+
+                            <p>
+                                Vista de consulta para que el tutor pueda revisar la oferta solicitada por sus alumnos.
+                            </p>
+                        </div>
+
+                        <div class="oferta-header-icono">
+                            <i class="bi bi-building-check"></i>
+                        </div>
+                    </header>
+
+                    <div class="oferta-meta-grid">
+
+                        <article class="oferta-meta-card">
+                            <i class="bi bi-building"></i>
+                            <div>
+                                <span>Empresa</span>
+                                <strong
+                                    th:text="${oferta.empresa != null ? oferta.empresa.nombre : 'Empresa no asignada'}">
+                                    Empresa
+                                </strong>
+                            </div>
+                        </article>
+
+                        <article class="oferta-meta-card">
+                            <i class="bi bi-geo-alt"></i>
+                            <div>
+                                <span>Ciudad</span>
+                                <strong
+                                    th:text="${oferta.ciudad != null and !oferta.ciudad.isBlank() ? oferta.ciudad : 'No indicada'}">
+                                    Ciudad
+                                </strong>
+                            </div>
+                        </article>
+
+                        <article class="oferta-meta-card">
+                            <i class="bi bi-laptop"></i>
+                            <div>
+                                <span>Modalidad</span>
+                                <strong
+                                    th:text="${oferta.modalidad != null and !oferta.modalidad.isBlank() ? oferta.modalidad : 'No indicada'}">
+                                    Modalidad
+                                </strong>
+                            </div>
+                        </article>
+
+                        <article class="oferta-meta-card">
+                            <i class="bi bi-clock-history"></i>
+                            <div>
+                                <span>Horario</span>
+                                <strong
+                                    th:text="${oferta.horario != null and !oferta.horario.isBlank() ? oferta.horario : 'No indicado'}">
+                                    Horario
+                                </strong>
+                            </div>
+                        </article>
+
+                        <article class="oferta-meta-card">
+                            <i class="bi bi-journal-code"></i>
+                            <div>
+                                <span>Especialidad</span>
+                                <strong
+                                    th:text="${oferta.especialidad != null and !oferta.especialidad.isBlank() ? oferta.especialidad : 'No indicada'}">
+                                    Especialidad
+                                </strong>
+                            </div>
+                        </article>
+
+                        <article class="oferta-meta-card">
+                            <i class="bi bi-people"></i>
+                            <div>
+                                <span>Plazas</span>
+                                <strong th:text="${oferta.plazas != null ? oferta.plazas : 0}">
+                                    0
+                                </strong>
+                            </div>
+                        </article>
+
+                        <article class="oferta-meta-card">
+                            <i class="bi bi-calendar-check"></i>
+                            <div>
+                                <span>Publicación</span>
+                                <strong
+                                    th:text="${oferta.fechaPublicacion != null ? #temporals.format(oferta.fechaPublicacion, 'dd/MM/yyyy') : 'No indicada'}">
+                                    01/01/2026
+                                </strong>
+                            </div>
+                        </article>
+
+                    </div>
+
+                    <section class="oferta-descripcion">
+                        <h2>
+                            <i class="bi bi-info-circle"></i>
+                            Descripción de la oferta
+                        </h2>
+
+                        <p th:if="${oferta.descripcion != null and !oferta.descripcion.isBlank()}"
+                            th:text="${oferta.descripcion}">
+                            Descripción de la oferta.
+                        </p>
+
+                        <p th:if="${oferta.descripcion == null or oferta.descripcion.isBlank()}">
+                            Esta oferta todavía no tiene una descripción detallada.
+                        </p>
+                    </section>
+
+                </article>
+
+                <aside class="oferta-panel-lateral">
+
+                    <div class="panel-icono">
+                        <i class="bi bi-search-heart"></i>
+                    </div>
+
+                    <h2>Consulta del tutor</h2>
+
+                    <p>
+                        Esta vista es solo informativa. La gestión de solicitudes corresponde a la empresa,
+                        pero el tutor puede revisar los detalles para orientar mejor al alumno.
+                    </p>
+
+                    <a th:href="@{/tutor/solicitudes}" class="btn-principal">
+                        <i class="bi bi-send"></i>
+                        Ver solicitudes
+                    </a>
+
+                    <a th:href="@{/tutor/alumnos}" class="btn-secundario">
+                        <i class="bi bi-people"></i>
+                        Volver a alumnos
+                    </a>
+
+                    <div class="panel-aviso">
+                        <h3>
+                            <i class="bi bi-lightbulb"></i>
+                            Consejo
+                        </h3>
+                        <p>
+                            Revisa ciudad, modalidad, horario y especialidad para comprobar si la oferta encaja con el
+                            perfil del alumno.
+                        </p>
+                    </div>
+
+                </aside>
+
+            </section>
+
+        </main>
+    </div>
+    <script th:src="@{/js/tutor/detalle-alumno.js}"></script>
+</body>
+</html>

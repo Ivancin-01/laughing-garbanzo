@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var telefono = document.getElementById('telefono');
 
         if (!departamento.value.trim()) {
-          mostrarError('err-rol', 'El departamento es obligatorio');
+          mostrarError('err-departamento', 'Debes seleccionar una especialidad');
           hayErrores = true;
         }
 
@@ -165,6 +165,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!telefono.value.trim()) {
           mostrarError('err-rol', 'El teléfono es obligatorio');
+          hayErrores = true;
+        } else if (!/^[0-9]{9}$/.test(telefono.value.trim())) {
+          mostrarError('err-telefono', 'El teléfono debe tener 9 dígitos');
           hayErrores = true;
         }
       }
@@ -180,6 +183,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!telefonoTC.value.trim()) {
           mostrarError('err-rol', 'El teléfono es obligatorio');
+          hayErrores = true;
+        } else if (!/^[0-9]{9}$/.test(telefonoTC.value.trim())) {
+          mostrarError('err-telefonoTC', 'El teléfono debe tener 9 dígitos');
           hayErrores = true;
         }
       }

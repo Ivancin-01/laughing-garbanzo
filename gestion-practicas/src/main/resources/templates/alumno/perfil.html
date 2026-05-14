@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FP Connect | Perfil - Alumno</title>
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
+    
     <!-- Google Fonts: Poppins para títulos, Lato para texto normal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap"
@@ -108,7 +110,13 @@
                 <i class="bi bi-info-circle-fill"></i>
                 <div>
                     <span>Estado</span>
-                    <p th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'Pendiente'}">Estado</p>
+                    <p th:text="${alumno.estadoFct == 'EN_PRACTICAS' ? 'En prácticas' :
+                        alumno.estadoFct == 'EN_BUSQUEDA' ? 'En búsqueda' :
+                        alumno.estadoFct == 'FINALIZADO' ? 'Finalizado' :
+                        alumno.estadoFct == 'PENDIENTE' ? 'Pendiente' :
+                        'Pendiente'}">
+                        Estado
+                    </p>
                 </div>
             </div>
             <div class="stat-card">
@@ -230,8 +238,12 @@
                     <label>Estado de prácticas</label>
                     <div class="campo-solo-lectura">
                         <i class="bi bi-flag"></i>
-                        <span th:text="${alumno.estadoFct != null ? alumno.estadoFct : 'EN_BUSQUEDA'}">
-                            EN_BUSQUEDA
+                        <span th:text="${alumno.estadoFct == 'EN_PRACTICAS' ? 'En prácticas' :
+                            alumno.estadoFct == 'EN_BUSQUEDA' ? 'En búsqueda' :
+                            alumno.estadoFct == 'FINALIZADO' ? 'Finalizado' :
+                            alumno.estadoFct == 'PENDIENTE' ? 'Pendiente' :
+                            'En búsqueda'}">
+                            En búsqueda
                         </span>
                     </div>
                     <small class="texto-ayuda">
@@ -240,12 +252,14 @@
                 </div>
                 <div class="form-group">
                     <label>Horas Totales</label>
-                    <select th:field="*{horasFct}" class="form-control-custom">
-                        <option value="200">200h</option>
-                        <option value="300">300h</option>
-                        <option value="400">400h</option>
-                        <option value="500">500h</option>
-                    </select>
+                    <div class="campo-solo-lectura">
+                        <i class="bi bi-clock"></i>
+                        <span th:text="${alumno.horasFct != null ? alumno.horasFct + 'h' : 'No asignadas'}">No
+                            asignadas</span>
+                    </div>
+                    <small class="texto-ayuda">
+                        Las horas FCT las asigna el tutor. El alumno no puede modificar este dato.
+                    </small>
                 </div>
 
                 <div class="form-group" style="grid-column: span 2;">
