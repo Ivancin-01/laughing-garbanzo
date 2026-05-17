@@ -343,6 +343,12 @@ input.campo-error {
   border-radius: 999px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
 }
 
 .btn-submit:hover {
@@ -510,4 +516,82 @@ input.campo-error {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+/* =====================================================
+   RECUPERAR CONTRASEÑA
+   ===================================================== */
+
+.recuperar-card {
+  max-width: 470px;
+}
+
+.recuperar-card .login-avatar {
+  background: linear-gradient(135deg, #fff3e0, #d9f5e8);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+}
+
+.recuperar-card .login-cabecera p {
+  max-width: 360px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.recuperar-card .btn-submit {
+  margin-top: 10px;
+}
+
+.recuperar-card .link-registro {
+  margin-top: 22px;
+}
+
+/* =====================================================
+   INPUT RECUPERAR CONTRASEÑA
+   ===================================================== */
+
+.input-wrapper-email {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper-email .input-icon {
+  position: absolute;
+  left: 16px;
+  color: #6b7280;
+  font-size: 1.05rem;
+  pointer-events: none;
+  transition: color 0.25s ease;
+}
+
+.input-wrapper-email input {
+  width: 100%;
+  padding: 14px 16px 14px 46px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 14px;
+  background-color: #f9fafb;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.98rem;
+  color: #1f2937;
+  outline: none;
+  transition: 
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease,
+    transform 0.2s ease;
+}
+
+.input-wrapper-email input::placeholder {
+  color: #9ca3af;
+}
+
+.input-wrapper-email input:focus {
+  border-color: #2f9e6d;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(47, 158, 109, 0.15);
+  transform: translateY(-1px);
+}
+
+.input-wrapper-email:focus-within .input-icon {
+  color: #2f9e6d;
 }

@@ -45,7 +45,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/login", "/cuenta-desactivada", "/usuarios/registro", "/usuarios/registrar",
+                                "/", "/login", "/cuenta-desactivada", "/recuperar-password", "/usuarios/registro", "/usuarios/registrar",
                                 "/css/**", "/js/**", "/img/**", "/json/**", "/error",
                                 "/ofertas", "/ofertas/**")
                         .permitAll()
